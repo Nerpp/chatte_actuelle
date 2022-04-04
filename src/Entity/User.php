@@ -192,35 +192,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Edito>
-     */
-    public function getEditos(): Collection
-    {
-        return $this->editos;
-    }
-
-    public function addEdito(Edito $edito): self
-    {
-        if (!$this->editos->contains($edito)) {
-            $this->editos[] = $edito;
-            $edito->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEdito(Edito $edito): self
-    {
-        if ($this->editos->removeElement($edito)) {
-            // set the owning side to null (unless already changed)
-            if ($edito->getUser() === $this) {
-                $edito->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function isVerified(): bool
     {
