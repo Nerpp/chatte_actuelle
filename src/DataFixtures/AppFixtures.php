@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Articles;
+use App\Entity\Comments;
 use App\Entity\Edito;
 use App\Entity\Tags;
 use App\Entity\User;
@@ -97,19 +99,19 @@ class AppFixtures extends Fixture
         ];
 
         $listArticle = [
-            [
-                'title' => 'Titre 1',
-                'slug' => 'titre 1',
+            
+                'title' => 'Titre',
+                'slug' => 'titre',
                 'article' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at lacus a risus cursus vestibulum. Mauris eget felis nec nunc convallis sagittis. Proin mi velit, maximus nec aliquet a, mattis in purus. Suspendisse vel eleifend ex. Suspendisse suscipit eget mauris at bibendum. Integer convallis malesuada lectus, id auctor lectus auctor ut. Vestibulum sit amet felis vitae quam semper volutpat nec nec urna.
 
                 Nam tristique non turpis at efficitur. Sed faucibus sem non tellus efficitur, sit amet gravida nulla pharetra. Praesent sed auctor nisi. Aliquam lobortis erat velit, ornare scelerisque neque ullamcorper in. Cras sit amet enim in lectus tempor maximus vitae a ex. Duis sagittis consequat tortor, vel pellentesque enim. Quisque ullamcorper dui ex, iaculis volutpat ante commodo aliquet. Nullam turpis nunc, commodo id malesuada vitae, porttitor vel nunc. Ut sed euismod justo. Donec id nulla ultricies, venenatis metus et, lacinia arcu. Nunc accumsan mi ac placerat fermentum. Maecenas mollis, lorem eu ultricies eleifend, libero mi rutrum ipsum, id dapibus diam ligula interdum urna. In hac habitasse platea dictumst. Nunc ut metus ut urna dignissim efficitur eu ac risus.
                 
                 Etiam semper, ex lacinia luctus bibendum, tortor eros faucibus enim, in maximus justo elit quis turpis. Donec ut ex lectus. Nulla dignissim sapien eu dui blandit, id convallis justo tincidunt. Ut mi lorem, vulputate vel imperdiet eget, ultricies in augue. Mauris dictum est ex, a mollis odio eleifend vitae. Praesent sagittis enim justo, id tempus ante lacinia laoreet. Nam semper lacus in placerat iaculis. Nam et neque eu enim tempor eleifend vitae in diam. Mauris tristique maximus magna ac varius. Aliquam velit elit, laoreet vel nisl non, blandit hendrerit ipsum. Curabitur a tellus eget mauris accumsan laoreet. Curabitur tristique, ex porttitor dignissim fringilla, libero augue tempus ipsum, in bibendum nisl leo at ipsum. Pellentesque eu fermentum dolor. Mauris sollicitudin porttitor neque ut volutpat.
                 
-                In sit amet tortor elit. Nunc ex dolor, euismod eu lorem sed, scelerisque bibendum ex. Sed sit amet auctor lorem. Phasellus nec nisi vel dui aliquet luctus non vel erat. Nam vulputate vestibulum nunc. Pellentesque dignissim quis lectus sed vestibulum. Suspendisse consectetur urna fringilla enim faucibus, sed volutpat.',
-               
-            ]
+                In sit amet tortor elit. Nunc ex dolor, euismod eu lorem sed, scelerisque bibendum ex. Sed sit amet auctor lorem. Phasellus nec nisi vel dui aliquet luctus non vel erat. Nam vulputate vestibulum nunc. Pellentesque dignissim quis lectus sed vestibulum. Suspendisse consectetur urna fringilla enim faucibus, sed volutpat.'
+        ];
 
+        $ListComments = [
 
         ];
 
@@ -125,6 +127,8 @@ class AppFixtures extends Fixture
 
         $insertEdito = new Edito;
         $insertEdito->setEdito($edito);
+        $insertEdito->setDraft(1);
+        $insertEdito->setPublishedAt(new \DateTime('now'));
         $manager->persist($insertEdito);
 
         foreach ($listTags as $tagListed) {
@@ -135,7 +139,43 @@ class AppFixtures extends Fixture
            $allTags[] = $tag;
         }
 
+        $manager->flush();
 
+        for ($i=0; $i < 11; $i++) { 
+            foreach ($allUser as $userALl) {
+               
+                $article = new Articles;
+                $IdUnic = uniqid(true);
+                $article->setTitle($listArticle['title'].$IdUnic);
+                $article->setSlug($listArticle['slug'].$IdUnic);
+                $article->setArticle($listArticle['article']);
+
+                $draft = rand(0,1);
+                $article->setDraft($draft);
+                if ($draft === 1) {
+                    $article->setPublishedAt(new \DateTime('+' . mt_rand(5, 19) . 'days'));
+                }
+                $article->setUser($userALl);
+                $article->setTags($allTags[rand(0,4)]);
+                $manager->persist($article);
+                $allArticle[] = $article;
+
+            }
+        }
+
+        foreach ($allArticle as $articleAll) {
+
+           for ($i=0; $i <15 ; $i++) { 
+            $comment = new Comments;
+            $comment->setComment(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis sem ligula. Nulla nisl ex, rhoncus et rutrum vel, tempor nec lorem. Pellentesque sit amet augue vitae ipsum blandit pharetra. Nullam imperdiet imperdiet semper. Vestibulum vivamus.'
+        );
+            $comment->setCreatedAt(new \DateTime('+' . mt_rand(5, 19) . 'days'));
+            $comment->setUser($allUser[rand(0,count($allUser)-1)]);
+            $comment->setArticle($articleAll);
+            $manager->persist($comment);
+           }
+        }
 
         $manager->flush();
     }

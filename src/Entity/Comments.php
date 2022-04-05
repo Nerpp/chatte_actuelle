@@ -26,6 +26,10 @@ class Comments
     #[ORM\Column(type: 'boolean', nullable: true)]
     private $signalement;
 
+    #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $article;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +79,18 @@ class Comments
     public function setSignalement(?bool $signalement): self
     {
         $this->signalement = $signalement;
+
+        return $this;
+    }
+
+    public function getArticle(): ?Articles
+    {
+        return $this->article;
+    }
+
+    public function setArticle(?Articles $article): self
+    {
+        $this->article = $article;
 
         return $this;
     }

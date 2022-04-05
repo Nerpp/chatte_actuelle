@@ -1,11 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Accueil
+{% endblock %}
 
-{% block body %}
+{% block header %}
+	<div class="container">
+		<h1>Chatte Actuelle</h1>
+	</div>
+{% endblock %}
 
+{% block section %}
+	<div class="container">
+		<div class="">
+			<p>
+				<h1>Edito</h1>
+			</p>
+		</div>
+		<div class="">
+			<p>{{ editos.edito }}</p>
+		</div>
+		<div class="">
+			<p>{{ editos.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+		</div>
 
-<div class="container">
-    test
-</div>
+		{% for last_article in last_articles %}
+			<div class="card" style="width: 18rem;">
+			<img src="..." class="card-img-top" alt="...">
+			<div class="card-body">
+				<h5 class="card-title">{{ last_article.title }}</h5>
+				<p class="card-text">{{ last_article.article|u.truncate(255)  }}...</p>
+				<a href="#" class="btn btn-primary">Lire</a>
+			</div>
+		</div>
+		{% endfor %}
+		
+	</div>
 {% endblock %}

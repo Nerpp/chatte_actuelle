@@ -37,8 +37,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comments::class, orphanRemoval: true)]
     private $comments;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Edito::class, orphanRemoval: true)]
-    private $editos;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
