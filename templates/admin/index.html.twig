@@ -1,11 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Administration{% endblock %}
+{% block title %}Administration
+{% endblock %}
 
 {% block header %}
-<div class="container">
-<div class="">
-    <h1>Bienvenue</h1>
-</div>
-</div>
+	<div class="container">
+		<div class="">
+			<h1>Bienvenue</h1>
+		</div>
+	</div>
+{% endblock %}
+
+{% block section %}
+	<div class="container">
+		<div class="">
+            <a class="btn btn-primary" href="{{ path('app_articles_new') }}" role="button">Nouvel Article</a>
+        </div>
+	</div>
 {% endblock %}

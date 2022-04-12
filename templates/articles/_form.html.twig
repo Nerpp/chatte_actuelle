@@ -1,4 +1,19 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{# {{ form_start(form) }}
+{{ form_widget(form) }}
+
+{{ form_end(form) }} #}
+
+<div class="d-grid gap-3">
+	<div class="">
+        {{ form_widget(form.title, {'attr': {'class': 'form-control  text-center'}}) }}
+    </div>
+    <div class="">
+        {{ form_widget(form.article, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="">
+        
+    </div>
+    <div class="">
+        <button class="btn">{{ button_label|default('Save') }}</button>
+    </div>
+</div>

@@ -17,7 +17,7 @@ class ArticlesController extends AbstractController
     public function index(ArticlesRepository $articlesRepository): Response
     {
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findAll(),
+            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
         ]);
     }
 
@@ -39,7 +39,7 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_articles_show', methods: ['GET'])]
+    #[Route('/{slug}', name: 'app_articles_show', methods: ['GET'])]
     public function show(Articles $article): Response
     {
         return $this->render('articles/show.html.twig', [
