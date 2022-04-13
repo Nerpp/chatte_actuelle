@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\ArticlesRepository;
+use ContainerC6fd1RO\getUserRepositoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,28 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $managerForm = $form->getData();
+           
+            if (!$form->getData()->getTags()) {
+               
+                if (!$form->get('newTags')->getData()) {
+
+                    $this->addFlash(
+                        'tags',
+                        'Vous devez choisir ou créer un tag'
+                    );
+
+                    return $this->renderForm('articles/new.html.twig', [
+                        'article' => $article,
+                        'form' => $form,
+                    ]);
+                }
+
+            }
+            
+            dd('test');
+
             $articlesRepository->add($article);
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }

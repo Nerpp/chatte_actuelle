@@ -31,7 +31,7 @@ class AppFixtures extends Fixture
 
         $listUser = [
             [
-                'email' => 'aurelienregi@gmail.com',
+                'email' => 'regiaurelien@gmail.com',
                 'displayName' => 'Aurélien',
                 'password' => '12345678',
                 'roles' => ['ROLE_SUPERADMIN'],
