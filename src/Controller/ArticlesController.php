@@ -39,7 +39,7 @@ class ArticlesController extends AbstractController
        
 
         if (!$this->isGranted('new_article', $this->security->getUser())) {
-            $this->addFlash('article_erreur', 'Désolé, vous devez être connecté en tant que administrateur');
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
 

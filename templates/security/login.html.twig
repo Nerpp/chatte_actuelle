@@ -17,7 +17,7 @@
 		{% endif %}
 
 		<div class="col-12 bg-danger bg-gradient text-white text-center ">
-			{% for message in app.flashes('article_erreur') %}
+			{% for message in app.flashes('unauthorised') %}
 				<div class="flash-notice">
 					{{ message }}
 				</div>

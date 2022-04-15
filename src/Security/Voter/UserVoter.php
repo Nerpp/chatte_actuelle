@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Security;
 class UserVoter extends Voter
 {
     public const NEW_ARTICLE = 'new_article';
+    public const SECTION_ADMIN = 'section_admin';
     public const EDIT = 'POST_EDIT';
     public const VIEW = 'POST_VIEW';
 
@@ -24,7 +25,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::NEW_ARTICLE,self::EDIT, self::VIEW])
+        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::EDIT, self::VIEW])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -42,6 +43,9 @@ class UserVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
+            case 'section_admin':
+                $this->authSectionAdmin();
+                break;
             case 'new_article':
                 return $this->authNewArticle();
                 break;
@@ -59,6 +63,15 @@ class UserVoter extends Voter
     }
 
     private function authNewArticle()
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authSectionAdmin()
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
