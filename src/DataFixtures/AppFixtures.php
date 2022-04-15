@@ -134,7 +134,6 @@ class AppFixtures extends Fixture
         foreach ($listTags as $tagListed) {
            $tag = new Tags;
            $tag->setName($tagListed['tags']);
-           $tag->setColor($tagListed['color']);
            $manager->persist($tag);
            $allTags[] = $tag;
         }

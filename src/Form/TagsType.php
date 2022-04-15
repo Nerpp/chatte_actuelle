@@ -13,7 +13,6 @@ class TagsType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('color')
         ;
     }
 

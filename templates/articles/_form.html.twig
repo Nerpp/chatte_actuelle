@@ -13,11 +13,11 @@
 		</div>
 	</div>
 	<div class="d-flex flex-row align-items-center justify-content-around ">
-		<div class="">
-			{{ form_widget(form.tags) }}
+        <div class="">
+			{% include "/articles/_modal_information.html.twig" %}
 		</div>
 		<div class="">
-			{% include "/articles/_modal_information.html.twig" %}
+			{{ form_widget(form.tags) }}
 		</div>
 		<div class="col-3">
 			{{ form_widget(form.newTags, {'attr': {'class': 'form-control  text-center'}}) }}

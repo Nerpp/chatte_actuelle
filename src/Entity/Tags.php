@@ -18,9 +18,6 @@ class Tags
     #[ORM\Column(type: 'string', length: 45)]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 6)]
-    private $color;
-
     #[ORM\OneToMany(mappedBy: 'tags', targetEntity: Articles::class, orphanRemoval: true)]
     private $articles;
 
@@ -42,18 +39,6 @@ class Tags
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
-
-    public function setColor(string $color): self
-    {
-        $this->color = $color;
 
         return $this;
     }
