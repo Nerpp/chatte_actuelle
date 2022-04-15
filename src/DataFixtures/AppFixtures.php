@@ -151,7 +151,7 @@ class AppFixtures extends Fixture
 
                 $draft = rand(0,1);
                 $article->setDraft($draft);
-                if ($draft === 1) {
+                if ($draft === 0) {
                     $article->setPublishedAt(new \DateTime('+' . mt_rand(5, 19) . 'days'));
                 }
                 $article->setUser($userALl);

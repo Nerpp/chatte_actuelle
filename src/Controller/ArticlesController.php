@@ -7,9 +7,8 @@ use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\TagsRepository;
 use App\Repository\ArticlesRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
-use ContainerC6fd1RO\getUserRepositoryService;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +16,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/articles')]
 class ArticlesController extends AbstractController
 {
+
+    public function __construct(Security $security)
+    {
+        // Avoid calling getUser() in the constructor: auth may not
+        // be complete yet. Instead, store the entire Security object.
+        $this->security = $security;
+    }
+
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
     {
@@ -29,6 +36,13 @@ class ArticlesController extends AbstractController
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
     {
+       
+
+        if (!$this->isGranted('new_article', $this->security->getUser())) {
+            $this->addFlash('article_erreur', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
