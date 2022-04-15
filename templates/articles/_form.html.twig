@@ -1,5 +1,12 @@
 {{ form_start(form) }}
 <div class="d-grid gap-3">
+	<div class="col-12 bg-danger bg-gradient text-white text-center ">
+			{% for message in app.flashes('title') %}
+				<div class="flash-notice">
+					{{ message }}
+				</div>
+			{% endfor %}
+		</div>
 	<div class="">
 		{{ form_widget(form.title, {'attr': {'class': 'form-control  text-center'}}) }}
 	</div>

@@ -34,7 +34,8 @@ class ArticlesType extends AbstractType
             // ->add('publishedAt')
             // ->add('modifiedAt')
             ->add('draft',CheckboxType::class,[
-                'data' => true
+                'data' => true,
+                'required' => false
             ])
             // ->add('user')
             ->add('tags',EntityType::class,[

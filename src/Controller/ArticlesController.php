@@ -20,28 +20,25 @@ class ArticlesController extends AbstractController
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
     {
+        
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
+            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'DESC']),
         ]);
     }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ManagerRegistry $doctrine, ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
+    public function new(Request $request, ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
     {
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
 
-       
         if ($form->isSubmitted() && $form->isValid()) {
 
-           
-            $entityManager = $doctrine->getManager();
             $newArticle = $form->getData();
 
-            
+            $error = false;
 
-            // tag venant de la séléction null
             if (!$form->getData()->getTags()) {
                
                 // je récupére le nouveau tag
@@ -54,55 +51,57 @@ class ArticlesController extends AbstractController
                         'Vous devez choisir ou créer un tag'
                     );
 
-                    return $this->renderForm('articles/new.html.twig', [
-                        'article' => $article,
-                        'form' => $form,
-                    ]);
+                    $error = true;
                 }
 
-                // je vais chercher le new tag dans la bdd
-                $checkedNewTag = $tagsRepository->findOneBy(['name' => $newTag]);
-
                 // erreur il existe déja
-                if($checkedNewTag)
+                if($tagsRepository->findOneBy(['name' => $newTag]))
                 {
                     $this->addFlash(
                         'tags',
                         'Le tag existe déjà'
                     );
-                    return $this->renderForm('articles/new.html.twig', [
-                        'article' => $article,
-                        'form' => $form,
-                    ]);
+                    $error = true;
                 }
-
+                
                 // il existe pas j'enregistre
-                $tag = new Tags;
-                $tag->setName($newArticle->getTags()->getName());
-                $tag->addArticle($article);
-                $entityManager->persist($tag);
-
+                $tag = new Tags;         
+                $tag->setName($form->get('newTags')->getData());
+                $article->setTags($tag);
             }
             else{
                 //enregistrement du tag venant de la séléction
-                $article->setTags($newArticle->getTags());
+              $article->setTags($newArticle->getTags());
             }
 
-           
-            
-            $article->setSlug($newArticle->getTitle());
-            $article->setTitle($newArticle->getTitle());
-            $article->setArticle($newArticle->getArticle());
-            
-            $article->setUser($this->getUser());
-           
-            // $articlesRepository->add($article);
-           
-            $entityManager->persist($article);
-            
-            $entityManager->flush();
-            
+            if ($articlesRepository->findOneBy(['title' => $newArticle->getTitle()])) {
+                $this->addFlash(
+                    'title',
+                    'Un article similaire existe déjà'
+                );
+                $error = true;
+            }
 
+            if ($error) {
+                return $this->renderForm('articles/new.html.twig', [
+                    'article' => $article,
+                    'form' => $form,
+                ]);
+            }
+
+            if (!$newArticle->getDraft()) {
+               $article->setPublishedAt(new \DateTime('now'));
+            }
+
+            $article->setSlug($newArticle->getTitle());
+            $article->setUser($this->getUser());
+
+            if(isset($tag)){
+                $tagsRepository->add($tag);
+            }
+           
+            $articlesRepository->add($article);
+           
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
 
