@@ -16,11 +16,16 @@ class Images
     #[ORM\Column(type: 'string', length: 255)]
     private $source;
 
-    #[ORM\Column(type: 'string', length: 45)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $description;
 
-    #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'images')]
+    #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'images',cascade:["persist"])]
     private $articles;
+
+    public function __toString()
+    {
+        $this->source;   
+    }
 
     public function getId(): ?int
     {

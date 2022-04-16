@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -52,6 +53,12 @@ class ArticlesType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Créer un nouveau tag pour l\'article',
                 ]
+            ])
+
+            ->add('image', FileType::class, [
+                'mapped' => false,
+                'multiple' => true,
+                'required' => false,
             ])
 
         ;

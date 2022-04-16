@@ -3,15 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Tags;
+use App\Entity\Images;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Repository\TagsRepository;
 use App\Repository\ArticlesRepository;
+use App\Repository\ImagesRepository;
+use App\Services\Cleaner;
+use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\Node\Expr\AssignOp\Mod;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('/articles')]
 class ArticlesController extends AbstractController
@@ -29,12 +35,12 @@ class ArticlesController extends AbstractController
     {
         
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'DESC']),
+            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
         ]);
     }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
+    public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository,TagsRepository $tagsRepository,ImagesRepository $imagesRepository): Response
     {
        
         if (!$this->isGranted('new_article', $this->security->getUser())) {
@@ -48,10 +54,11 @@ class ArticlesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $entityManager = $doctrine->getManager();
             $newArticle = $form->getData();
-
             $error = false;
 
+            // administration Tag
             if (!$form->getData()->getTags()) {
                
                 // je récupére le nouveau tag
@@ -80,13 +87,16 @@ class ArticlesController extends AbstractController
                 // il existe pas j'enregistre
                 $tag = new Tags;         
                 $tag->setName($form->get('newTags')->getData());
+                $entityManager->persist($tag);
                 $article->setTags($tag);
             }
             else{
                 //enregistrement du tag venant de la séléction
               $article->setTags($newArticle->getTags());
             }
+            // administration tag
 
+            // je vérifie que l'article n'existe pas déjà
             if ($articlesRepository->findOneBy(['title' => $newArticle->getTitle()])) {
                 $this->addFlash(
                     'title',
@@ -95,6 +105,32 @@ class ArticlesController extends AbstractController
                 $error = true;
             }
 
+            // je traite les images
+            $files = $form->get('image')->getData();
+
+            foreach ($files as $image) {
+                $filename = "_" . md5(uniqid()) . "." . $image->guessExtension();
+
+                if ($image) {
+                    try {
+                        $image->move(
+                            $this->getParameter('images_directory'),
+                            $filename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
+                        return $this->redirectToRoute('app_articles_new');
+                    }
+                }
+
+                $recImage = new Images;
+                $recImage->setSource($filename);
+                $article->addImage($recImage);
+                $entityManager->persist($recImage);
+            }
+
+           
+            // j'envoit toutes les erreurs
             if ($error) {
                 return $this->renderForm('articles/new.html.twig', [
                     'article' => $article,
@@ -102,18 +138,18 @@ class ArticlesController extends AbstractController
                 ]);
             }
 
+            // Si draft est null cela signifie que l'article est publié donc je met une date de publication
             if (!$newArticle->getDraft()) {
                $article->setPublishedAt(new \DateTime('now'));
             }
 
-            $article->setSlug($newArticle->getTitle());
+            $cleaner = new Cleaner;
+            $article->setSlug($cleaner->delAccent($newArticle->getTitle()));
             $article->setUser($this->getUser());
+            $article->setArticle($newArticle->getArticle());
 
-            if(isset($tag)){
-                $tagsRepository->add($tag);
-            }
-           
-            $articlesRepository->add($article);
+            $entityManager->persist($article);
+            $entityManager->flush();
            
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -139,7 +175,7 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $articlesRepository->add($article);
+            $articlesRepository->add($article); 
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
 
