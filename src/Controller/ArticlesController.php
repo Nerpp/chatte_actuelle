@@ -37,7 +37,6 @@ class ArticlesController extends AbstractController
     public function new(Request $request, ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
     {
        
-
         if (!$this->isGranted('new_article', $this->security->getUser())) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');

@@ -1,12 +1,12 @@
 {{ form_start(form) }}
 <div class="d-grid gap-3">
 	<div class="col-12 bg-danger bg-gradient text-white text-center ">
-			{% for message in app.flashes('title') %}
-				<div class="flash-notice">
-					{{ message }}
-				</div>
-			{% endfor %}
-		</div>
+		{% for message in app.flashes('title') %}
+			<div class="flash-notice">
+				{{ message }}
+			</div>
+		{% endfor %}
+	</div>
 	<div class="">
 		{{ form_widget(form.title, {'attr': {'class': 'form-control  text-center'}}) }}
 	</div>
@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<div class="d-flex flex-row align-items-center justify-content-around ">
-        <div class="">
+		<div class="">
 			{% include "/articles/_modal_information.html.twig" %}
 		</div>
 		<div class="">
@@ -44,7 +44,14 @@
     </div>
     
     <div class="">
-        <button class="btn">{{ button_label|default('Enregistrer') }}</button>
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
     </div>
+
+	{# <button class="btn btn-primary">
+		<span>{{ button_label|default('Enregistrer') }}</span>
+		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+		<span class="sr-only">Loading...</span>
+	</button> #}
+
 </div>
 {{ form_end(form) }}

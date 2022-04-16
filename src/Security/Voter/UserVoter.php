@@ -7,6 +7,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Security;
 
+use function PHPUnit\Framework\matches;
+
 class UserVoter extends Voter
 {
     public const NEW_ARTICLE = 'new_article';
@@ -41,25 +43,12 @@ class UserVoter extends Voter
             return true;
         }
 
-        // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
-            case 'section_admin':
-                $this->authSectionAdmin();
-                break;
-            case 'new_article':
-                return $this->authNewArticle();
-                break;
-            case self::EDIT:
-                // logic to determine if the user can EDIT
-                // return true or false
-                break;
-            case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
-                break;
-        }
-
-        return false;
+        match($attribute){
+            self::SECTION_ADMIN => $this->authSectionAdmin(),
+            self::NEW_ARTICLE => $this->authNewArticle(),
+            default => false
+        };
+            
     }
 
     private function authNewArticle()

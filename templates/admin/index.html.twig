@@ -6,7 +6,7 @@
 {% block header %}
 	<div class="container">
 		<div class="">
-			<h1>Bienvenue</h1>
+			<h1>Bienvenue {{ app.user.displayName }}</h1>
 		</div>
 	</div>
 {% endblock %}
@@ -16,5 +16,9 @@
 		<div class="">
             <a class="btn btn-primary" href="{{ path('app_articles_new') }}" role="button">Nouvel Article</a>
         </div>
+
+		<div class="">
+			
+		</div>
 	</div>
 {% endblock %}

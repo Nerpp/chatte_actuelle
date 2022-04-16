@@ -12,17 +12,24 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_articles_index') }}">Articles</a>
         </li>
+        {% if is_granted('section_admin',app.user) %}
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_admin') }}">Admin</a>
         </li>
+        {% endif %}
+
+        {% if not app.user %}
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_login') }}">Connection</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_register') }}">Enregistrement</a>
         </li>
-        
-        
+        {% else %}
+          <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_logout') }}">Déconnection</a>
+        </li>
+        {% endif %}
       </ul>
     </div>
   </div>
