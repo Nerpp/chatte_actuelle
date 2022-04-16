@@ -32,8 +32,7 @@ class ArticlesController extends AbstractController
 
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
-    {
-        
+    { 
         return $this->render('articles/index.html.twig', [
             'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
         ]);
@@ -105,8 +104,18 @@ class ArticlesController extends AbstractController
                 $error = true;
             }
 
-            // je traite les images
+            // j'envoit toutes les erreurs avant de traiter les images
+            if ($error) {
+                return $this->renderForm('articles/new.html.twig', [
+                    'article' => $article,
+                    'form' => $form,
+                ]);
+            }
+
+            // je vérifie qu'il existe des images
             $files = $form->get('image')->getData();
+
+            // si il existe des images je crée un dossier au nom de l'article
 
             foreach ($files as $image) {
                 $filename = "_" . md5(uniqid()) . "." . $image->guessExtension();
@@ -130,13 +139,7 @@ class ArticlesController extends AbstractController
             }
 
            
-            // j'envoit toutes les erreurs
-            if ($error) {
-                return $this->renderForm('articles/new.html.twig', [
-                    'article' => $article,
-                    'form' => $form,
-                ]);
-            }
+            
 
             // Si draft est null cela signifie que l'article est publié donc je met une date de publication
             if (!$newArticle->getDraft()) {
