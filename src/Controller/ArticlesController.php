@@ -10,6 +10,7 @@ use App\Repository\TagsRepository;
 use App\Repository\ArticlesRepository;
 use App\Repository\ImagesRepository;
 use App\Services\Cleaner;
+use App\Services\CreateFolder;
 use Doctrine\Persistence\ManagerRegistry;
 use PhpParser\Node\Expr\AssignOp\Mod;
 use Symfony\Component\HttpFoundation\Request;
@@ -115,7 +116,17 @@ class ArticlesController extends AbstractController
             // je vérifie qu'il existe des images
             $files = $form->get('image')->getData();
 
-            // si il existe des images je crée un dossier au nom de l'article
+            $cleaner = new Cleaner;
+            $slug = strToLower($cleaner->delAccent($newArticle->getTitle()));
+            $article->setSlug($slug);
+
+            // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
+            if ($files) {
+                $where = $this->getParameter('images_directory').$slug;
+
+                $folder = new CreateFolder;
+                $folder->createFolder($where);
+            }
 
             foreach ($files as $image) {
                 $filename = "_" . md5(uniqid()) . "." . $image->guessExtension();
@@ -123,7 +134,7 @@ class ArticlesController extends AbstractController
                 if ($image) {
                     try {
                         $image->move(
-                            $this->getParameter('images_directory'),
+                           $where,
                             $filename
                         );
                     } catch (FileException $e) {
@@ -133,7 +144,7 @@ class ArticlesController extends AbstractController
                 }
 
                 $recImage = new Images;
-                $recImage->setSource($filename);
+                $recImage->setSource($slug.'/'.$filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
             }
@@ -146,8 +157,8 @@ class ArticlesController extends AbstractController
                $article->setPublishedAt(new \DateTime('now'));
             }
 
-            $cleaner = new Cleaner;
-            $article->setSlug($cleaner->delAccent($newArticle->getTitle()));
+            
+            
             $article->setUser($this->getUser());
             $article->setArticle($newArticle->getArticle());
 
