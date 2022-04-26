@@ -12,7 +12,7 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_articles_index') }}">Articles</a>
         </li>
-        {% if is_granted('section_admin',app.user) %}
+        {% if is_granted('SECTION_ADMIN',app.user) %}
         <li class="nav-item">
           <a class="nav-link" href="{{ path('app_admin') }}">Admin</a>
         </li>

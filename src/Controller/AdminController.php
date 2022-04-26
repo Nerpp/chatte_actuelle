@@ -19,7 +19,7 @@ class AdminController extends AbstractController
     #[Route('/admin', name: 'app_admin')]
     public function index(): Response
     {
-        if (!$this->isGranted('section_admin', $this->security->getUser())) {
+        if (!$this->isGranted('SECTION_ADMIN', $this->security->getUser())) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }

@@ -31,7 +31,9 @@ class ArticlesType extends AbstractType
             ->add('slug',HiddenType::class,[
                 'required'   => false,
             ])
-            ->add('article', CKEditorType::class)
+            ->add('article', CKEditorType::class,[
+                'required' => true,
+            ])
             // ->add('publishedAt')
             // ->add('modifiedAt')
             ->add('draft',CheckboxType::class,[

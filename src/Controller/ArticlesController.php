@@ -31,19 +31,29 @@ class ArticlesController extends AbstractController
         $this->security = $security;
     }
 
+    // Index Publication
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
     { 
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
+            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'DESC']),
+        ]);
+    }
+
+    // Index Brouillon
+    #[Route('/', name: 'app_draft_index', methods: ['GET'])]
+    public function indexDraft(ArticlesRepository $articlesRepository): Response
+    { 
+        return $this->render('articles/index.html.twig', [
+            'articles' => $articlesRepository->findBy(['draft' => 1],['id'=>'DESC']),
         ]);
     }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository,TagsRepository $tagsRepository,ImagesRepository $imagesRepository): Response
+    public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
     {
        
-        if (!$this->isGranted('new_article', $this->security->getUser())) {
+        if (!$this->isGranted('NEW_ARTICLE', $this->getUser())) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
@@ -58,9 +68,20 @@ class ArticlesController extends AbstractController
             $newArticle = $form->getData();
             $error = false;
 
+            $title = $article->getTitle();
+            
+              // je vérifie que l'article n'existe pas déjà
+              if ($articlesRepository->findOneBy(['title' =>  $title])) {
+                $this->addFlash(
+                    'title',
+                    'Un article similaire existe déjà'
+                );
+                $error = true;
+            }
+
             // administration Tag
-            if (!$form->getData()->getTags()) {
-               
+            if (!$newArticle->getTags()) {
+
                 // je récupére le nouveau tag
                 $newTag = $form->get('newTags')->getData();
 
@@ -84,11 +105,15 @@ class ArticlesController extends AbstractController
                     $error = true;
                 }
                 
-                // il existe pas j'enregistre
+                // il existe pas et un nouveau tag à été crée j'enregistre car error est false
+
+                if (!$error) {
                 $tag = new Tags;         
                 $tag->setName($form->get('newTags')->getData());
                 $entityManager->persist($tag);
                 $article->setTags($tag);
+                }
+               
             }
             else{
                 //enregistrement du tag venant de la séléction
@@ -96,14 +121,14 @@ class ArticlesController extends AbstractController
             }
             // administration tag
 
-            // je vérifie que l'article n'existe pas déjà
-            if ($articlesRepository->findOneBy(['title' => $newArticle->getTitle()])) {
+            if (!$article->getArticle()) {
                 $this->addFlash(
-                    'title',
-                    'Un article similaire existe déjà'
+                    'article',
+                    'Vous devez écrire un article'
                 );
                 $error = true;
             }
+          
 
             // j'envoit toutes les erreurs avant de traiter les images
             if ($error) {
@@ -177,12 +202,20 @@ class ArticlesController extends AbstractController
     #[Route('/{slug}', name: 'app_articles_show', methods: ['GET'])]
     public function show(Articles $article): Response
     {
+       
+        if (!$article->getDraft()) {
+            if (!$this->isGranted('VIEW_DRAFT', $article)) {
+                $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+                return $this->redirectToRoute('app_login');
+            }
+        }
+
         return $this->render('articles/show.html.twig', [
             'article' => $article,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
+    #[Route('/{slug}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
         $form = $this->createForm(ArticlesType::class, $article);

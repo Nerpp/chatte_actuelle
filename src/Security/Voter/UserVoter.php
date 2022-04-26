@@ -11,8 +11,8 @@ use function PHPUnit\Framework\matches;
 
 class UserVoter extends Voter
 {
-    public const NEW_ARTICLE = 'new_article';
-    public const SECTION_ADMIN = 'section_admin';
+    public const NEW_ARTICLE = 'NEW_ARTICLE';
+    public const SECTION_ADMIN = 'SECTION_ADMIN';
     public const EDIT = 'POST_EDIT';
     public const VIEW = 'POST_VIEW';
 
@@ -48,7 +48,7 @@ class UserVoter extends Voter
             self::NEW_ARTICLE => $this->authNewArticle(),
             default => false
         };
-            
+        
     }
 
     private function authNewArticle()

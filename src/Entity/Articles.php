@@ -41,7 +41,7 @@ class Articles
     #[ORM\JoinColumn(nullable: false)]
     private $tags;
 
-    #[ORM\OneToMany(mappedBy: 'articles', targetEntity: Images::class)]
+    #[ORM\OneToMany(mappedBy: 'articles', targetEntity: Images::class , cascade:['persist'])]
     private $images;
 
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comments::class, orphanRemoval: true)]
