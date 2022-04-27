@@ -6,15 +6,14 @@
 {% block header %}
 	<div class="container">
 		<div class="text-center">
-			<h1>Historique de tout les articles</h1>
+			<h1>Historique de tout les brouillons</h1>
 		</div>
 	</div>
 {% endblock %}
 
 {% block section %}
 
-	<div class="container">
-	{% if articles %}
+	<div class="container pt-5">
 		<div class="d-flex flex-row flex-wrap justify-content-center d-grid gap-2">
 			{% for article in articles %}
 				<div class="card" style="width: 18rem;">
@@ -26,15 +25,15 @@
 							<p class="card-text">{{ article.article|u.truncate(155)|raw }}...</p>
 						{% endautoescape %}
 						<p><strong>Auteur : </strong>{{ article.user.displayName }}</p>
+						{% if article.PublishedAt %}
 						<p>
-							<strong>Publié :
-							</strong>
-							{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+							<strong>Publié : </strong>{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+						</p>
+						{% endif %}
 						{% if article.modifiedAt %}
 							<p>
-								<strong>Modifié :
-								</strong>
-								{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+								<strong>Modifié : </strong>{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+							</p>
 						{% endif %}
 						<div class="d-flex flex-row d-grid gap-2">
 							<div class="">
@@ -55,11 +54,10 @@
 				</div>
 			{% endfor %}
 		</div>
-		{% else %}
-			<div class="">
-				<h2>Au boulot</h2>
-			</div>
-		{% endif %}
 	</div>
 
+
+	
+	
+		{# <a href="{{ path('app_articles_new') }}">Create new</a> #}
 {% endblock %}

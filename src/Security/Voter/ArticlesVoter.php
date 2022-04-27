@@ -12,7 +12,7 @@ class ArticlesVoter extends Voter
     public const VIEW_DRAFT = 'VIEW_DRAFT';
     public const EDIT_ARTICLE = 'EDIT_ARTICLE';
     public const DELETE_ARTICLE = 'DELETE_ARTICLE';
-
+    
     private $security;
 
     public function __construct(Security $security)

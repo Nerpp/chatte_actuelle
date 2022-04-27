@@ -29,6 +29,7 @@ class ArticlesController extends AbstractController
         // Avoid calling getUser() in the constructor: auth may not
         // be complete yet. Instead, store the entire Security object.
         $this->security = $security;
+        $this->tokenUser = $this->security->getUser();
     }
 
     // Index Publication
@@ -36,24 +37,60 @@ class ArticlesController extends AbstractController
     public function index(ArticlesRepository $articlesRepository): Response
     { 
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'DESC']),
+            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
         ]);
     }
 
     // Index Brouillon
-    #[Route('/', name: 'app_draft_index', methods: ['GET'])]
+    #[Route('/index/draft', name: 'app_draft_index', methods: ['GET'])]
     public function indexDraft(ArticlesRepository $articlesRepository): Response
     { 
-        return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 1],['id'=>'DESC']),
+
+        if (!$this->isGranted('VIEW_ALL_DRAFT', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que super administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('articles/index_draft.html.twig', [
+            'articles' => $articlesRepository->findBy(['draft' => 1],['id'=>'ASC']),
         ]);
     }
+
+     // Index article publié
+     #[Route('/personnal/', name: 'app_article_index_personnal', methods: ['GET'])]
+     public function indexPersonnalArticle(): Response
+     { 
+ 
+         if (!$this->isGranted('VIEW_PERSONNAL_ARTICLE', $this->tokenUser)) {
+             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+             return $this->redirectToRoute('app_login');
+         }
+
+         return $this->render('articles/index_personnal_article.html.twig', [
+             'user' => $this->tokenUser,
+         ]);
+     }
+
+       // Index Brouillon
+       #[Route('/personnal/draft', name: 'app_draft_index_personnal', methods: ['GET'])]
+       public function indexPersonnalDraft(): Response
+       { 
+   
+           if (!$this->isGranted('VIEW_PERSONNAL_ARTICLE', $this->tokenUser)) {
+               $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+               return $this->redirectToRoute('app_login');
+           }
+  
+           return $this->render('articles/index_personnal_draft.html.twig', [
+               'user' => $this->tokenUser,
+           ]);
+       }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
     public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
     {
        
-        if (!$this->isGranted('NEW_ARTICLE', $this->getUser())) {
+        if (!$this->isGranted('NEW_ARTICLE', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
@@ -203,7 +240,7 @@ class ArticlesController extends AbstractController
     public function show(Articles $article): Response
     {
        
-        if (!$article->getDraft()) {
+        if ($article->getDraft()) {
             if (!$this->isGranted('VIEW_DRAFT', $article)) {
                 $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
                 return $this->redirectToRoute('app_login');
@@ -218,6 +255,11 @@ class ArticlesController extends AbstractController
     #[Route('/{slug}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
+        if (!$this->isGranted('EDIT_ARTICLE', $article)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
         $form = $this->createForm(ArticlesType::class, $article);
         $form->handleRequest($request);
 
@@ -235,6 +277,11 @@ class ArticlesController extends AbstractController
     #[Route('/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
+        if (!$this->isGranted('DELETE_ARTICLE', $article)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
             $articlesRepository->remove($article);
         }

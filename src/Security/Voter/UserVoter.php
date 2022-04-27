@@ -13,8 +13,9 @@ class UserVoter extends Voter
 {
     public const NEW_ARTICLE = 'NEW_ARTICLE';
     public const SECTION_ADMIN = 'SECTION_ADMIN';
-    public const EDIT = 'POST_EDIT';
-    public const VIEW = 'POST_VIEW';
+    public const VIEW_ALL_DRAFT = 'VIEW_ALL_DRAFT';
+    public const VIEW_PERSONNAL_DRAFT = 'VIEW_PERSONNAL_ARTICLE';
+    
 
     private $security;
 
@@ -27,7 +28,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::EDIT, self::VIEW])
+        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -43,12 +44,32 @@ class UserVoter extends Voter
             return true;
         }
 
-        match($attribute){
-            self::SECTION_ADMIN => $this->authSectionAdmin(),
-            self::NEW_ARTICLE => $this->authNewArticle(),
-            default => false
-        };
+        switch ($attribute) {
+            case self::SECTION_ADMIN:
+                return $this->$this->authSectionAdmin();
+                break;
+            case self::NEW_ARTICLE:
+                return $this->$this->authNewArticle();
+                break;
+            case self::VIEW_ALL_DRAFT:
+                return $this->authViewAllDraft();
+                break;
+            case self::VIEW_PERSONNAL_DRAFT:
+                return $this->authPersonnalDraft();
+                break;
+        }
+
+        return false;
         
+    }
+
+    private function authSectionAdmin()
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
     }
 
     private function authNewArticle()
@@ -60,7 +81,16 @@ class UserVoter extends Voter
         return false;
     }
 
-    private function authSectionAdmin()
+    private function authViewAllDraft()
+    {
+        if ($this->security->isGranted('ROLE_SUPERADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authPersonnalDraft()
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
@@ -68,4 +98,5 @@ class UserVoter extends Voter
 
         return false;
     }
+    
 }
