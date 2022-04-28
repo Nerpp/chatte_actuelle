@@ -26,8 +26,8 @@
 		<div class="">
 			{{ form_widget(form.tags) }}
 		</div>
-		<div class="col-3">
-			{{ form_widget(form.newTags, {'attr': {'class': 'form-control  text-center'}}) }}
+		<div class="">
+			<a class="btn btn-primary" href="{{ path('app_tags_new') }}" role="button">Créer un Tag</a>
 		</div>
 	</div>
 	<div class="col-12 bg-danger bg-gradient text-white text-center ">
@@ -49,7 +49,9 @@
             {{ form_widget(form.draft) }}
         </div>
     </div>
-    
+    <div class="">
+	{{ form_errors(form.image) }}
+	</div>
 	<div class="">
 	{{ form_widget(form.image, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
 	</div>

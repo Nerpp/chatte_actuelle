@@ -6,6 +6,7 @@ use App\Entity\Tags;
 use App\Entity\Images;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
+use App\Form\ArticlesEditType;
 use App\Repository\TagsRepository;
 use App\Repository\ArticlesRepository;
 use App\Repository\ImagesRepository;
@@ -87,7 +88,7 @@ class ArticlesController extends AbstractController
        }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository,TagsRepository $tagsRepository): Response
+    public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository): Response
     {
        
         if (!$this->isGranted('NEW_ARTICLE', $this->tokenUser)) {
@@ -97,6 +98,8 @@ class ArticlesController extends AbstractController
 
         $article = new Articles();
         $form = $this->createForm(ArticlesType::class, $article);
+        $form->remove('publishedAt');
+        $form->remove('modifiedAt');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -116,46 +119,9 @@ class ArticlesController extends AbstractController
                 $error = true;
             }
 
-            // administration Tag
-            if (!$newArticle->getTags()) {
-
-                // je récupére le nouveau tag
-                $newTag = $form->get('newTags')->getData();
-
-                // si le nouveau tag est null
-                if (!$newTag) {
-                    $this->addFlash(
-                        'tags',
-                        'Vous devez choisir ou créer un tag'
-                    );
-
-                    $error = true;
-                }
-
-                // erreur il existe déja
-                if($tagsRepository->findOneBy(['name' => $newTag]))
-                {
-                    $this->addFlash(
-                        'tags',
-                        'Le tag existe déjà'
-                    );
-                    $error = true;
-                }
-                
-                // il existe pas et un nouveau tag à été crée j'enregistre car error est false
-
-                if (!$error) {
-                $tag = new Tags;         
-                $tag->setName($form->get('newTags')->getData());
-                $entityManager->persist($tag);
-                $article->setTags($tag);
-                }
-               
-            }
-            else{
-                //enregistrement du tag venant de la séléction
+            //enregistrement du tag venant de la séléction
               $article->setTags($newArticle->getTags());
-            }
+            
             // administration tag
 
             if (!$article->getArticle()) {
@@ -185,7 +151,6 @@ class ArticlesController extends AbstractController
             // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
             if ($files) {
                 $where = $this->getParameter('images_directory').$slug;
-
                 $folder = new CreateFolder;
                 $folder->createFolder($where);
             }
@@ -211,16 +176,11 @@ class ArticlesController extends AbstractController
                 $entityManager->persist($recImage);
             }
 
-           
-            
-
             // Si draft est null cela signifie que l'article est publié donc je met une date de publication
             if (!$newArticle->getDraft()) {
                $article->setPublishedAt(new \DateTime('now'));
             }
 
-            
-            
             $article->setUser($this->getUser());
             $article->setArticle($newArticle->getArticle());
 
@@ -239,7 +199,6 @@ class ArticlesController extends AbstractController
     #[Route('/{slug}', name: 'app_articles_show', methods: ['GET'])]
     public function show(Articles $article): Response
     {
-       
         if ($article->getDraft()) {
             if (!$this->isGranted('VIEW_DRAFT', $article)) {
                 $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
@@ -260,10 +219,17 @@ class ArticlesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $form = $this->createForm(ArticlesType::class, $article);
+        $form = $this->createForm(ArticlesEditType::class, $article);
+        $form->remove('publishedAt');
+        $form->remove('modifiedAt');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($article->getPublishedAt()) {
+                $article->setModifiedAt(new \DateTime('now'));
+            }
+            
             $articlesRepository->add($article); 
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -277,6 +243,8 @@ class ArticlesController extends AbstractController
     #[Route('/{id}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
+        // https://gmanier.com/memo/6/php-supprimer-dossier-a-l-aide-de-la-recursivite a voir pour supprimer dossier php
+
         if (!$this->isGranted('DELETE_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
