@@ -150,7 +150,7 @@ class ArticlesController extends AbstractController
 
             // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
             if ($files) {
-                $where = $this->getParameter('images_directory').$slug;
+                $where = $this->getParameter('images_directory');
                 $folder = new CreateFolder;
                 $folder->createFolder($where);
             }
@@ -171,7 +171,7 @@ class ArticlesController extends AbstractController
                 }
 
                 $recImage = new Images;
-                $recImage->setSource($slug.'/'.$filename);
+                $recImage->setSource($filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
             }
@@ -212,7 +212,7 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/{slug}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
+    public function edit(Request $request, Articles $article,ManagerRegistry $doctrine,ArticlesRepository $articlesRepository): Response
     {
         if (!$this->isGranted('EDIT_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
@@ -225,9 +225,46 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $doctrine->getManager();
 
             if ($article->getPublishedAt()) {
                 $article->setModifiedAt(new \DateTime('now'));
+            }
+
+            // je vérifie qu'il existe des images
+            $files = $form->get('image')->getData();
+
+            $cleaner = new Cleaner;
+            $slug = strToLower($cleaner->delAccent($article->getTitle()));
+            $article->setSlug($slug);
+
+            // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
+            if ($files) {
+                $where = $this->getParameter('images_directory');
+                $folder = new CreateFolder;
+                $folder->createFolder($where);
+            }
+
+            foreach ($files as $image) {
+                $filename = "_" . md5(uniqid()) . "." . $image->guessExtension();
+
+                if ($image) {
+                    try {
+                        $image->move(
+                           $where,
+                            $filename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
+                        return $this->redirectToRoute('app_articles_new');
+                    }
+                }
+
+                $recImage = new Images;
+                $recImage->setSource($filename);
+                $article->addImage($recImage);
+                $entityManager->persist($recImage);
+                $entityManager->flush();
             }
             
             $articlesRepository->add($article); 

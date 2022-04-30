@@ -51,6 +51,7 @@ class ArticlesType extends AbstractType
                 'label' => 'Choisir un fichier',
                 'mapped' => false,
                 'multiple' => true,
+                'required' => false,
                 'constraints' => [
                   new All([
                     'constraints' => [

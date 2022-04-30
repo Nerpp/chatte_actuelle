@@ -18,6 +18,11 @@
 			<div class="">
 				{{ article.article|raw }}
 			</div>
+				{% for image in article.images %}
+					<div class="">
+					 <img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
+					</div>
+				{% endfor %}
 			<div class="">
 				<p>
 					<strong>Auteur :

@@ -55,6 +55,15 @@
 	<div class="">
 	{{ form_widget(form.image, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
 	</div>
+	
+	<div class="d-flex flex-row flex-wrap">
+		{% for image in article.images %}
+			<div class="col-4">
+				<img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
+			</div>
+		{% endfor %}
+	</div>
+	
     <div class="">
         <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
     </div>
