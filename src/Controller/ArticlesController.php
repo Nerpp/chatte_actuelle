@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use App\Services\ImageOptimizer;
 
 #[Route('/articles')]
 class ArticlesController extends AbstractController
@@ -164,6 +165,9 @@ class ArticlesController extends AbstractController
                            $where,
                             $filename
                         );
+
+                        $resizeImg = new ImageOptimizer;
+                        $resizeImg->resize($where.$filename);
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');
@@ -254,6 +258,10 @@ class ArticlesController extends AbstractController
                            $where,
                             $filename
                         );
+
+                         $resizeImg = new ImageOptimizer;
+                        $resizeImg->resize($where.$filename);
+
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');
