@@ -285,15 +285,21 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_articles_delete', methods: ['POST'])]
+    #[Route('/{slug}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
         // https://gmanier.com/memo/6/php-supprimer-dossier-a-l-aide-de-la-recursivite a voir pour supprimer dossier php
 
+        
         if (!$this->isGranted('DELETE_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
+
+        foreach ($article->getImages() as $image ) {
+            unlink($this->getParameter('images_directory') .$image->getSource());
+        }
+
 
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
             $articlesRepository->remove($article);

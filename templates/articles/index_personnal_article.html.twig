@@ -51,7 +51,7 @@
                             {% endif %}
                             {% if is_granted('DELETE_ARTICLE',article) %}
                                 <div class="">
-                                    <a href="{{ path('app_articles_delete', {'id': article.id}) }}" class="btn btn-danger">Supprimer</a>
+                                    <a href="{{ path('app_articles_delete', {'slug': article.slug}) }}" class="btn btn-danger">Supprimer</a>
                                 </div>
                             {% endif %}
 						</div>
