@@ -7,13 +7,9 @@ use App\Entity\Images;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
 use App\Form\ArticlesEditType;
-use App\Repository\TagsRepository;
 use App\Repository\ArticlesRepository;
-use App\Repository\ImagesRepository;
 use App\Services\Cleaner;
-use App\Services\CreateFolder;
 use Doctrine\Persistence\ManagerRegistry;
-use PhpParser\Node\Expr\AssignOp\Mod;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -107,53 +103,23 @@ class ArticlesController extends AbstractController
 
             $entityManager = $doctrine->getManager();
             $newArticle = $form->getData();
-            $error = false;
-
-            $title = $article->getTitle();
-            
-              // je vérifie que l'article n'existe pas déjà
-              if ($articlesRepository->findOneBy(['title' =>  $title])) {
-                $this->addFlash(
-                    'title',
-                    'Un article similaire existe déjà'
-                );
-                $error = true;
-            }
 
             //enregistrement du tag venant de la séléction
               $article->setTags($newArticle->getTags());
             
-            // administration tag
-
-            if (!$article->getArticle()) {
-                $this->addFlash(
-                    'article',
-                    'Vous devez écrire un article'
-                );
-                $error = true;
-            }
-          
-
-            // j'envoit toutes les erreurs avant de traiter les images
-            if ($error) {
-                return $this->renderForm('articles/new.html.twig', [
-                    'article' => $article,
-                    'form' => $form,
-                ]);
-            }
-
-            // je vérifie qu'il existe des images
-            $files = $form->get('image')->getData();
+           
 
             $cleaner = new Cleaner;
             $slug = strToLower($cleaner->delAccent($newArticle->getTitle()));
             $article->setSlug($slug);
 
+             // je vérifie qu'il existe des images
+             $files = $form->get('image')->getData();
+
             // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
             if ($files) {
                 $where = $this->getParameter('images_directory');
-                $folder = new CreateFolder;
-                $folder->createFolder($where);
+              
             }
 
             foreach ($files as $image) {
@@ -235,18 +201,15 @@ class ArticlesController extends AbstractController
                 $article->setModifiedAt(new \DateTime('now'));
             }
 
-            // je vérifie qu'il existe des images
-            $files = $form->get('image')->getData();
-
             $cleaner = new Cleaner;
             $slug = strToLower($cleaner->delAccent($article->getTitle()));
             $article->setSlug($slug);
 
-            // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
+            // je vérifie qu'il existe des images
+            $files = $form->get('image')->getData();
+
             if ($files) {
                 $where = $this->getParameter('images_directory');
-                $folder = new CreateFolder;
-                $folder->createFolder($where);
             }
 
             foreach ($files as $image) {
@@ -272,8 +235,8 @@ class ArticlesController extends AbstractController
                 $recImage->setSource($filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
-                $entityManager->flush();
             }
+            $entityManager->flush();
             
             $articlesRepository->add($article); 
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);

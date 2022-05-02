@@ -15,6 +15,8 @@ class UserVoter extends Voter
     public const SECTION_ADMIN = 'SECTION_ADMIN';
     public const VIEW_ALL_DRAFT = 'VIEW_ALL_DRAFT';
     public const VIEW_PERSONNAL_DRAFT = 'VIEW_PERSONNAL_ARTICLE';
+    public const CREATE_TAG = 'CREATE_TAG';
+    public const INDEX_TAGS = 'INDEX_TAGS';
     
 
     private $security;
@@ -28,7 +30,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT])
+        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -46,16 +48,22 @@ class UserVoter extends Voter
 
         switch ($attribute) {
             case self::SECTION_ADMIN:
-                return $this->$this->authSectionAdmin();
+                return $this->authSectionAdmin();
                 break;
             case self::NEW_ARTICLE:
-                return $this->$this->authNewArticle();
+                return $this->authNewArticle();
                 break;
             case self::VIEW_ALL_DRAFT:
                 return $this->authViewAllDraft();
                 break;
             case self::VIEW_PERSONNAL_DRAFT:
                 return $this->authPersonnalDraft();
+                break;
+            case self::CREATE_TAG:
+               return $this->authCreateTag();
+                break;
+            case self::INDEX_TAGS:
+                return $this->authIndexTag();
                 break;
         }
 
@@ -91,6 +99,24 @@ class UserVoter extends Voter
     }
 
     private function authPersonnalDraft()
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authCreateTag()
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authIndexTag()
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;

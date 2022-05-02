@@ -2,11 +2,19 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticlesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ArticlesRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @ORM\Entity
+ * @UniqueEntity(
+ * "title",
+ *  message="Ce Titre existe déjà.")
+ */
 #[ORM\Entity(repositoryClass: ArticlesRepository::class)]
 class Articles
 {
@@ -15,12 +23,16 @@ class Articles
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 45)]
+
+    #[ORM\Column(type: 'string', length: 45,unique:true)]
     private $title;
 
     #[ORM\Column(type: 'string', length: 45)]
     private $slug;
 
+    /**
+     * @Assert\NotBlank(message="Vous devez écrire un article")
+     */
     #[ORM\Column(type: 'text')]
     private $article;
 

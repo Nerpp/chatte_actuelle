@@ -1,23 +1,10 @@
 {{ form_start(form) }}
 <div class="d-grid gap-3">
 	<div class="col-12 bg-danger bg-gradient text-white text-center ">
-		{% for message in app.flashes('title') %}
-			<div class="flash-notice">
-				{{ message }}
-			</div>
-		{% endfor %}
+		{{ form_errors(form.title) }}
 	</div>
 	<div class="">
 		{{ form_widget(form.title, {'attr': {'class': 'form-control  text-center'}}) }}
-	</div>
-	<div class="">
-		<div class="col-12 bg-danger bg-gradient text-white text-center ">
-			{% for message in app.flashes('tags') %}
-				<div class="flash-notice">
-					{{ message }}
-				</div>
-			{% endfor %}
-		</div>
 	</div>
 	<div class="d-flex flex-row align-items-center justify-content-around ">
 		<div class="">
@@ -31,11 +18,7 @@
 		</div>
 	</div>
 	<div class="col-12 bg-danger bg-gradient text-white text-center ">
-			{% for message in app.flashes('article') %}
-				<div class="flash-notice">
-					{{ message }}
-				</div>
-			{% endfor %}
+			{{ form_errors(form.article) }}
 		</div>
 	<div class="">
 		{{ form_widget(form.article, {'attr': {'class': 'form-control'}}) }}

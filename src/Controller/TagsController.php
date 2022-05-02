@@ -5,17 +5,29 @@ namespace App\Controller;
 use App\Entity\Tags;
 use App\Form\TagsType;
 use App\Repository\TagsRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/tags')]
 class TagsController extends AbstractController
 {
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+        $this->tokenUser = $this->security->getUser();
+    }
+    
     #[Route('/', name: 'app_tags_index', methods: ['GET'])]
     public function index(TagsRepository $tagsRepository): Response
     {
+        if (!$this->isGranted('INDEX_TAGS', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que super administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('tags/index.html.twig', [
             'tags' => $tagsRepository->findAll(),
         ]);
@@ -24,6 +36,11 @@ class TagsController extends AbstractController
     #[Route('/new', name: 'app_tags_new', methods: ['GET', 'POST'])]
     public function new(Request $request, TagsRepository $tagsRepository): Response
     {
+        if (!$this->isGranted('CREATE_TAG', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que super administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
         $tag = new Tags();
         $form = $this->createForm(TagsType::class, $tag);
         $form->handleRequest($request);
@@ -39,17 +56,15 @@ class TagsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_tags_show', methods: ['GET'])]
-    public function show(Tags $tag): Response
-    {
-        return $this->render('tags/show.html.twig', [
-            'tag' => $tag,
-        ]);
-    }
 
     #[Route('/{id}/edit', name: 'app_tags_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tags $tag, TagsRepository $tagsRepository): Response
     {
+        if (!$this->isGranted('SECTION_ADMIN', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
         $form = $this->createForm(TagsType::class, $tag);
         $form->handleRequest($request);
 
@@ -67,6 +82,11 @@ class TagsController extends AbstractController
     #[Route('/{id}', name: 'app_tags_delete', methods: ['POST'])]
     public function delete(Request $request, Tags $tag, TagsRepository $tagsRepository): Response
     {
+        if (!$this->isGranted('SECTION_ADMIN', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+        
         if ($this->isCsrfTokenValid('delete'.$tag->getId(), $request->request->get('_token'))) {
             $tagsRepository->remove($tag);
         }

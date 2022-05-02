@@ -2,28 +2,37 @@
 
 {% block title %}Tags index{% endblock %}
 
-{% block body %}
-    <h1>Tags index</h1>
+{% block header %}
+<div class="container">
+    <div class="text-center">
+        <h1>Index des Tags</h1>
+    </div>
+</div>
+{% endblock %}
 
+{% block section %}
+    
+<div class="container">
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Color</th>
-                <th>actions</th>
+                <th>Nom</th>
+                {# <th>Color</th> #}
+                <th>Editer</th>
+                <th>Supprimer</th>
             </tr>
         </thead>
         <tbody>
         {% for tag in tags %}
             <tr>
-                <td>{{ tag.id }}</td>
                 <td>{{ tag.name }}</td>
-                <td>{{ tag.color }}</td>
+                {# <td>{{ tag.color }}</td> #}
                 <td>
-                    <a href="{{ path('app_tags_show', {'id': tag.id}) }}">show</a>
+                    {# <a href="{{ path('app_tags_show', {'id': tag.id}) }}">show</a> #}
+                   
                     <a href="{{ path('app_tags_edit', {'id': tag.id}) }}">edit</a>
                 </td>
+                <td> {{ include('tags/_delete_form.html.twig') }}</td>
             </tr>
         {% else %}
             <tr>
@@ -34,4 +43,5 @@
     </table>
 
     <a href="{{ path('app_tags_new') }}">Create new</a>
+</div>
 {% endblock %}

@@ -2,11 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\TagsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TagsRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
+// DON'T forget the following use statement!!!
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @ORM\Entity
+ * @UniqueEntity(
+ * "name",
+ *  message="Ce tag existe déjà.")
+ */
 #[ORM\Entity(repositoryClass: TagsRepository::class)]
 class Tags
 {
@@ -15,7 +26,8 @@ class Tags
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 45)]
+    
+    #[ORM\Column(type: 'string', length: 45, unique:true)]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'tags', targetEntity: Articles::class, orphanRemoval: true)]
