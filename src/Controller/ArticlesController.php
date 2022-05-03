@@ -220,7 +220,6 @@ class ArticlesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $doctrine->getManager();
             
-
             if ($article->getPublishedAt()) {
                 $article->setModifiedAt(new \DateTime('now'));
             }
@@ -272,7 +271,7 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'app_articles_delete', methods: ['POST'])]
+    #[Route('/{slug}/delete', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
         // https://gmanier.com/memo/6/php-supprimer-dossier-a-l-aide-de-la-recursivite a voir pour supprimer dossier php
@@ -283,12 +282,12 @@ class ArticlesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        foreach ($article->getImages() as $image ) {
-            unlink($this->getParameter('images_directory') .$image->getSource());
-        }
-
-
         if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+
+            foreach ($article->getImages() as $image ) {
+                unlink($this->getParameter('images_directory') .$image->getSource());
+            }
+    
             $articlesRepository->remove($article);
         }
 

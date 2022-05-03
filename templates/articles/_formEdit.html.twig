@@ -58,7 +58,7 @@
 				<img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
 			</div>
 			<div class="">
-				<a href="{{ path('#', {'id': image.id}) }}" class="btn btn-danger">Supprimer</a>
+				<a href="{{ path('app_images_delete', {'id': image.id}) }}" class="btn btn-danger">Supprimer</a>
 			</div>
 			</div>
 		{% endfor %}
