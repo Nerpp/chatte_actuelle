@@ -59,6 +59,9 @@ class Articles
     #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comments::class, orphanRemoval: true)]
     private $comments;
 
+    #[ORM\Column(type: 'boolean')]
+    private $censure = false;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -222,6 +225,18 @@ class Articles
                 $comment->setArticle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCensure(): ?bool
+    {
+        return $this->censure;
+    }
+
+    public function setCensure(?bool $censure): self
+    {
+        $this->censure = $censure;
 
         return $this;
     }

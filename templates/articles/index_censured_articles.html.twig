@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Articles index
-{% endblock %}
+{% block title %}Article censuré{% endblock %}
 
 {% block header %}
 	<div class="container">
 		<div class="text-center">
-			<h1>Historique de tout les brouillons</h1>
+			<h1>Les articles censurés {{ app.user.displayName }}</h1>
 		</div>
 	</div>
 {% endblock %}
@@ -15,7 +14,10 @@
 
 	<div class="container pt-5">
 		<div class="d-flex flex-row flex-wrap justify-content-center d-grid gap-2">
+		{% set censure = false %}
 			{% for article in articles %}
+			{% if is_granted('VIEW_CENSURE',article)%}
+				{% set censure = true %}
 				<div class="card" style="width: 18rem;">
 					<img src="..." class="card-img-top" alt="...">
 					<div class="card-body">
@@ -29,8 +31,13 @@
 						<p>
 							<strong>Publié : </strong>{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
 						</p>
+                        <p>
+                            <strong>Renvoyé pour modification</strong>
+                        </p>
 						{% else %}
-							<p>Jamais Publié</p>
+							<p>
+								<strong>Jamais Publié</strong>
+							</p>
 						{% endif %}
 						{% if article.modifiedAt %}
 							<p>
@@ -49,6 +56,7 @@
                                     <a href="{{ path('app_articles_edit', {'slug': article.slug}) }}" class="btn btn-primary">Editer</a>
                                 </div>
                             {% endif %}
+							
                             {% if is_granted('DELETE_ARTICLE',article) %}
                                 <div class="">
                                     <a href="{{ path('app_articles_delete', {'slug': article.slug}) }}" class="btn btn-danger">Supprimer</a>
@@ -57,9 +65,17 @@
 						</div>
 					</div>
 				</div>
-				
+				{% endif %}
 			{% endfor %}
 		</div>
+
+		{% if not censure %}
+		<div class="text-center">
+			<p>Aucun article censuré</p>
+		</div>
+		{% endif %}
 	</div>
-		{# <a href="{{ path('app_articles_new') }}">Create new</a> #}
+
+	
+		{# <a href="{{ path('app_articles_new') }}">Create new</a> #} 
 {% endblock %}

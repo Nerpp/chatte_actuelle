@@ -70,6 +70,10 @@ class ArticlesType extends AbstractType
                 ]
               ])
 
+              ->add('censure',CheckboxType::class,[
+                'required' => false
+            ])
+
         ;
     }
 

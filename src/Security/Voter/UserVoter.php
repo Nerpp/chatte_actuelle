@@ -17,6 +17,7 @@ class UserVoter extends Voter
     public const VIEW_PERSONNAL_DRAFT = 'VIEW_PERSONNAL_ARTICLE';
     public const CREATE_TAG = 'CREATE_TAG';
     public const INDEX_TAGS = 'INDEX_TAGS';
+    public const ACCES_CENSURE = 'ACCES_CENSURE';
     
 
     private $security;
@@ -30,7 +31,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS])
+        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS,self::ACCES_CENSURE])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -64,6 +65,9 @@ class UserVoter extends Voter
                 break;
             case self::INDEX_TAGS:
                 return $this->authIndexTag();
+                break;
+            case self::ACCES_CENSURE:
+                return $this->authAccessCensure();
                 break;
         }
 
@@ -120,6 +124,21 @@ class UserVoter extends Voter
     {
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
+        }
+
+        return false;
+    }
+
+    private function authAccessCensure()
+    {
+        if (!$this->security->isGranted('ROLE_ADMIN')) {
+            return false;
+        }
+       
+        foreach ($this->security->getUser()->getArticles() as $articlesChecked) {
+            if ($articlesChecked->getCensure()) {
+               return true;
+            }
         }
 
         return false;

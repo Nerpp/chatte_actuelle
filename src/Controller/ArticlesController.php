@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Tags;
 use App\Entity\Images;
 use App\Entity\Articles;
 use App\Form\ArticlesType;
@@ -35,11 +34,11 @@ class ArticlesController extends AbstractController
     public function index(ArticlesRepository $articlesRepository): Response
     { 
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0],['publishedAt'=>'ASC']),
+            'articles' => $articlesRepository->findBy(['draft' => 0,'censure'=> 0],['publishedAt'=>'ASC']),
         ]);
     }
 
-    // Index Brouillon
+    // Index de tout les Brouillons uniquement pour super admin
     #[Route('/index/draft', name: 'app_draft_index', methods: ['GET'])]
     public function indexDraft(ArticlesRepository $articlesRepository): Response
     { 
@@ -50,7 +49,7 @@ class ArticlesController extends AbstractController
         }
 
         return $this->render('articles/index_draft.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 1],['id'=>'ASC']),
+            'articles' => $articlesRepository->findBy(['draft' => 1],['id'=>'DESC']),
         ]);
     }
 
@@ -84,8 +83,21 @@ class ArticlesController extends AbstractController
            ]);
        }
 
+       #[Route('/censure', name: 'app_index_censure', methods: ['GET'])]
+       public function indexArticleCensure(ArticlesRepository $articlesRepository): Response
+       {
+           if (!$this->isGranted('ACCES_CENSURE', $this->tokenUser)) {
+               $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+               return $this->redirectToRoute('app_login');
+           }
+  
+           return $this->render('articles/index_censured_articles.html.twig', [
+            'articles' => $articlesRepository->findBy(['censure' => 1],['id'=>'DESC']),
+        ]);
+       }
+
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request,ManagerRegistry $doctrine ,ArticlesRepository $articlesRepository): Response
+    public function new(Request $request,ManagerRegistry $doctrine): Response
     {
        
         if (!$this->isGranted('NEW_ARTICLE', $this->tokenUser)) {
@@ -97,6 +109,7 @@ class ArticlesController extends AbstractController
         $form = $this->createForm(ArticlesType::class, $article);
         $form->remove('publishedAt');
         $form->remove('modifiedAt');
+        $form->remove('censure');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -176,6 +189,13 @@ class ArticlesController extends AbstractController
             }
         }
 
+        if ($article->getCensure()) {
+            if (!$this->isGranted('VIEW_CENSURE', $article)) {
+                $this->addFlash('unauthorised', 'Désolé, cette article à étè retiré');
+                return $this->redirectToRoute('app_login');
+            }
+        }
+
         return $this->render('articles/show.html.twig', [
             'article' => $article,
         ]);
@@ -192,10 +212,14 @@ class ArticlesController extends AbstractController
         $form = $this->createForm(ArticlesEditType::class, $article);
         $form->remove('publishedAt');
         $form->remove('modifiedAt');
+        if (!$this->isGranted('CENSURE_ARTICLE', $article)) {
+            $form->remove('censure');
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $doctrine->getManager();
+            
 
             if ($article->getPublishedAt()) {
                 $article->setModifiedAt(new \DateTime('now'));

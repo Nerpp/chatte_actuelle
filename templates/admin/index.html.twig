@@ -52,6 +52,12 @@
 						<a class="btn btn-primary" href="{{ path('app_draft_index') }}" role="button">Liste de tout les Brouillons</a>
 					</div>
 				{% endif %}
+
+				{% if is_granted('ACCES_CENSURE',app.user) %}
+					<div class="">
+						<a class="btn btn-primary" href="{{ path('app_index_censure') }}" role="button">Liste article censuré</a>
+					</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>

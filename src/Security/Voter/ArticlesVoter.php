@@ -12,6 +12,8 @@ class ArticlesVoter extends Voter
     public const VIEW_DRAFT = 'VIEW_DRAFT';
     public const EDIT_ARTICLE = 'EDIT_ARTICLE';
     public const DELETE_ARTICLE = 'DELETE_ARTICLE';
+    public const CENSURE_ARTICLE = 'CENSURE_ARTICLE';
+    public const VIEW_CENSURE = 'VIEW_CENSURE';
     
     private $security;
 
@@ -26,13 +28,12 @@ class ArticlesVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::VIEW_DRAFT,self::EDIT_ARTICLE,self::DELETE_ARTICLE])
+        return in_array($attribute, [self::VIEW_DRAFT,self::EDIT_ARTICLE,self::DELETE_ARTICLE,self::CENSURE_ARTICLE,self::VIEW_CENSURE])
             && $article instanceof \App\Entity\Articles;
     }
 
     protected function voteOnAttribute(string $attribute, $article, TokenInterface $token): bool
     {
-        
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
@@ -52,6 +53,12 @@ class ArticlesVoter extends Voter
                 break;
             case self::DELETE_ARTICLE:
                 return $this->authDeleteArticle($article);
+                break;
+            case self::CENSURE_ARTICLE:
+                return $this->authCensureArticle($article);
+                break;
+            case self::VIEW_CENSURE:
+               return $this->authViewCensure($article);
                 break;
         }
 
@@ -78,6 +85,24 @@ class ArticlesVoter extends Voter
     }
 
     private function authDeleteArticle($article)
+    {
+        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authCensureArticle($article)
+    {
+        if ($this->security->isGranted('ROLE_SUPERADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authViewCensure($article)
     {
         if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser ) {
             return true;

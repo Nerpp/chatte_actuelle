@@ -1,0 +1,72 @@
+{{ form_start(form) }}
+<div class="d-grid gap-3">
+	<div class="col-12 bg-danger bg-gradient text-white text-center ">
+		{{ form_errors(form.title) }}
+	</div>
+	<div class="">
+		{{ form_widget(form.title, {'attr': {'class': 'form-control  text-center'}}) }}
+	</div>
+	<div class="d-flex flex-row align-items-center justify-content-around ">
+		<div class="">
+			{% include "/articles/_modal_information.html.twig" %}
+		</div>
+		<div class="">
+			{{ form_widget(form.tags) }}
+		</div>
+		<div class="">
+			<a class="btn btn-primary" href="{{ path('app_tags_new') }}" role="button">Créer un Tag</a>
+		</div>
+	</div>
+	<div class="col-12 bg-danger bg-gradient text-white text-center ">
+			{{ form_errors(form.article) }}
+		</div>
+	<div class="">
+		{{ form_widget(form.article, {'attr': {'class': 'form-control'}}) }}
+	</div>
+
+	<div class="d-flex flex-row d-grid gap-2">
+		<div class="">
+			{{ form_label(form.draft, 'Décocher la case pour Publier l\'article') }}
+        </div>
+        <div class="">
+            {{ form_widget(form.draft) }}
+        </div>
+		{% if is_granted('CENSURE_ARTICLE',article) %}
+		<div class="">
+			{{ form_label(form.censure, 'Cocher la case pour censurer l\'article') }}
+        </div>
+		 <div class="">
+            {{ form_widget(form.censure) }}
+        </div>
+		{% endif %}
+    </div>
+	<div class="">
+		<h1>Gestion images</h1>
+	</div>
+    <div class="">
+	{{ form_errors(form.image) }}
+	</div>
+	<div class="">
+	{{ form_widget(form.image, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
+	</div>
+	
+	<div class="d-flex flex-row flex-wrap d-grid gap-4">
+		{% for image in article.images %}
+			<div class="">
+				<img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
+			</div>
+		{% endfor %}
+	</div>
+	
+    <div class="">
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+
+	{# <button class="btn btn-primary">
+		<span>{{ button_label|default('Enregistrer') }}</span>
+		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+		<span class="sr-only">Loading...</span>
+	</button> #}
+
+</div>
+{{ form_end(form) }}
