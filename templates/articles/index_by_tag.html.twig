@@ -16,6 +16,7 @@
 	<div class="container pt-5">
 		<div class="d-flex flex-row flex-wrap justify-content-center d-grid gap-2">
 			{% for article in articles %}
+            {% if not article.draft and not article.censure %}
 				<div class="card" style="width: 18rem;">
 					<img src="{{ asset('/img/chatte_actuelle.jpg') }}" class="card-img-top" alt="chatte_actuelle">
 					<div class="card-body">
@@ -66,7 +67,7 @@
 						</div>
 					</div>
 				</div>
-
+                {% endif %}
 			{% endfor %}
 		</div>
 	</div>

@@ -18,7 +18,7 @@
 			{% for article in user.articles %}
 			{% if not article.draft %}
 				<div class="card" style="width: 18rem;">
-					<img src="..." class="card-img-top" alt="...">
+					<img src="{{ asset('/img/chatte_actuelle.jpg') }}" class="card-img-top" alt="chatte_actuelle">
 					<div class="card-body">
 						<h6 class='text-end text-info'>{{article.tags.name}}</h6>
 						<h5 class="card-title">{{ article.title }}</h5>

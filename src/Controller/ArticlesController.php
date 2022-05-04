@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Images;
 use App\Entity\Articles;
+use App\Entity\Tags;
 use App\Services\Cleaner;
 use App\Form\ArticlesType;
 use App\Services\FileSysteme;
 use App\Form\ArticlesEditType;
 use App\Services\ImageOptimizer;
+use App\Repository\TagsRepository;
 use App\Repository\ImagesRepository;
 use App\Repository\ArticlesRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,6 +41,17 @@ class ArticlesController extends AbstractController
             'articles' => $articlesRepository->findBy(['draft' => 0, 'censure' => 0], ['publishedAt' => 'ASC']),
         ]);
     }
+
+    // articles by tag
+    #[Route('/bytag/{id}', name: 'app_articles_by_tag_index', methods: ['GET'])]
+    public function indexByTag(Tags $tags): Response
+    {
+        return $this->render('articles/index_by_tag.html.twig', [
+            'articles' => $tags->getArticles(),
+        ]);
+    }
+
+
 
     // Index de tout les Brouillons uniquement pour super admin
     #[Route('/index/draft', name: 'app_draft_index', methods: ['GET'])]
@@ -88,6 +101,7 @@ class ArticlesController extends AbstractController
     #[Route('/censure', name: 'app_index_censure', methods: ['GET'])]
     public function indexArticleCensure(ArticlesRepository $articlesRepository): Response
     {
+        
         if (!$this->isGranted('ACCES_CENSURE', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');

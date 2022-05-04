@@ -18,36 +18,46 @@
 		</div>
 
 		{% if editos %}
-		<div class="">
-			<p>{{ editos.edito }}</p>
-		</div>
-		<div class="">
-			<p>{{ editos.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-		</div>
+			<div class="">
+				<p>{{ editos.edito }}</p>
+			</div>
+			<div class="">
+				<p>{{ editos.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
+			</div>
 		{% else %}
 			<div class="">
 				<h2>Humeur en construction</h2>
 			</div>
 		{% endif %}
 
-		{% if last_articles %}
-		{% for last_article in last_articles %}
-			<div class="card" style="width: 18rem;">
-			<img src="..." class="card-img-top" alt="...">
-			<div class="card-body">
-				<h5 class="card-title">{{ last_article.title }}</h5>
-				{% autoescape %}
-					<p class="card-text">{{ last_article.article|u.truncate(155)|raw }}...</p>
-				{% endautoescape %}
-				<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}" class="btn btn-primary">Lire</a>
+		<div class="d-flex flex-row flex-wrap d-grid gap-2">
+		{% for tag in tags %}
+			<div class="">
+				<a href="{{ path('app_articles_by_tag_index', {'id': tag.id, }) }}" class="btn btn-primary">{{ tag.name }}</a>
 			</div>
-		</div>
 		{% endfor %}
+		</div>
+
+		{% if last_articles %}
+		<div class="d-flex flex-row flex-wrap d-grid gap-3">
+			{% for last_article in last_articles %}
+				<div class="card" style="width: 18rem;">
+					<img src="{{ asset('/img/chatte_actuelle.jpg') }}" class="card-img-top" alt="chatte_actuelle">
+					<div class="card-body">
+						<h5 class="card-title">{{ last_article.title }}</h5>
+						{% autoescape %}
+							<p class="card-text">{{ last_article.article|u.truncate(155)|raw }}...</p>
+						{% endautoescape %}
+						<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}" class="btn btn-primary">Lire</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
 		{% else %}
 			<div class="">
 				<h2>Au Boulot</h2>
 			</div>
 		{% endif %}
-		
+
 	</div>
 {% endblock %}
