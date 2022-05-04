@@ -58,7 +58,9 @@
 				<img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
 			</div>
 			<div class="">
-				<a href="{{ path('app_images_delete', {'id': image.id}) }}" class="btn btn-danger">Supprimer</a>
+				<a href="{{ path('app_images_delete', {'id': image.id, }) }}" data-delete data-token="{{ csrf_token('delete' ~ image.id) }}" class="btn btn-danger" onclick="return confirm('Cette action est définitive !!!');">
+					Supprimer
+				</a>
 			</div>
 			</div>
 		{% endfor %}

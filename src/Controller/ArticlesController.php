@@ -4,18 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Images;
 use App\Entity\Articles;
+use App\Services\Cleaner;
 use App\Form\ArticlesType;
 use App\Form\ArticlesEditType;
+use App\Services\ImageOptimizer;
+use App\Repository\ImagesRepository;
 use App\Repository\ArticlesRepository;
-use App\Services\Cleaner;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use App\Services\ImageOptimizer;
 
 #[Route('/articles')]
 class ArticlesController extends AbstractController
@@ -226,6 +229,7 @@ class ArticlesController extends AbstractController
 
             $cleaner = new Cleaner;
             $slug = strToLower($cleaner->delAccent($article->getTitle()));
+
             $article->setSlug($slug);
 
             // je vérifie qu'il existe des images
@@ -293,4 +297,34 @@ class ArticlesController extends AbstractController
 
         return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/image/{id}', name: 'app_images_delete', methods: ['POST','GET'])]
+    public function deleteImage(Request $request, Images $image, ImagesRepository $imagesRepository): Response
+    {
+    
+        if (!$this->isGranted('DELETE_IMAGE', $image)) {
+            $this->addFlash('unauthorised', 'Désolé, vous ne disposez pas des droits nécessaires');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
+            
+            $article = $image->getArticles()->getSlug();
+
+            $filesystem = new Filesystem();
+            try {
+                $filesystem->remove([$this->getParameter('images_directory').'/'.$image->getSource()]);
+            } catch (IOExceptionInterface $exception) {
+                echo "An error occurred while creating your directory at ".$exception->getPath();
+            }
+
+            $imagesRepository->remove($image);
+
+            return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);
+        // }
+
+        // return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+    }
 }
+
+// $filesystem->remove(['symlink', '/path/to/directory', 'activity.log']);

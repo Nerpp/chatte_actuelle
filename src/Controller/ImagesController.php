@@ -65,18 +65,22 @@ class ImagesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_images_delete', methods: ['POST'])]
-    public function delete(Request $request, Images $image, ImagesRepository $imagesRepository): Response
-    {
+    // #[Route('/{id}', name: 'app_images_delete', methods: ['POST'])]
+    // public function delete(Request $request, Images $image, ImagesRepository $imagesRepository): Response
+    // {
 
-        if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
+    //     if (!$this->isGranted('DELETE_IMAGE', $image)) {
+    //         $this->addFlash('unauthorised', 'Désolé, vous ne disposez pas des droits nécessaires');
+    //         return $this->redirectToRoute('app_login');
+    //     }
 
-            $article = $image->getArticles();
-            unlink($this->getParameter('images_directory') .$image->getSource());
-            $imagesRepository->remove($image);
-            return  $this->redirectToRoute('app_articles_edit', ['slug' => $article->getSlug()], Response::HTTP_SEE_OTHER);
-        }
+    //     if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
+    //         $article = $image->getArticles();
+    //         unlink($this->getParameter('images_directory') .$image->getSource());
+    //         $imagesRepository->remove($image);
+    //         return  $this->redirectToRoute('app_articles_edit', ['slug' => $article->getSlug()], Response::HTTP_SEE_OTHER);
+    //     }
 
-        return $this->redirectToRoute('app_images_index', [], Response::HTTP_SEE_OTHER);
-    }
+    //     return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+    // }
 }
