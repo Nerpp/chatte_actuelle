@@ -35,16 +35,16 @@ class ArticlesController extends AbstractController
     // Index Publication
     #[Route('/', name: 'app_articles_index', methods: ['GET'])]
     public function index(ArticlesRepository $articlesRepository): Response
-    { 
+    {
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0,'censure'=> 0],['publishedAt'=>'ASC']),
+            'articles' => $articlesRepository->findBy(['draft' => 0, 'censure' => 0], ['publishedAt' => 'ASC']),
         ]);
     }
 
     // Index de tout les Brouillons uniquement pour super admin
     #[Route('/index/draft', name: 'app_draft_index', methods: ['GET'])]
     public function indexDraft(ArticlesRepository $articlesRepository): Response
-    { 
+    {
 
         if (!$this->isGranted('VIEW_ALL_DRAFT', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que super administrateur');
@@ -52,57 +52,57 @@ class ArticlesController extends AbstractController
         }
 
         return $this->render('articles/index_draft.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 1],['id'=>'DESC']),
+            'articles' => $articlesRepository->findBy(['draft' => 1], ['id' => 'DESC']),
         ]);
     }
 
-     // Index article publié
-     #[Route('/personnal/', name: 'app_article_index_personnal', methods: ['GET'])]
-     public function indexPersonnalArticle(): Response
-     { 
- 
-         if (!$this->isGranted('VIEW_PERSONNAL_ARTICLE', $this->tokenUser)) {
-             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
-             return $this->redirectToRoute('app_login');
-         }
+    // Index article publié
+    #[Route('/personnal/', name: 'app_article_index_personnal', methods: ['GET'])]
+    public function indexPersonnalArticle(): Response
+    {
 
-         return $this->render('articles/index_personnal_article.html.twig', [
-             'user' => $this->tokenUser,
-         ]);
-     }
+        if (!$this->isGranted('VIEW_PERSONNAL_ARTICLE', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
 
-       // Index Brouillon
-       #[Route('/personnal/draft', name: 'app_draft_index_personnal', methods: ['GET'])]
-       public function indexPersonnalDraft(): Response
-       { 
-   
-           if (!$this->isGranted('VIEW_PERSONNAL_ARTICLE', $this->tokenUser)) {
-               $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
-               return $this->redirectToRoute('app_login');
-           }
-  
-           return $this->render('articles/index_personnal_draft.html.twig', [
-               'user' => $this->tokenUser,
-           ]);
-       }
-
-       #[Route('/censure', name: 'app_index_censure', methods: ['GET'])]
-       public function indexArticleCensure(ArticlesRepository $articlesRepository): Response
-       {
-           if (!$this->isGranted('ACCES_CENSURE', $this->tokenUser)) {
-               $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
-               return $this->redirectToRoute('app_login');
-           }
-  
-           return $this->render('articles/index_censured_articles.html.twig', [
-            'articles' => $articlesRepository->findBy(['censure' => 1],['id'=>'DESC']),
+        return $this->render('articles/index_personnal_article.html.twig', [
+            'user' => $this->tokenUser,
         ]);
-       }
+    }
+
+    // Index Brouillon
+    #[Route('/personnal/draft', name: 'app_draft_index_personnal', methods: ['GET'])]
+    public function indexPersonnalDraft(): Response
+    {
+
+        if (!$this->isGranted('VIEW_PERSONNAL_ARTICLE', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('articles/index_personnal_draft.html.twig', [
+            'user' => $this->tokenUser,
+        ]);
+    }
+
+    #[Route('/censure', name: 'app_index_censure', methods: ['GET'])]
+    public function indexArticleCensure(ArticlesRepository $articlesRepository): Response
+    {
+        if (!$this->isGranted('ACCES_CENSURE', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('articles/index_censured_articles.html.twig', [
+            'articles' => $articlesRepository->findBy(['censure' => 1], ['id' => 'DESC']),
+        ]);
+    }
 
     #[Route('/new', name: 'app_articles_new', methods: ['GET', 'POST'])]
-    public function new(Request $request,ManagerRegistry $doctrine): Response
+    public function new(Request $request, ManagerRegistry $doctrine): Response
     {
-       
+
         if (!$this->isGranted('NEW_ARTICLE', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
@@ -121,21 +121,27 @@ class ArticlesController extends AbstractController
             $newArticle = $form->getData();
 
             //enregistrement du tag venant de la séléction
-              $article->setTags($newArticle->getTags());
-            
-           
+            $article->setTags($newArticle->getTags());
+
 
             $cleaner = new Cleaner;
             $slug = strToLower($cleaner->delAccent($newArticle->getTitle()));
             $article->setSlug($slug);
 
-             // je vérifie qu'il existe des images
-             $files = $form->get('image')->getData();
+            // je vérifie qu'il existe des images
+            $files = $form->get('image')->getData();
 
             // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
             if ($files) {
                 $where = $this->getParameter('images_directory');
-              
+
+                $filesystem = new Filesystem();
+
+                try {
+                    $filesystem->mkdir($where.$slug, 0700);
+                } catch (IOExceptionInterface $exception) {
+                    echo "An error occurred while creating your directory at " . $exception->getPath();
+                }
             }
 
             foreach ($files as $image) {
@@ -144,12 +150,12 @@ class ArticlesController extends AbstractController
                 if ($image) {
                     try {
                         $image->move(
-                           $where,
+                            $where.$slug.'/',
                             $filename
                         );
 
                         $resizeImg = new ImageOptimizer;
-                        $resizeImg->resize($where.$filename);
+                        $resizeImg->resize($where.$slug.'/'. $filename);
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');
@@ -157,14 +163,14 @@ class ArticlesController extends AbstractController
                 }
 
                 $recImage = new Images;
-                $recImage->setSource($filename);
+                $recImage->setSource($slug.'/'.$filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
             }
 
             // Si draft est null cela signifie que l'article est publié donc je met une date de publication
             if (!$newArticle->getDraft()) {
-               $article->setPublishedAt(new \DateTime('now'));
+                $article->setPublishedAt(new \DateTime('now'));
             }
 
             $article->setUser($this->getUser());
@@ -172,7 +178,7 @@ class ArticlesController extends AbstractController
 
             $entityManager->persist($article);
             $entityManager->flush();
-           
+
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -205,7 +211,7 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/{slug}/edit', name: 'app_articles_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Articles $article,ManagerRegistry $doctrine,ArticlesRepository $articlesRepository): Response
+    public function edit(Request $request, Articles $article, ManagerRegistry $doctrine, ArticlesRepository $articlesRepository): Response
     {
         if (!$this->isGranted('EDIT_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
@@ -222,10 +228,12 @@ class ArticlesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $doctrine->getManager();
-            
+
             if ($article->getPublishedAt()) {
                 $article->setModifiedAt(new \DateTime('now'));
             }
+
+            $oldSlug = $article->getSlug();
 
             $cleaner = new Cleaner;
             $slug = strToLower($cleaner->delAccent($article->getTitle()));
@@ -235,8 +243,14 @@ class ArticlesController extends AbstractController
             // je vérifie qu'il existe des images
             $files = $form->get('image')->getData();
 
-            if ($files) {
-                $where = $this->getParameter('images_directory');
+            $where = $this->getParameter('images_directory');
+
+            $filesystem = new Filesystem();
+
+            try {
+                $filesystem->rename($where . $oldSlug . '/', $where.$slug .'/', false);
+            } catch (IOExceptionInterface $exception) {
+                echo "An error occurred while creating your directory at " . $exception->getPath();
             }
 
             foreach ($files as $image) {
@@ -245,13 +259,12 @@ class ArticlesController extends AbstractController
                 if ($image) {
                     try {
                         $image->move(
-                           $where,
+                            $where.$slug.'/',
                             $filename
                         );
 
-                         $resizeImg = new ImageOptimizer;
-                        $resizeImg->resize($where.$filename);
-
+                        $resizeImg = new ImageOptimizer;
+                        $resizeImg->resize($where.$slug.'/'.$filename);
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');
@@ -259,13 +272,13 @@ class ArticlesController extends AbstractController
                 }
 
                 $recImage = new Images;
-                $recImage->setSource($filename);
+                $recImage->setSource($slug.'/'.$filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
             }
             $entityManager->flush();
-            
-            $articlesRepository->add($article); 
+
+            $articlesRepository->add($article);
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -275,52 +288,61 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}/delete', name: 'app_articles_delete', methods: ['POST'])]
+    #[Route('/delete/{slug}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
         // https://gmanier.com/memo/6/php-supprimer-dossier-a-l-aide-de-la-recursivite a voir pour supprimer dossier php
 
-        
         if (!$this->isGranted('DELETE_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
 
-        if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+        
+        if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
 
-            foreach ($article->getImages() as $image ) {
-                unlink($this->getParameter('images_directory') .$image->getSource());
-            }
-    
+            // foreach ($article->getImages() as $image) {
+            //     unlink($this->getParameter('images_directory') . $image->getSource());
+            // }
+
+           
+
+            $filesystem = new Filesystem();
+        try {
+            $filesystem->remove([$this->getParameter('images_directory'). $article->getSlug().'/']);
+        } catch (IOExceptionInterface $exception) {
+            echo "Un probléme est survenue lors de la délétion de l'image " . $exception->getPath();
+        }
+
             $articlesRepository->remove($article);
         }
 
         return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/image/{id}', name: 'app_images_delete', methods: ['POST','GET'])]
+    #[Route('/image/{id}', name: 'app_images_delete', methods: ['POST', 'GET'])]
     public function deleteImage(Request $request, Images $image, ImagesRepository $imagesRepository): Response
     {
-    
+
         if (!$this->isGranted('DELETE_IMAGE', $image)) {
             $this->addFlash('unauthorised', 'Désolé, vous ne disposez pas des droits nécessaires');
             return $this->redirectToRoute('app_login');
         }
 
         // if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
-            
-            $article = $image->getArticles()->getSlug();
 
-            $filesystem = new Filesystem();
-            try {
-                $filesystem->remove([$this->getParameter('images_directory').'/'.$image->getSource()]);
-            } catch (IOExceptionInterface $exception) {
-                echo "An error occurred while creating your directory at ".$exception->getPath();
-            }
+        $article = $image->getArticles()->getSlug();
 
-            $imagesRepository->remove($image);
+        $filesystem = new Filesystem();
+        try {
+            $filesystem->remove([$this->getParameter('images_directory') . '/' . $image->getSource()]);
+        } catch (IOExceptionInterface $exception) {
+            echo "Un probléme est survenue lors de la délétion de l'image " . $exception->getPath();
+        }
 
-            return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);
+        $imagesRepository->remove($image);
+
+        return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);
         // }
 
         // return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
