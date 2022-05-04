@@ -6,17 +6,16 @@ use App\Entity\Images;
 use App\Entity\Articles;
 use App\Services\Cleaner;
 use App\Form\ArticlesType;
+use App\Services\FileSysteme;
 use App\Form\ArticlesEditType;
 use App\Services\ImageOptimizer;
 use App\Repository\ImagesRepository;
 use App\Repository\ArticlesRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
@@ -135,13 +134,8 @@ class ArticlesController extends AbstractController
             if ($files) {
                 $where = $this->getParameter('images_directory');
 
-                $filesystem = new Filesystem();
-
-                try {
-                    $filesystem->mkdir($where.$slug, 0700);
-                } catch (IOExceptionInterface $exception) {
-                    echo "An error occurred while creating your directory at " . $exception->getPath();
-                }
+                $filesystem = new FileSysteme;
+                $filesystem->createFolder($where.$slug);
             }
 
             foreach ($files as $image) {
@@ -163,7 +157,7 @@ class ArticlesController extends AbstractController
                 }
 
                 $recImage = new Images;
-                $recImage->setSource($slug.'/'.$filename);
+                $recImage->setSource($filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
             }
@@ -237,7 +231,6 @@ class ArticlesController extends AbstractController
 
             $cleaner = new Cleaner;
             $slug = strToLower($cleaner->delAccent($article->getTitle()));
-
             $article->setSlug($slug);
 
             // je vérifie qu'il existe des images
@@ -245,13 +238,8 @@ class ArticlesController extends AbstractController
 
             $where = $this->getParameter('images_directory');
 
-            $filesystem = new Filesystem();
-
-            try {
-                $filesystem->rename($where . $oldSlug . '/', $where.$slug .'/', false);
-            } catch (IOExceptionInterface $exception) {
-                echo "An error occurred while creating your directory at " . $exception->getPath();
-            }
+            $filesystem = new FileSysteme;
+            $filesystem->renameFolder($where . $oldSlug . '/', $where.$slug .'/');
 
             foreach ($files as $image) {
                 $filename = "_" . md5(uniqid()) . "." . $image->guessExtension();
@@ -272,7 +260,7 @@ class ArticlesController extends AbstractController
                 }
 
                 $recImage = new Images;
-                $recImage->setSource($slug.'/'.$filename);
+                $recImage->setSource($filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
             }
@@ -298,21 +286,10 @@ class ArticlesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
 
-            // foreach ($article->getImages() as $image) {
-            //     unlink($this->getParameter('images_directory') . $image->getSource());
-            // }
-
-           
-
-            $filesystem = new Filesystem();
-        try {
-            $filesystem->remove([$this->getParameter('images_directory'). $article->getSlug().'/']);
-        } catch (IOExceptionInterface $exception) {
-            echo "Un probléme est survenue lors de la délétion de l'image " . $exception->getPath();
-        }
+        $filesystem = new FileSysteme;
+            $filesystem->remove($this->getParameter('images_directory'). $article->getSlug().'/');
 
             $articlesRepository->remove($article);
         }
@@ -333,13 +310,8 @@ class ArticlesController extends AbstractController
 
         $article = $image->getArticles()->getSlug();
 
-        $filesystem = new Filesystem();
-        try {
-            $filesystem->remove([$this->getParameter('images_directory') . '/' . $image->getSource()]);
-        } catch (IOExceptionInterface $exception) {
-            echo "Un probléme est survenue lors de la délétion de l'image " . $exception->getPath();
-        }
-
+        $filesystem = new FileSysteme;
+        $filesystem->remove($this->getParameter('images_directory').$article. '/' . $image->getSource());
         $imagesRepository->remove($image);
 
         return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);

@@ -55,7 +55,7 @@
 		{% for image in article.images %}
 			<div class="d-flex flex-column d-grid gap-2">
 			<div class="">
-				<img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
+				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt=""> 
 			</div>
 			<div class="">
 				<a href="{{ path('app_images_delete', {'id': image.id, }) }}" data-delete data-token="{{ csrf_token('delete' ~ image.id) }}" class="btn btn-danger" onclick="return confirm('Cette action est définitive !!!');">

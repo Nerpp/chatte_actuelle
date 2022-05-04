@@ -21,7 +21,7 @@
 			<div class="d-flex flex-row flex-wrap d-grid gap-2">
 				{% for image in article.images %}
 					<div class="">
-					 <img src="{{ asset('/img/download/'~image.source) }}" alt=""> 
+					 <img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt=""> 
 					</div>
 				{% endfor %}
 			</div>
