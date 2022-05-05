@@ -12,7 +12,6 @@
 {% endblock %}
 
 {% block section %}
-
 	<div class="container pt-5">
 		<div class="d-flex flex-row flex-wrap justify-content-center d-grid gap-2">
 			{% for article in user.articles %}
@@ -62,6 +61,13 @@
 		</div>
 	</div>
 
-	
-		{# <a href="{{ path('app_articles_new') }}">Create new</a> #} 
+	<div class="container">
+		<div class="">
+			<a href="{{ path('app_articles_new') }}">Nouvel Article</a> 
+		</div>
+		<div class="">
+			<a href="{{ path('app_admin') }}">Retour</a> 
+		</div>
+	</div>
+		
 {% endblock %}

@@ -187,6 +187,10 @@ class ArticlesController extends AbstractController
             $entityManager->persist($article);
             $entityManager->flush();
 
+            if ($newArticle->getDraft()) {
+                return $this->redirectToRoute('app_draft_index_personnal', [], Response::HTTP_SEE_OTHER);
+            }
+
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -279,8 +283,16 @@ class ArticlesController extends AbstractController
                 $entityManager->persist($recImage);
             }
             $entityManager->flush();
-
             $articlesRepository->add($article);
+
+            if ($article->getCensure()) {
+                return $this->redirectToRoute('app_index_censure', [], Response::HTTP_SEE_OTHER);
+            }
+
+            if ($article->getDraft()) {
+                return $this->redirectToRoute('app_draft_index_personnal', [], Response::HTTP_SEE_OTHER);
+            }
+
             return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
         }
 

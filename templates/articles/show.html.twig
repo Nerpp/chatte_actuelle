@@ -6,8 +6,9 @@
 
 {% block header %}
 	<div class="container">
-		<h1>{{ article.title }}</h1>
-		<div class=""></div>
+		<div class="text-center">
+			<h1>{{ article.title }}</h1>
+		</div>
 	</div>
 
 {% endblock %}
@@ -21,7 +22,7 @@
 			<div class="d-flex flex-row flex-wrap d-grid gap-2">
 				{% for image in article.images %}
 					<div class="">
-					 <img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt=""> 
+						<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="">
 					</div>
 				{% endfor %}
 			</div>
@@ -43,50 +44,30 @@
 				</p>
 			{% endif %}
 
-            {% if article.modifiedAt %}
+			{% if article.modifiedAt %}
 				<p>
-				    <strong>Modifié : </strong>{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+					<strong>Modifié :
+					</strong>
+					{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
 				</p>
 			{% endif %}
 		</div>
 	</div>
 
-	{# <table class="table">
-		        <tbody>
-		            <tr>
-		                <th>Id</th>
-		                <td>{{ article.id }}</td>
-		            </tr>
-		            <tr>
-		                <th>Title</th>
-		                <td>{{ article.title }}</td>
-		            </tr>
-		            <tr>
-		                <th>Slug</th>
-		                <td>{{ article.slug }}</td>
-		            </tr>
-		            <tr>
-		                <th>Article</th>
-		                <td></td>
-		            </tr>
-		            <tr>
-		                <th>PublishedAt</th>
-		                <td>{{ article.publishedAt ? article.publishedAt|date('Y-m-d H:i:s') : '' }}</td>
-		            </tr>
-		            <tr>
-		                <th>ModifiedAt</th>
-		                <td>{{ article.modifiedAt ? article.modifiedAt|date('Y-m-d H:i:s') : '' }}</td>
-		            </tr>
-		            <tr>
-		                <th>Draft</th>
-		                <td>{{ article.draft ? 'Yes' : 'No' }}</td>
-		            </tr>
-		        </tbody>
-		    </table>
-		
-		    <a href="{{ path('app_articles_index') }}">back to list</a>
-		
-		    <a href="{{ path('app_articles_edit', {'slug': article.slug}) }}">edit</a> #}
+	<div class="container">
+		<div class="d-flex flex-row d-grid gap-2">
+			{% if is_granted('DELETE_ARTICLE',article) %}
+				<div class="">
+					{{ include('articles/_delete_form.html.twig') }}
+				</div>
+			{% endif %}
 
-	{{ include('articles/_delete_form.html.twig') }}
+			{% if is_granted('EDIT_ARTICLE',article) %}
+				<div class="">
+					<a href="{{ path('app_articles_edit', {'slug': article.slug}) }}" class="btn btn-primary">Editer</a>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
 {% endblock %}
