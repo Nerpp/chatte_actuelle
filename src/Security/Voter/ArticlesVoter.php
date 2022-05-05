@@ -110,4 +110,5 @@ class ArticlesVoter extends Voter
 
         return false;
     }
+
 }

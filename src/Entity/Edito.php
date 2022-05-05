@@ -16,9 +16,6 @@ class Edito
     #[ORM\Column(type: 'text')]
     private $edito;
 
-    #[ORM\Column(type: 'boolean', nullable: true)]
-    private $draft;
-
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $publishedAt;
 
@@ -36,18 +33,6 @@ class Edito
     public function setEdito(string $edito): self
     {
         $this->edito = $edito;
-
-        return $this;
-    }
-
-    public function getDraft(): ?bool
-    {
-        return $this->draft;
-    }
-
-    public function setDraft(?bool $draft): self
-    {
-        $this->draft = $draft;
 
         return $this;
     }

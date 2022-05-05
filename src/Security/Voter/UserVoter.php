@@ -18,6 +18,7 @@ class UserVoter extends Voter
     public const CREATE_TAG = 'CREATE_TAG';
     public const INDEX_TAGS = 'INDEX_TAGS';
     public const ACCES_CENSURE = 'ACCES_CENSURE';
+    public const EDITO_EDIT ='EDITO_EDIT';
     
 
     private $security;
@@ -31,7 +32,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS,self::ACCES_CENSURE])
+        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS,self::ACCES_CENSURE,self::EDITO_EDIT])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -69,6 +70,8 @@ class UserVoter extends Voter
             case self::ACCES_CENSURE:
                 return $this->authAccessCensure();
                 break;
+            case self::EDITO_EDIT:
+                return $this->authEditEdito();
         }
 
         return false;
@@ -139,6 +142,15 @@ class UserVoter extends Voter
             if ($articlesChecked->getCensure()) {
                return true;
             }
+        }
+
+        return false;
+    }
+
+    private function authEditEdito()
+    {
+        if ($this->security->isGranted('ROLE_SUPERADMIN')) {
+            return true;
         }
 
         return false;
