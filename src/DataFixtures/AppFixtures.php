@@ -127,7 +127,6 @@ class AppFixtures extends Fixture
 
         $insertEdito = new Edito;
         $insertEdito->setEdito($edito);
-        $insertEdito->setDraft(1);
         $insertEdito->setPublishedAt(new \DateTime('now'));
         $manager->persist($insertEdito);
 

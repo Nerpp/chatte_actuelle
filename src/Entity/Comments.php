@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\CommentsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CommentsRepository;
+
 
 #[ORM\Entity(repositoryClass: CommentsRepository::class)]
 class Comments
@@ -22,9 +23,6 @@ class Comments
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
-
-    #[ORM\Column(type: 'boolean', nullable: true)]
-    private $signalement;
 
     #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -71,18 +69,6 @@ class Comments
         return $this;
     }
 
-    public function getSignalement(): ?bool
-    {
-        return $this->signalement;
-    }
-
-    public function setSignalement(?bool $signalement): self
-    {
-        $this->signalement = $signalement;
-
-        return $this;
-    }
-
     public function getArticle(): ?Articles
     {
         return $this->article;
@@ -94,4 +80,5 @@ class Comments
 
         return $this;
     }
+
 }

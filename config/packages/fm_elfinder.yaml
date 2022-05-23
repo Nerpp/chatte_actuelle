@@ -9,7 +9,7 @@ fm_elfinder:
                 roots:
                     uploads:
                         driver: LocalFileSystem
-                        path: uploads/images
+                        path: img/download/
                         show_hidden: false
                         upload_allow: ['image/png','image/jpg','image/jpeg']
                         upload_deny: ['all']

@@ -56,7 +56,7 @@ class Articles
     #[ORM\OneToMany(mappedBy: 'articles', targetEntity: Images::class , cascade:['persist'],orphanRemoval: true)]
     private $images;
 
-    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comments::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comments::class,orphanRemoval: true)]
     private $comments;
 
     #[ORM\Column(type: 'boolean')]

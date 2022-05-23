@@ -2,17 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\Tags;
 use App\Entity\Images;
 use App\Entity\Articles;
-use App\Entity\Tags;
+use App\Entity\Comments;
 use App\Services\Cleaner;
 use App\Form\ArticlesType;
+use App\Form\CommentsType;
 use App\Services\FileSysteme;
 use App\Form\ArticlesEditType;
 use App\Services\ImageOptimizer;
 use App\Repository\TagsRepository;
 use App\Repository\ImagesRepository;
 use App\Repository\ArticlesRepository;
+use App\Repository\CommentsRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
@@ -200,8 +203,8 @@ class ArticlesController extends AbstractController
         ]);
     }
 
-    #[Route('/{slug}', name: 'app_articles_show', methods: ['GET'])]
-    public function show(Articles $article): Response
+    #[Route('/{slug}', name: 'app_articles_show', methods: ['GET','POST'])]
+    public function show(Request $request,Articles $article, CommentsRepository $commentsRepository): Response
     {
         if ($article->getDraft()) {
             if (!$this->isGranted('VIEW_DRAFT', $article)) {
@@ -217,8 +220,21 @@ class ArticlesController extends AbstractController
             }
         }
 
+        $comment = new Comments();
+        $form = $this->createForm(CommentsType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setCreatedAt(new \DateTime('now'));
+            $comment->setUser($this->tokenUser);
+            $comment->setArticle($article);
+            $commentsRepository->add($comment);
+        }
+
         return $this->render('articles/show.html.twig', [
             'article' => $article,
+            'comment' => $comment,
+            'form' => $form->createView(),
         ]);
     }
 

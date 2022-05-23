@@ -19,6 +19,7 @@ class UserVoter extends Voter
     public const INDEX_TAGS = 'INDEX_TAGS';
     public const ACCES_CENSURE = 'ACCES_CENSURE';
     public const EDITO_EDIT ='EDITO_EDIT';
+    public const SEND_COMMENTS = 'SEND_COMMENTS';
     
 
     private $security;
@@ -32,7 +33,7 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS,self::ACCES_CENSURE,self::EDITO_EDIT])
+        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS,self::ACCES_CENSURE,self::EDITO_EDIT,self::SEND_COMMENTS])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -72,6 +73,10 @@ class UserVoter extends Voter
                 break;
             case self::EDITO_EDIT:
                 return $this->authEditEdito();
+                break;
+            case self::SEND_COMMENTS:
+                return $this->authSendComments();
+                break;
         }
 
         return false;
@@ -150,6 +155,15 @@ class UserVoter extends Voter
     private function authEditEdito()
     {
         if ($this->security->isGranted('ROLE_SUPERADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authSendComments()
+    {
+        if ($this->security->isGranted('ROLE_USER')) {
             return true;
         }
 
