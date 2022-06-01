@@ -121,6 +121,7 @@ class AppFixtures extends Fixture
             $user->setDisplayname($userListed['displayName']);
             $user->setPassword($this->passwordHasher->hashPassword($user, $userListed['password']));
             $user->setRoles($userListed['roles']);
+            $user->setIsVerified(true);
             $manager->persist($user);
             $allUser[] = $user;
         }

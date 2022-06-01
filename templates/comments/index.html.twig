@@ -1,39 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comments index{% endblock %}
+{% block title %}Commentaires signalés
+{% endblock %}
 
-{% block body %}
-    <h1>Comments index</h1>
+{% block header %}
+	<div class="container">
+		<div class="text-center">
+			<h1>Commentaires signalés</h1>
+		</div>
+	</div>
+{% endblock %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Comment</th>
-                <th>CreatedAt</th>
-                <th>Signalement</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for comment in comments %}
-            <tr>
-                <td>{{ comment.id }}</td>
-                <td>{{ comment.comment }}</td>
-                <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ comment.signalement ? 'Yes' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_comments_show', {'id': comment.id}) }}">show</a>
-                    <a href="{{ path('app_comments_edit', {'id': comment.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_comments_new') }}">Create new</a>
+{% block section %}
+	<div class="container">
+		{% if comments %}
+			{% for comment in comments %}
+				<p>
+					<strong>{{ comment.user.displayName }}</strong>
+					:
+					{{ comment.comment }}
+					<br>
+					{{ include('comments/_deleted_by_admin.html.twig') }}
+					{{ include('comments/_allow_comment.html.twig') }}
+				</p>
+			{% endfor %}
+		{% else %}
+			<p>Aucun Commentaire signalé(s)</p>
+		{% endif %}
+	</div>
 {% endblock %}

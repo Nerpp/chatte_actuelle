@@ -46,6 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->articles = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->editos = new ArrayCollection();
+        $this->reportings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -202,4 +203,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+  
 }

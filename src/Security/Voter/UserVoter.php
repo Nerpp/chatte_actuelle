@@ -20,6 +20,7 @@ class UserVoter extends Voter
     public const ACCES_CENSURE = 'ACCES_CENSURE';
     public const EDITO_EDIT ='EDITO_EDIT';
     public const SEND_COMMENTS = 'SEND_COMMENTS';
+    public const VIEW_REPORTED_COMMENTS = 'VIEW_REPORTED_COMMENTS';
     
 
     private $security;
@@ -33,7 +34,19 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::SECTION_ADMIN,self::NEW_ARTICLE,self::VIEW_ALL_DRAFT,self::VIEW_PERSONNAL_DRAFT,self::CREATE_TAG,self::INDEX_TAGS,self::ACCES_CENSURE,self::EDITO_EDIT,self::SEND_COMMENTS])
+        return in_array($attribute, 
+        [
+        self::SECTION_ADMIN,
+        self::NEW_ARTICLE,
+        self::VIEW_ALL_DRAFT,
+        self::VIEW_PERSONNAL_DRAFT,
+        self::CREATE_TAG,
+        self::INDEX_TAGS,
+        self::ACCES_CENSURE,
+        self::EDITO_EDIT,
+        self::SEND_COMMENTS,
+        self::VIEW_REPORTED_COMMENTS,
+        ])
             && $subject instanceof \App\Entity\User;
     }
 
@@ -76,6 +89,9 @@ class UserVoter extends Voter
                 break;
             case self::SEND_COMMENTS:
                 return $this->authSendComments();
+                break;
+            case self::VIEW_REPORTED_COMMENTS:
+                return $this->authViewReportedComment();
                 break;
         }
 
@@ -167,6 +183,15 @@ class UserVoter extends Voter
             return true;
         }
 
+        return false;
+    }
+
+    private function authViewReportedComment()
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+       
         return false;
     }
     

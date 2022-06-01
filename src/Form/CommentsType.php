@@ -13,10 +13,6 @@ class CommentsType extends AbstractType
     {
         $builder
             ->add('comment')
-            // ->add('createdAt')
-            // ->add('signalement')
-            // ->add('user')
-            // ->add('article')
         ;
     }
 

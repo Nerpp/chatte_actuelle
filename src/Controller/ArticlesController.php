@@ -229,6 +229,8 @@ class ArticlesController extends AbstractController
             $comment->setUser($this->tokenUser);
             $comment->setArticle($article);
             $commentsRepository->add($comment);
+
+            return $this->redirectToRoute('app_articles_show',['slug' => $article->getSlug()]);
         }
 
         return $this->render('articles/show.html.twig', [

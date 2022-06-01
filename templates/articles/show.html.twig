@@ -9,8 +9,18 @@
 		<div class="text-center">
 			<h1>{{ article.title }}</h1>
 		</div>
+		<div class="">
+			{% for label, messages in app.flashes(['success', 'unauthorised']) %}
+    {% for message in messages %}
+	{% if label == 'unauthorised' %}
+	<div class="alert alert-danger" role="alert">{{ message }}</div>
+	{% else %}
+	<div class="alert alert-success" role="alert">{{ message }}</div>
+	{% endif %} 
+    {% endfor %}
+{% endfor %}
+		</div>
 	</div>
-
 {% endblock %}
 
 {% block section %}
@@ -78,31 +88,42 @@
 		{# {{ include('/comments/_form.html.twig') }} #}
 
 		{% if is_granted('SEND_COMMENTS',app.user) %}
-		<div class="">
-		{{ form_start(form) }}
-			{{ form_widget(form) }}
-    		<button class="btn btn-primary">{{ button_label|default('Envoyer') }}</button>
-		{{ form_end(form) }}
-		{% else %}
-			<p>Vous devez être connecté pour poster des commentaires</p>
-		</div>
+			<div class="">
+				{{ form_start(form) }}
+				{{ form_widget(form) }}
+				<button class="btn btn-primary">{{ button_label|default('Envoyer') }}</button>
+				{{ form_end(form) }}
+			{% else %}
+				<p>Vous devez être connecté pour poster des commentaires</p>
+			</div>
 		{% endif %}
 	</div>
 	<div class="container">
 		<div class="pt-3">
-			{% for comment in article.comments|reverse %}
-			<div class="">
-				<p>{{ comment.user.displayname }}</p>
-			</div>
-			<div class="">
-				<p>{{ comment.comment }}</p>
-			</div>
-			<div class="">
-				<p>{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</p>
-			</div>
-			<div class="">
-				 {{ include('comments/_delete_form.html.twig') }}
-			</div>
+			{% for comment in article.comments|reverse %}	
+				<div class="pt-2">
+					<strong>{{ comment.user.displayname }}</strong> : {{ comment.comment }}
+				</div>
+				<div class="">
+					{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+				</div>
+				
+				{% if is_granted('DELETE_COMMENT',comment) %}
+					<div class="">
+						{{ include('comments/_delete_form.html.twig') }}
+					</div>
+				{% endif %}
+				{% if is_granted('REPORT_COMMENT',comment) %}
+					<div class="">
+						<a href="{{ path('app_comments_report', {'id': comment.id }) }}" class="btn">signaler</a>
+					</div>
+				{% endif %}
+				{% if is_granted('EDIT_COMMENT',comment) %}
+				<div class="">
+					<a href="{{ path('app_comments_edit', {'id': comment.id }) }}" class="btn">Editer</a>
+				</div>
+				{% endif %}
+
 			{% endfor %}
 		</div>
 	</div>

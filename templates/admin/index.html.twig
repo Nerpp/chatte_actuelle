@@ -13,7 +13,6 @@
 {% endblock %}
 
 {% block section %}
-
 	<div class="container pt-5">
 		<div class="d-flex flex-column d-grid gap-3">
 			<div class="">
@@ -59,6 +58,27 @@
 					</div>
 				{% endif %}
 			</div>
+		</div>
+	</div>
+	<div class="container pt-5">
+		<div class="d-flex flex-column d-grid gap-3">
+			<div class="">
+				<h2>Gestion Commentaires</h2>
+			</div>
+			<div class="">
+				<a class="btn btn-primary" href="{{ path('app_comments_reported_index') }}" role="button">Commentaire signalé {{ comments|length }}</a>
+			</div>
+			{# <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+				Commentaire signalé {{ comments|length }}
+			</a>
+			<div class="collapse" id="collapseExample">
+				{% for comment in comments %}
+					<p>
+						<strong>{{ comment.user.displayName }}</strong> : {{ comment.comment }} <br>
+						{{ include('comments/_deleted_by_admin.html.twig') }} {{ include('comments/_allow_comment.html.twig') }}
+					</p>
+				{% endfor %}
+			</div> #}
 		</div>
 	</div>
 {% endblock %}

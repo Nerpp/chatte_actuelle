@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentsRepository;
 
@@ -27,6 +29,18 @@ class Comments
     #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private $article;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $reported;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private $moderated;
+
+
+    public function __construct()
+    {
+        $this->reportings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -80,5 +94,31 @@ class Comments
 
         return $this;
     }
+
+    public function isReported(): ?bool
+    {
+        return $this->reported;
+    }
+
+    public function setReported(?bool $reported): self
+    {
+        $this->reported = $reported;
+
+        return $this;
+    }
+
+    public function isModerated(): ?bool
+    {
+        return $this->moderated;
+    }
+
+    public function setModerated(?bool $moderated): self
+    {
+        $this->moderated = $moderated;
+
+        return $this;
+    }
+
+  
 
 }
