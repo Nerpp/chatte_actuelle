@@ -1,4 +1,30 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {# {{ form_widget(form) }} #}
+        <div class="">
+            {{ form_label(form.displayname, 'Nom d\'affichage') }}
+        </div>
+        <div class="">
+            {{ form_errors(form.displayname) }}
+        </div>
+        <div class="">
+            {{ form_widget(form.displayname, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
+        <div class="">
+            {{ form_label(form.email, 'email') }}
+        </div>
+        <div class="">
+            {{ form_errors(form.email) }}
+        </div>
+        <div class="">
+            {{ form_widget(form.email, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
+        <div class="">
+            {{ form_label(form.roles, 'Choisissez un role') }}
+        </div>
+        <div class="">
+            {{ form_widget(form.roles) }}
+        </div>
+        <div class="">
+            <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+        </div>
 {{ form_end(form) }}
