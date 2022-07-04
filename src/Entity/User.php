@@ -41,6 +41,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: BlackList::class, cascade: ['persist', 'remove'])]
+    private $blackList;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $warning;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -204,5 +210,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-  
+    public function getBlackList(): ?BlackList
+    {
+        return $this->blackList;
+    }
+
+    public function setBlackList(BlackList $blackList): self
+    {
+        // set the owning side of the relation if necessary
+        if ($blackList->getUser() !== $this) {
+            $blackList->setUser($this);
+        }
+
+        $this->blackList = $blackList;
+
+        return $this;
+    }
+
+    public function getWarning(): ?int
+    {
+        return $this->warning;
+    }
+
+    public function setWarning(?int $warning): self
+    {
+        $this->warning = $warning;
+
+        return $this;
+    }
+    
+    public function __toString()
+    {
+        $this->roles;
+    }
 }
