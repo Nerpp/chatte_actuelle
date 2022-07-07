@@ -48,6 +48,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer', nullable: true)]
     private $warning;
 
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: ImgProfile::class, cascade: ['persist', 'remove'])]
+    private $imgProfile;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -243,5 +246,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         $this->roles;
+    }
+
+    public function getImgProfile(): ?ImgProfile
+    {
+        return $this->imgProfile;
+    }
+
+    public function setImgProfile(?ImgProfile $imgProfile): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($imgProfile === null && $this->imgProfile !== null) {
+            $this->imgProfile->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($imgProfile !== null && $imgProfile->getUser() !== $this) {
+            $imgProfile->setUser($this);
+        }
+
+        $this->imgProfile = $imgProfile;
+
+        return $this;
     }
 }

@@ -2,6 +2,7 @@
     "devDependencies": {
         "@hotwired/stimulus": "^3.0.0",
         "@symfony/stimulus-bridge": "^3.0.0",
+        "@symfony/ux-autocomplete": "file:vendor/symfony/ux-autocomplete/assets",
         "@symfony/webpack-encore": "^1.7.0",
         "autoprefixer": "^10.4.4",
         "core-js": "^3.0.0",
@@ -11,6 +12,7 @@
         "regenerator-runtime": "^0.13.2",
         "sass": "^1.49.10",
         "sass-loader": "^12.6.0",
+        "tom-select": "^2.0.1",
         "webpack": "^5.70.0",
         "webpack-notifier": "^1.6.0"
     },
