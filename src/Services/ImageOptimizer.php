@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use Imagine\Gd\Imagine;

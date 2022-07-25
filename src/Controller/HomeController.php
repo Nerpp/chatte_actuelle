@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tags;
 use App\Entity\Edito;
 use App\Entity\Articles;
+use App\Form\ArticleAutocompleterType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,13 +15,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine,Request $request): Response
     {
+        // $article = new Articles();
+        // $search = $this->createForm(ArticleAutocompleterType::class, $article);
+        // $search->remove('publishedAt');
+        // $search->remove('modifiedAt');
+        // $search->remove('censure');
+        // $search->handleRequest($request);
+
+       
+
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'editos' => $doctrine->getRepository(Edito::class)->findOneBy(['id' => 1]),
             'last_articles' => $doctrine->getRepository(Articles::class)->findBy(['draft' => 0,'censure' => 0],['publishedAt'=>'ASC'],3),
             'tags' => $doctrine->getRepository(Tags::class)->findAll(),
+            // 'search' => $search->createView(),
+           
         ]);
     }
 }
