@@ -13,21 +13,55 @@
 {% block section %}
 <div class="container pt-5">
     {% for flash_error in app.flashes('verify_email_error') %}
-<div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-{% endfor %}
+    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
     {{ form_start(registrationForm) }}
-    {# {{ form_row(registrationForm.email) }}
-    {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-    {{ form_row(registrationForm.agreeTerms) }} #}
+    
+    <div class="d-grid gap-2">
+        <div class="">
+            {{ form_errors(registrationForm.email) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
+        <div class="">
+            {{ form_errors(registrationForm.displayName) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.displayName, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
+        <div class="">
+            {{ form_errors(registrationForm.imgProfile) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.imgProfile, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
+        </div>
+        <div class="">
+            {{ form_errors(registrationForm.plainPassword.first) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
+        <div class="">
+            {{ form_errors(registrationForm.plainPassword.second) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
 
-    {# <button type="submit" class="btn">Register</button> #}
-
-    <div class="pt-1 pt-lg-3">
-		Résoudre :
-		{{ captcha }}
-	</div>
+        <div class="pt-1 pt-lg-3">
+            Résoudre :
+            {{ captcha }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.captcha, {'attr': {'class': 'form-control  text-center'}}) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.agreeTerms) }}
+        </div>
+        <div class="">
+            {{ form_widget(registrationForm.save, { 'label': 'Envoyer' }) }}
+        </div>
+    </div>
     {{ form_end(registrationForm) }}
-</div>
-{% endblock %}
+    {% endblock %}

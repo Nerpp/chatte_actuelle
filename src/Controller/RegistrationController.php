@@ -38,10 +38,23 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            
             if (strval($session->get('captcha')) !== $form->get('captcha')->getData() ) {
-                $this->addFlash('error', 'Le captcha est incorrect');
-                return $this->redirectToRoute('app_register');
+                $this->addFlash('verify_email_error', 'Le captcha est incorrect');
+                // return $this->redirectToRoute('app_register');
+                $firstElement =  random_int(0, 10);
+                $secondElement = random_int(0, 10);
+        
+                $session->set('captcha', $firstElement + $secondElement);
+        
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form->createView(),
+                    'captcha' => $firstElement . '+' . $secondElement,
+                ]);
                }
+
+               dd('test');
+
             // encode the plain password
             $user->setPassword(
             $userPasswordHasher->hashPassword(

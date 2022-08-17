@@ -955,9 +955,6 @@
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
-"@symfony/ux-autocomplete@file:vendor/symfony/ux-autocomplete/assets":
-  version "1.0.0"
-
 "@symfony/webpack-encore@^1.7.0":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@symfony/webpack-encore/-/webpack-encore-1.8.2.tgz#ceffa0d9326d29fa62b3a61f213e8e01a9992a7e"

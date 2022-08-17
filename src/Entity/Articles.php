@@ -27,7 +27,7 @@ class Articles
     #[ORM\Column(type: 'string', length: 45,unique:true)]
     private $title;
 
-    #[ORM\Column(type: 'string', length: 45)]
+    #[ORM\Column(type: 'string', length: 45,unique:true)]
     private $slug;
 
     /**
