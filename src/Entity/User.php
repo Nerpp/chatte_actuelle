@@ -32,9 +32,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
+    #[Assert\Regex(pattern:"/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$/", match:false, message:"Votre mot de passe doit être constitué de minuscule, de caractéres spéciaux et de caractéres numérique")]
     private $password;
 
     #[ORM\Column(type: 'string', length: 45, unique: true)]
+    #[Assert\NotBlank(message:"Vous devez choisir un pseudonyme d'affichage.")]
     private $displayname;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Articles::class, orphanRemoval: true)]
