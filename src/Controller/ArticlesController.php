@@ -150,7 +150,6 @@ class ArticlesController extends AbstractController
             // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
             if ($files) {
                 $where = $this->getParameter('images_directory');
-
                 $filesystem = new FileSysteme;
                 $filesystem->createFolder($where.$slug);
             }

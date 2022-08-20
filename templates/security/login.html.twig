@@ -24,6 +24,14 @@
 			{% endfor %}
 		</div>
 
+		<div class="col-12 bg-success bg-gradient text-white text-center ">
+			{% for message in app.flashes('bien') %}
+				<div class="flash-notice">
+					{{ message }}
+				</div>
+			{% endfor %}
+		</div>
+
 		{% if app.user %}
 			<div class="mb-3">
 				You are logged in as

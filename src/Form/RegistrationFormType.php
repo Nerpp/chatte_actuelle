@@ -45,28 +45,34 @@ class RegistrationFormType extends AbstractType
             ]
         ])
 
+       
+
         ->add('imgProfile', FileType::class, [
-            'label' => 'Choisir un fichier',
+            'label' => 'Brochure (PDF file)',
+
+            // unmapped means that this field is not associated to any entity property
             'mapped' => false,
-            'multiple' => false,
+
+            // make it optional so you don't have to re-upload the PDF file
+            // every time you edit the Product details
             'required' => false,
+
+            // unmapped fields can't define their validation using annotations
+            // in the associated entity, so you can use the PHP constraint classes
             'constraints' => [
-              new All([
-                'constraints' => [
-                  new File([
-                    'maxSize' => '100k',
-                    'mimeTypesMessage' => 'Veuillez télécharger un fichier conforme',
+                new File([
+                    // 'maxSize' => '200k',
+                    // 'maxSizeMessage' => 'Votre image de profil est trop importante ({{ size }} {{ suffix }}). Taille maximale autorisé {{ limit }} {{ suffix }}',
                     'mimeTypes' => [
-                                        "image/png",
+                        "image/png",
                                         "image/jpeg",
                                         "image/jpg",
                                         "image/gif",
-                                    ],
-                  ]),
-                ],
-              ]),
-            ]
-          ])
+                    ],
+                    'mimeTypesMessage' => 'Les formats autorisés sont de type jpeg, jpg, gif',
+                ])
+            ],
+        ])
 
           ->add('plainPassword',RepeatedType::class, [
             // instead of being set onto the object directly,
@@ -104,24 +110,6 @@ class RegistrationFormType extends AbstractType
             ],
         ])
             
-            // ->add('plainPassword', PasswordType::class, [
-            //     // instead of being set onto the object directly,
-            //     // this is read and encoded in the controller
-            //     'mapped' => false,
-            //     'placeholder' => 'email@exemple.com',
-            //     'attr' => ['autocomplete' => 'new-password'],
-            //     'constraints' => [
-            //         new NotBlank([
-            //             'message' => 'Veuillez crée un mot de passe',
-            //         ]),
-            //         new Length([
-            //             'min' => 8,
-            //             'minMessage' => 'Your password should be at least {{ limit }} characters',
-            //             // max length allowed by Symfony for security reasons
-            //             'max' => 4096,
-            //         ]),
-            //     ],
-            // ])
 
             ->add('captcha', TextType::class, [
                 'mapped' => false,

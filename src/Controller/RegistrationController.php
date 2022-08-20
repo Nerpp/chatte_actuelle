@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\ImgProfile;
 use App\Entity\User;
 use App\Security\EmailVerifier;
+use App\Services\ImageOptimizer;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Symfony\Component\Mime\Address;
@@ -16,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
@@ -38,13 +41,11 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            
             if (strval($session->get('captcha')) !== $form->get('captcha')->getData() ) {
-                $this->addFlash('verify_email_error', 'Le captcha est incorrect');
-                // return $this->redirectToRoute('app_register');
+                $this->addFlash('', 'Le captcha est incorrect');
+
                 $firstElement =  random_int(0, 10);
                 $secondElement = random_int(0, 10);
-        
                 $session->set('captcha', $firstElement + $secondElement);
         
                 return $this->render('registration/register.html.twig', [
@@ -53,7 +54,36 @@ class RegistrationController extends AbstractController
                 ]);
                }
 
-             
+             // je vérifie qu'il existe des images
+            $files = $form->get('imgProfile')->getData();
+
+            if($files){
+                $where = $this->getParameter('images_directory').'profile/';
+                $filename = "_" . md5(uniqid()) . "." . $files->guessExtension();
+
+                try {
+                    $files->move(
+                        $where,
+                        $filename
+                    );
+
+                    $resizeImg = new ImageOptimizer;
+                    $resizeImg->resizeImgProfile($where.'/'. $filename);
+                } catch (FileException $e) {
+                    $this->addFlash('verify_email_error', 'Une érreur est survenue lors du chargement de l\'image !');
+                    $firstElement =  random_int(0, 10);
+                    $secondElement = random_int(0, 10);
+                    $session->set('captcha', $firstElement + $secondElement);
+                return $this->render('registration/register.html.twig', [
+                    'registrationForm' => $form->createView(),
+                    'captcha' => $firstElement . '+' . $secondElement,
+                ]);
+                }
+                $recImg = new ImgProfile;
+                $recImg->setSource($filename);
+                $entityManager->persist($recImg);
+                $user->setImgProfile($recImg);
+            }
 
             // encode the plain password
             $user->setPassword(
@@ -76,13 +106,14 @@ class RegistrationController extends AbstractController
             );
             // do anything else you need here, like send an email
 
-          
+            // return $userAuthenticator->authenticateUser(
+            //     $user,
+            //     $authenticator,
+            //     $request
+            // );
 
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );
+           return $this->redirectToRoute('app_login');
+
         }
 
         $firstElement =  random_int(0, 10);
@@ -99,6 +130,7 @@ class RegistrationController extends AbstractController
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserRepository $userRepository): Response
     {
+       
         $id = $request->get('id');
 
         if (null === $id) {
@@ -121,8 +153,8 @@ class RegistrationController extends AbstractController
         }
 
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('bien', 'Bienvenue, vous pouvez vous connecter.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('app_login');
     }
 }

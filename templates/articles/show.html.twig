@@ -1,131 +1,140 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ article.title }}
+{{ article.title }}
 {% endblock %}
 
 {% block header %}
-	<div class="container">
-		<div class="text-center">
-			<h1>{{ article.title }}</h1>
-		</div>
-		<div class="">
-			{% for label, messages in app.flashes(['success', 'unauthorised']) %}
-    {% for message in messages %}
-	{% if label == 'unauthorised' %}
-	<div class="alert alert-danger" role="alert">{{ message }}</div>
-	{% else %}
-	<div class="alert alert-success" role="alert">{{ message }}</div>
-	{% endif %} 
-    {% endfor %}
-{% endfor %}
-		</div>
+<div class="container">
+	<div class="text-center">
+		<h1>{{ article.title }}</h1>
 	</div>
+	<div class="">
+		{% for label, messages in app.flashes(['success', 'unauthorised']) %}
+		{% for message in messages %}
+		{% if label == 'unauthorised' %}
+		<div class="alert alert-danger" role="alert">{{ message }}</div>
+		{% else %}
+		<div class="alert alert-success" role="alert">{{ message }}</div>
+		{% endif %}
+		{% endfor %}
+		{% endfor %}
+	</div>
+</div>
 {% endblock %}
 
 {% block section %}
-	<div class="container pt-5">
-		<div class="d-flex flex-column d-grid gap-2">
-			<div class="">
-				{{ article.article|raw }}
-			</div>
-			<div class="d-flex flex-row flex-wrap d-grid gap-2">
-				{% for image in article.images %}
-					<div class="">
-						<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="">
-					</div>
-				{% endfor %}
-			</div>
-			<div class="">
-				<p>
-					<strong>Auteur :
-					</strong>
-					{{ article.user.displayName }}</p>
-			</div>
-			{% if article.PublishedAt %}
-				<p>
-					<strong>Publié :
-					</strong>
-					{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
-				</p>
-			{% else %}
-				<p>
-					<strong>Jamais Publié</strong>
-				</p>
-			{% endif %}
-
-			{% if article.modifiedAt %}
-				<p>
-					<strong>Modifié :
-					</strong>
-					{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
-				</p>
-			{% endif %}
-		</div>
-	</div>
-
-	<div class="container">
-		<div class="d-flex flex-row d-grid gap-2">
-			{% if is_granted('DELETE_ARTICLE',article) %}
-				<div class="">
-					{{ include('articles/_delete_form.html.twig') }}
-				</div>
-			{% endif %}
-
-			{% if is_granted('EDIT_ARTICLE',article) %}
-				<div class="">
-					<a href="{{ path('app_articles_edit', {'slug': article.slug}) }}" class="btn btn-primary">Editer</a>
-				</div>
-			{% endif %}
-		</div>
-	</div>
-
-	<div class="container pt-5">
+<div class="container pt-5">
+	<div class="d-flex flex-column d-grid gap-2">
 		<div class="">
-			<h2>Commentaire</h2>
+			{{ article.article|raw }}
 		</div>
-
-		{# {{ include('/comments/_form.html.twig') }} #}
-
-		{% if is_granted('SEND_COMMENTS',app.user) %}
+		<div class="d-flex flex-row flex-wrap d-grid gap-2">
+			{% for image in article.images %}
 			<div class="">
-				{{ form_start(form) }}
-				{{ form_widget(form) }}
-				<button class="btn btn-primary">{{ button_label|default('Envoyer') }}</button>
-				{{ form_end(form) }}
-			{% else %}
-				<p>Vous devez être connecté pour poster des commentaires</p>
+				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="">
 			</div>
-		{% endif %}
-	</div>
-	<div class="container">
-		<div class="pt-3">
-			{% for comment in article.comments|reverse %}	
-				<div class="pt-2">
-					<strong>{{ comment.user.displayname }}</strong> : {{ comment.comment }}
-				</div>
-				<div class="">
-					{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
-				</div>
-				
-				{% if is_granted('DELETE_COMMENT',comment) %}
-					<div class="">
-						{{ include('comments/_delete_form.html.twig') }}
-					</div>
-				{% endif %}
-				{% if is_granted('REPORT_COMMENT',comment) %}
-					<div class="">
-						<a href="{{ path('app_comments_report', {'id': comment.id }) }}" class="btn">signaler</a>
-					</div>
-				{% endif %}
-				{% if is_granted('EDIT_COMMENT',comment) %}
-				<div class="">
-					<a href="{{ path('app_comments_edit', {'id': comment.id }) }}" class="btn">Editer</a>
-				</div>
-				{% endif %}
-
 			{% endfor %}
 		</div>
+		<div class="">
+			<p>
+				<strong>Auteur :
+				</strong>
+				{{ article.user.displayName }}</p>
+		</div>
+		{% if article.PublishedAt %}
+		<p>
+			<strong>Publié :
+			</strong>
+			{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+		</p>
+		{% else %}
+		<p>
+			<strong>Jamais Publié</strong>
+		</p>
+		{% endif %}
+
+		{% if article.modifiedAt %}
+		<p>
+			<strong>Modifié :
+			</strong>
+			{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+		</p>
+		{% endif %}
 	</div>
+</div>
+
+<div class="container">
+	<div class="d-flex flex-row d-grid gap-2">
+		{% if is_granted('DELETE_ARTICLE',article) %}
+		<div class="">
+			{{ include('articles/_delete_form.html.twig') }}
+		</div>
+		{% endif %}
+
+		{% if is_granted('EDIT_ARTICLE',article) %}
+		<div class="">
+			<a href="{{ path('app_articles_edit', {'slug': article.slug}) }}" class="btn btn-primary">Editer</a>
+		</div>
+		{% endif %}
+	</div>
+</div>
+
+<div class="container pt-5">
+	<div class="">
+		<h2>Commentaire</h2>
+	</div>
+
+	{# {{ include('/comments/_form.html.twig') }} #}
+
+	{% if is_granted('SEND_COMMENTS',app.user) %}
+	<div class="">
+		{{ form_start(form) }}
+		{{ form_widget(form) }}
+		<button class="btn btn-primary">{{ button_label|default('Envoyer') }}</button>
+		{{ form_end(form) }}
+		{% else %}
+		<p>Vous devez être connecté pour poster des commentaires</p>
+	</div>
+	{% endif %}
+</div>
+<div class="container">
+	<div class="pt-3">
+		{% for comment in article.comments|reverse %}
+
+		{% if comment.user.imgProfile %}
+		<div class="">
+			<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
+		</div>
+		{% else %}
+		<img src="{{ asset('/img/chatte_actuelle.jpg') }}" alt="">
+		{% endif %}
+
+		<div class="pt-2">
+			<strong>{{ comment.user.displayname }}</strong> : {{ comment.comment }}
+		</div>
+		<div class="">
+			{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+		</div>
+
+		{% if is_granted('DELETE_COMMENT',comment) %}
+		<div class="">
+			{{ include('comments/_delete_form.html.twig') }}
+		</div>
+		{% endif %}
+		{% if is_granted('REPORT_COMMENT',comment) %}
+		<div class="">
+			<a href="{{ path('app_comments_report', {'id': comment.id }) }}" class="btn">signaler</a>
+		</div>
+		{% endif %}
+		{% if is_granted('EDIT_COMMENT',comment) %}
+		<div class="">
+			<a href="{{ path('app_comments_edit', {'id': comment.id }) }}" class="btn">Editer</a>
+		</div>
+		{% endif %}
+
+		{% endfor %}
+	</div>
+</div>
 
 {% endblock %}
