@@ -21,6 +21,10 @@ class UserVoter extends Voter
     public const EDITO_EDIT ='EDITO_EDIT';
     public const SEND_COMMENTS = 'SEND_COMMENTS';
     public const VIEW_REPORTED_COMMENTS = 'VIEW_REPORTED_COMMENTS';
+    public const EDIT_PROFILE = 'EDIT_PROFILE';
+    public const CHANGE_ROLE = 'CHANGE_ROLE';
+    public const USER_INDEX = 'USER_INDEX';
+    public const DELETE_USER = 'DELETE_USER';
     
 
     private $security;
@@ -46,11 +50,15 @@ class UserVoter extends Voter
         self::EDITO_EDIT,
         self::SEND_COMMENTS,
         self::VIEW_REPORTED_COMMENTS,
+        self::EDIT_PROFILE,
+        self::CHANGE_ROLE,
+        self::USER_INDEX,
+        self::DELETE_USER,
         ])
             && $subject instanceof \App\Entity\User;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, $subject ,TokenInterface $token): bool
     {
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
@@ -92,6 +100,9 @@ class UserVoter extends Voter
                 break;
             case self::VIEW_REPORTED_COMMENTS:
                 return $this->authViewReportedComment();
+                break;
+            case self::EDIT_PROFILE:
+                return $this->authEditProfile($subject);
                 break;
         }
 
@@ -192,6 +203,15 @@ class UserVoter extends Voter
             return true;
         }
        
+        return false;
+    }
+
+    private function authEditProfile($subject)
+    {
+        if ($subject === $this->security->getUser() ) {
+            return true;
+        }
+        
         return false;
     }
     

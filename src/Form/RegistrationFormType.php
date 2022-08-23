@@ -47,10 +47,8 @@ class RegistrationFormType extends AbstractType
             ]
         ])
 
-       
-
         ->add('imgProfile', FileType::class, [
-            'label' => 'Brochure (PDF file)',
+            'label' => 'Choisir un fichier',
 
             // unmapped means that this field is not associated to any entity property
             'mapped' => false,

@@ -2,12 +2,25 @@
 
 {% block title %}Edit User{% endblock %}
 
-{% block body %}
-    <h1>Edit User</h1>
+{% block header %}
+<div class="container text-center p-3">
+    <h1>Administration de profil</h1>
+</div>
+    
+{% endblock %}
 
-    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+{% block section %}
+{{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
 
-    {{ include('user/_delete_form.html.twig') }}
+<div class="container">
+{% if is_granted('USER_INDEX',app.user) %}
+    <a href="{{ path('app_user_index') }}">Retour Index</a>
+{% endif %}
+
+{% if is_granted('DELETE_USER',app.user) %}
+{{ include('user/_delete_form.html.twig') }}
+{% endif %}
+</div>
+    
 {% endblock %}

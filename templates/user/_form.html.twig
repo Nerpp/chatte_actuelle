@@ -1,30 +1,52 @@
-{{ form_start(form) }}
-    {# {{ form_widget(form) }} #}
-        <div class="">
-            {{ form_label(form.displayname, 'Nom d\'affichage') }}
-        </div>
-        <div class="">
-            {{ form_errors(form.displayname) }}
-        </div>
-        <div class="">
-            {{ form_widget(form.displayname, {'attr': {'class': 'form-control  text-center'}}) }}
-        </div>
-        <div class="">
-            {{ form_label(form.email, 'email') }}
-        </div>
-        <div class="">
-            {{ form_errors(form.email) }}
-        </div>
-        <div class="">
-            {{ form_widget(form.email, {'attr': {'class': 'form-control  text-center'}}) }}
-        </div>
-        <div class="">
-            {{ form_label(form.roles, 'Choisissez un role') }}
-        </div>
-        <div class="">
-            {{ form_widget(form.roles) }}
-        </div>
-        <div class="">
-            <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
-        </div>
-{{ form_end(form) }}
+<div class="container">
+
+    {% if user.imgProfile %}
+    <div class="">
+        <img src="{{ asset('/img/download/profile/'~ user.imgProfile.source) }}" alt="">
+    </div>
+    {% else %}
+    <div class="">
+        <img src="{{ asset('/img/chatte_actuelle.jpg') }}" alt="">
+    </div>
+    {% endif %}
+    {{ form_start(form) }}
+    <div class="">
+        {{ form_label(form.imgProfile, 'Image de profil') }}
+    </div>
+    <div class="">
+        {{ form_errors(form.imgProfile) }}
+    </div>
+    <div class="">
+        {{ form_widget(form.imgProfile, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
+    </div>
+    <div class="">
+        {{ form_label(form.displayName, 'Nom d\'affichage') }}
+    </div>
+    <div class="">
+        {{ form_errors(form.displayName) }}
+    </div>
+    <div class="">
+        {{ form_widget(form.displayName, {'attr': {'class': 'form-control  text-center'}}) }}
+    </div>
+    <div class="">
+        {{ form_label(form.email, 'email') }}
+    </div>
+    <div class="">
+        {{ form_errors(form.email) }}
+    </div>
+    <div class="">
+        {{ form_widget(form.email, {'attr': {'class': 'form-control  text-center'}}) }}
+    </div>
+    {% if is_granted('CHANGE_ROLE',app.user) %}
+    <div class="">
+        {{ form_label(form.roles, 'Choisissez un role') }}
+    </div>
+    <div class="">
+        {{ form_widget(form.roles) }}
+    </div>
+    {% endif %}
+    <div class="">
+        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    </div>
+    {{ form_end(form) }}
+</div>

@@ -29,10 +29,10 @@
           <li class="nav-item">
           <a class="nav-link" href="{{ path('app_logout') }}">Déconnection</a>
         </li>
-        {% endif %}
-        <li>
-          {# {{ include('autocompleter/_form.html.twig') }} #}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('app_user_edit',{'id': app.user.id}) }}">Profil</a>
         </li>
+        {% endif %}
       </ul>
       
     </div>

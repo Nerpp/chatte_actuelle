@@ -1,16 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}Utilisateur{% endblock %}
 
-{% block body %}
-    <h1>User</h1>
+{% block header %}
+<div class="container">
+    <h1>Utilisateur</h1>
+</div>
+{% endblock %}
+
+{% block section %}
+<div class="container">
 
     <table class="table">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
             <tr>
                 <th>Email</th>
                 <td>{{ user.email }}</td>
@@ -19,21 +21,18 @@
                 <th>Roles</th>
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
             </tr>
+           
             <tr>
-                <th>Password</th>
-                <td>{{ user.password }}</td>
-            </tr>
-            <tr>
-                <th>Displayname</th>
+                <th>Pseudonyme d'affichage</th>
                 <td>{{ user.displayname }}</td>
             </tr>
             <tr>
-                <th>IsVerified</th>
-                <td>{{ user.isVerified ? 'Yes' : 'No' }}</td>
+                <th>Compte vérifié</th>
+                <td>{{ user.isVerified ? 'Oui' : 'Non' }}</td>
             </tr>
             <tr>
-                <th>Warning</th>
-                <td>{{ user.warning }}</td>
+                <th>Avertissement</th>
+                <td>{{ user.warning ? user.warning : '0' }}</td>
             </tr>
         </tbody>
     </table>
@@ -43,4 +42,5 @@
     <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
 
     {{ include('user/_delete_form.html.twig') }}
+</div>
 {% endblock %}
