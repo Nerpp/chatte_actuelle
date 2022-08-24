@@ -6,6 +6,7 @@ use App\Entity\Tags;
 use App\Entity\Images;
 use App\Entity\Articles;
 use App\Entity\Comments;
+use App\Form\ImagesType;
 use App\Services\Cleaner;
 use App\Form\ArticlesType;
 use App\Form\CommentsType;
@@ -349,8 +350,6 @@ class ArticlesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
-
         $article = $image->getArticles()->getSlug();
 
         $filesystem = new FileSysteme;
@@ -358,10 +357,6 @@ class ArticlesController extends AbstractController
         $imagesRepository->remove($image);
 
         return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);
-        // }
-
-        // return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
-}
 
-// $filesystem->remove(['symlink', '/path/to/directory', 'activity.log']);
+}

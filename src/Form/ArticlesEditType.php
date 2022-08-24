@@ -58,7 +58,6 @@ class ArticlesEditType extends AbstractType
                   new All([
                     'constraints' => [
                       new File([
-                        'maxSize' => '1024k',
                         'mimeTypesMessage' => 'Veuillez télécharger un fichier conforme',
                         'mimeTypes' => [
                                             "image/png",

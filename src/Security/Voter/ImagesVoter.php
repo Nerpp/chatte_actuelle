@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ImagesVoter extends Voter
 {
-    public const EDIT = 'POST_EDIT';
+    public const IMAGE_EDIT = 'IMAGE_EDIT';
     public const VIEW = 'POST_VIEW';
     public const DELETE_IMAGE = 'DELETE_IMAGE';
 
@@ -26,7 +26,10 @@ class ImagesVoter extends Voter
         
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW,self::DELETE_IMAGE])
+        return in_array($attribute, [
+            self::IMAGE_EDIT, 
+            self::VIEW,
+            self::DELETE_IMAGE])
             && $image instanceof \App\Entity\Images;
     }
 
@@ -46,16 +49,14 @@ class ImagesVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case self::EDIT:
-                // logic to determine if the user can EDIT
-                // return true or false
+            case self::IMAGE_EDIT:
+                return $this->authEditImage($image);
                 break;
             case self::VIEW:
                 // logic to determine if the user can VIEW
                 // return true or false
                 break;
             case self::DELETE_IMAGE:
-                dd('test');
                 return $this->authDeleteImage($image);
                 break;
         }
@@ -65,7 +66,16 @@ class ImagesVoter extends Voter
 
     private function authDeleteImage($image)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $image->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function authEditImage($image)
+    {
+        if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser ) {
             return true;
         }
 

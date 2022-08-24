@@ -57,11 +57,13 @@
 			<div class="">
 				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt=""> 
 			</div>
+			{% if is_granted('DELETE_IMAGE',image) %}
 			<div class="">
 				<a href="{{ path('app_images_delete', {'id': image.id, }) }}" data-delete data-token="{{ csrf_token('delete' ~ image.id) }}" class="btn btn-danger" onclick="return confirm('Cette action est définitive !!!');">
 					Supprimer
 				</a>
 			</div>
+			{% endif %}
 			</div>
 		{% endfor %}
 	</div>

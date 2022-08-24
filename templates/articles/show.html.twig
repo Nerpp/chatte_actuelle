@@ -32,8 +32,16 @@
 		<div class="d-flex flex-row flex-wrap d-grid gap-2">
 			{% for image in article.images %}
 			<div class="">
-				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="">
+				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="{{ article.slug }}">
 			</div>
+			<div class="">
+				<small>{{ image.description }}</small>
+			</div>
+			{% if is_granted('IMAGE_EDIT',image) %}
+			<div class="">
+				<a href="{{ path('app_images_edit', {'id': image.id}) }}" class="btn btn-primary">Editer</a>
+			</div>
+			{% endif %}
 			{% endfor %}
 		</div>
 		<div class="">
