@@ -33,7 +33,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator, EntityManagerInterface $entityManager,SessionInterface $session): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -41,24 +41,25 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (strval($session->get('captcha')) !== $form->get('captcha')->getData() ) {
+            if (strval($session->get('captcha')) !== $form->get('captcha')->getData()) {
                 $this->addFlash('', 'Le captcha est incorrect');
 
                 $firstElement =  random_int(0, 10);
                 $secondElement = random_int(0, 10);
                 $session->set('captcha', $firstElement + $secondElement);
-        
+
                 return $this->render('registration/register.html.twig', [
                     'registrationForm' => $form->createView(),
                     'captcha' => $firstElement . '+' . $secondElement,
                 ]);
-               }
+            }
 
-             // je vérifie qu'il existe des images
+            // je vérifie qu'il existe des images
             $files = $form->get('imgProfile')->getData();
+            $recImg = new ImgProfile;
 
-            if($files){
-                $where = $this->getParameter('images_directory').'profile/';
+            if ($files) {
+                $where = $this->getParameter('images_directory') . 'profile/';
                 $filename = "_" . md5(uniqid()) . "." . $files->guessExtension();
 
                 try {
@@ -68,26 +69,28 @@ class RegistrationController extends AbstractController
                     );
 
                     $resizeImg = new ImageOptimizer;
-                    $resizeImg->resizeImgProfile($where.'/'. $filename);
+                    $resizeImg->resizeImgProfile($where . '/' . $filename);
                 } catch (FileException $e) {
                     $this->addFlash('verify_email_error', 'Une érreur est survenue lors du chargement de l\'image !');
                     $firstElement =  random_int(0, 10);
                     $secondElement = random_int(0, 10);
                     $session->set('captcha', $firstElement + $secondElement);
-                return $this->render('registration/register.html.twig', [
-                    'registrationForm' => $form->createView(),
-                    'captcha' => $firstElement . '+' . $secondElement,
-                ]);
+                    return $this->render('registration/register.html.twig', [
+                        'registrationForm' => $form->createView(),
+                        'captcha' => $firstElement . '+' . $secondElement,
+                    ]);
                 }
-                $recImg = new ImgProfile;
+                
                 $recImg->setSource($filename);
-                $entityManager->persist($recImg);
-                $user->setImgProfile($recImg);
+            }else{
+                $recImg->setSource(false);
             }
-
+            
+            $entityManager->persist($recImg);
+                $user->setImgProfile($recImg);
             // encode the plain password
             $user->setPassword(
-            $userPasswordHasher->hashPassword(
+                $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
@@ -97,7 +100,9 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
                 (new TemplatedEmail())
                     ->from(new Address('wampkarl@gmail.com'))
                     ->to($user->getEmail())
@@ -112,8 +117,7 @@ class RegistrationController extends AbstractController
             //     $request
             // );
 
-           return $this->redirectToRoute('app_login');
-
+            return $this->redirectToRoute('app_login');
         }
 
         $firstElement =  random_int(0, 10);
@@ -130,7 +134,7 @@ class RegistrationController extends AbstractController
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserRepository $userRepository): Response
     {
-       
+
         $id = $request->get('id');
 
         if (null === $id) {

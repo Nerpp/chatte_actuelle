@@ -36,7 +36,10 @@
                 <td>{{ user.warning ? user.warning : '0' }}</td>
                 <td>
                     <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+
+                    {% if is_granted('EDIT_PROFILE',user) %}
                     <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
             {% else %}
@@ -47,7 +50,6 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_user_new') }}">Créer nouvel Utilisateur</a>
 </div>
 
 {% endblock %}

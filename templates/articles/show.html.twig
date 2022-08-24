@@ -102,7 +102,7 @@
 	<div class="pt-3">
 		{% for comment in article.comments|reverse %}
 
-		{% if comment.user.imgProfile %}
+		{% if comment.user.imgProfile.source %}
 		<div class="">
 			<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
 		</div>

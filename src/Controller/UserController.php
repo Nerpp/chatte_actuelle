@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\ImgProfile;
 use App\Entity\User;
 use App\Form\UserType;
-use App\Repository\ImgProfileRepository;
+use App\Entity\ImgProfile;
 use App\Services\FileSysteme;
 use App\Services\ImageOptimizer;
 use App\Repository\UserRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,34 +31,13 @@ class UserController extends AbstractController
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        if (!$this->isGranted('EDIT_PROFILE', $this->tokenUser)) {
+        if (!$this->isGranted('USER_INDEX', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous n\'avez pas les droits suffisants pour accéder à cet espace');
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
-        ]);
-    }
-
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository,UserPasswordHasherInterface $passwordHasher): Response
-    {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $user->setPassword($passwordHasher->hashPassword($user, uniqid()));
-            $userRepository->add($user, true);
-
-            return $this->redirectToRoute('app_admin', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('user/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
         ]);
     }
 
@@ -71,7 +50,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, UserRepository $userRepository,ImgProfileRepository $imgProfileRepository): Response
+    public function edit(Request $request, User $user, UserRepository $userRepository,ManagerRegistry $doctrine): Response
     {
         $userProfile = $user;
         if (!$this->isGranted('EDIT_PROFILE', $userProfile)) {
@@ -84,33 +63,35 @@ class UserController extends AbstractController
         if (!$this->isGranted('CHANGE_ROLE', $this->tokenUser)) {
             $form->remove('roles');
         }
-        $form->remove('warning');
 
-        // $form->remove('password');
-
+        if (!$this->isGranted('CHANGE_AVERTISSEMENT_USER', $this->tokenUser)) {
+            $form->remove('warning');
+        }
+       
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $entityManager = $doctrine->getManager();
             $files = $form->get('imgProfile')->getData();
 
             if($files){
+
+                $where = $this->getParameter('images_directory').'profile/';
+                $filename = "_" . md5(uniqid()) . "." . $files->guessExtension();
                 
                 $userImg = $user->getImgProfile();
-
                 if ($userImg) {
                     $filesystem = new FileSysteme;
                     $filesystem->remove($this->getParameter('images_directory').'profile/'.$userImg->getSource());
                 }
-                
-                $where = $this->getParameter('images_directory').'profile/';
-                $filename = "_" . md5(uniqid()) . "." . $files->guessExtension();
-
+                   
                 try {
                     $files->move(
                         $where,
                         $filename
                     );
+
 
                     $resizeImg = new ImageOptimizer;
                     $resizeImg->resizeImgProfile($where.'/'. $filename);
@@ -118,11 +99,12 @@ class UserController extends AbstractController
                     $this->addFlash('verify_email_error', 'Une érreur est survenue lors du chargement de l\'image !');
                     return $this->redirectToRoute('app_user_edit');
                 }
-
+                
                 $userImg->setSource($filename);
+                  
             }
 
-            $userRepository->add($user, true);
+             $userRepository->add($user, true);
 
             return $this->renderForm('user/edit.html.twig', [
                 'user' => $user,
@@ -142,6 +124,12 @@ class UserController extends AbstractController
         if (!$this->isGranted('DELETE_USER', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous n\'avez pas les droits suffisants pour accéder à cet espace');
             return $this->redirectToRoute('app_login');
+        }
+
+        $img = $user->getImgProfile()->getSource();
+        if ($img) {
+            $filesystem = new FileSysteme;
+            $filesystem->remove($this->getParameter('images_directory').'profile/'.$img);
         }
 
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {

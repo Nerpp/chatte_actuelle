@@ -24,21 +24,28 @@ class CommentsVoter extends Voter
     
     protected function supports(string $attribute, $comment): bool
     {
+        
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::DELETE_COMMENT,self::REPORT_COMMENT,self::ALLOW_COMMENT,self::EDIT_COMMENT])
+        return in_array($attribute, [
+            self::DELETE_COMMENT,
+            self::REPORT_COMMENT,
+            self::ALLOW_COMMENT,
+            self::EDIT_COMMENT,
+            ])
             && $comment instanceof \App\Entity\Comments;
     }
 
     protected function voteOnAttribute(string $attribute, $comment, TokenInterface $token): bool
     {
-        $user = $token->getUser();
+       
+        $user = $token->getUser(); 
         // if the user is anonymous, do not grant access
         
         if (!$user instanceof UserInterface) {
             return false;
         }
-       
+      
         if ($this->security->isGranted('ROLE_SUPERADMIN')) {
             return true;
         }

@@ -27,7 +27,7 @@ class UserChecker implements UserCheckerInterface
             // @codeCoverageIgnoreEnd
         }
 
-        if ($user->getWarning() === 3) {
+        if ($user->getWarning() >= 3) {
             // the message passed to this exception is meant to be displayed to the user
             // @codeCoverageIgnoreStart
             throw new CustomUserMessageAccountStatusException('Votre compte à été suspendu veuillez contacter un administrateur.');

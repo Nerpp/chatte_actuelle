@@ -1,0 +1,19 @@
+<h1>Bonjour {{ username }}</h1>
+
+<p>
+    Votre commentaire : {{ comment }} <br> daté du : {{ date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+</p>
+
+<p>
+    Ne correspond pas à la politique de notre blog, c'est pour cela que nous avons le regret de vous informer que votre commentaire à dut être supprimé. <br>
+    Votre compte contient {{ warning }} avertissement(s). Nous bloquons les accés du compte à partir de 3 avertissements.
+</p>
+
+<p>
+    Pour contester cet avertissement vous pouvez répondre à cet email.
+</p>
+
+<p>
+    Veuillez accepter nos sincéres salutations. <br>
+    L'équipe de chatte actuelle
+</p>

@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Articles;
 use App\Entity\Comments;
 use App\Entity\Edito;
+use App\Entity\ImgProfile;
 use App\Entity\Tags;
 use App\Entity\User;
 use Doctrine\Persistence\ObjectManager;
@@ -21,7 +22,7 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
-        $edito = 'orem ipsum dolor sit amet, consectetur adipiscing elit. Sed at lacus a risus cursus vestibulum. Mauris eget felis nec nunc convallis sagittis. Proin mi velit, maximus nec aliquet a, mattis in purus. Suspendisse vel eleifend ex. Suspendisse suscipit eget mauris at bibendum. Integer convallis malesuada lectus, id auctor lectus auctor ut. Vestibulum sit amet felis vitae quam semper volutpat nec nec urna.
+        $edito = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at lacus a risus cursus vestibulum. Mauris eget felis nec nunc convallis sagittis. Proin mi velit, maximus nec aliquet a, mattis in purus. Suspendisse vel eleifend ex. Suspendisse suscipit eget mauris at bibendum. Integer convallis malesuada lectus, id auctor lectus auctor ut. Vestibulum sit amet felis vitae quam semper volutpat nec nec urna.
 
         Nam tristique non turpis at efficitur. Sed faucibus sem non tellus efficitur, sit amet gravida nulla pharetra. Praesent sed auctor nisi. Aliquam lobortis erat velit, ornare scelerisque neque ullamcorper in. Cras sit amet enim in lectus tempor maximus vitae a ex. Duis sagittis consequat tortor, vel pellentesque enim. Quisque ullamcorper dui ex, iaculis volutpat ante commodo aliquet. Nullam turpis nunc, commodo id malesuada vitae, porttitor vel nunc. Ut sed euismod justo. Donec id nulla ultricies, venenatis metus et, lacinia arcu. Nunc accumsan mi ac placerat fermentum. Maecenas mollis, lorem eu ultricies eleifend, libero mi rutrum ipsum, id dapibus diam ligula interdum urna. In hac habitasse platea dictumst. Nunc ut metus ut urna dignissim efficitur eu ac risus.
         
@@ -122,7 +123,14 @@ class AppFixtures extends Fixture
             $user->setPassword($this->passwordHasher->hashPassword($user, $userListed['password']));
             $user->setRoles($userListed['roles']);
             $user->setIsVerified(true);
+            
+
+            $userImg = new ImgProfile;
+            $userImg->setSource(false);
+            $user->setImgProfile($userImg);
             $manager->persist($user);
+            $manager->persist($userImg);
+            
             $allUser[] = $user;
         }
 
@@ -142,7 +150,6 @@ class AppFixtures extends Fixture
 
         for ($i=0; $i < 11; $i++) { 
             foreach ($allUser as $userALl) {
-               
                 $article = new Articles;
                 $IdUnic = uniqid(true);
                 $article->setTitle($listArticle['title'].$IdUnic);
@@ -158,7 +165,6 @@ class AppFixtures extends Fixture
                 $article->setTags($allTags[rand(0,4)]);
                 $manager->persist($article);
                 $allArticle[] = $article;
-
             }
         }
 

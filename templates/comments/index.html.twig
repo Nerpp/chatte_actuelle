@@ -4,28 +4,47 @@
 {% endblock %}
 
 {% block header %}
-	<div class="container">
-		<div class="text-center">
-			<h1>Commentaires signalés</h1>
-		</div>
+<div class="container">
+	<div class="text-center">
+		<h1>Commentaires signalés</h1>
 	</div>
+	<div class="">
+		{# read and display several types of flash messages #}
+		{% for label, messages in app.flashes(['success', 'warning']) %}
+		{% for message in messages %}
+		<div class="flash-{{ label }}">
+			{{ message }}
+		</div>
+		{% endfor %}
+		{% endfor %}
+	</div>
+</div>
 {% endblock %}
 
 {% block section %}
-	<div class="container">
-		{% if comments %}
-			{% for comment in comments %}
-				<p>
-					<strong>{{ comment.user.displayName }}</strong>
-					:
-					{{ comment.comment }}
-					<br>
-					{{ include('comments/_deleted_by_admin.html.twig') }}
-					{{ include('comments/_allow_comment.html.twig') }}
-				</p>
-			{% endfor %}
+<div class="container">
+	{% if comments %}
+	{% for comment in comments %}
+	<p>
+		{% if comment.user.imgProfile %}
+		<div class="">
+			<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
+		</div>
 		{% else %}
-			<p>Aucun Commentaire signalé(s)</p>
+		<div class="">
+			<img src="{{ asset('/img/chatte_actuelle.jpg') }}" alt="">
+		</div>
 		{% endif %}
-	</div>
+		<strong>{{ comment.user.displayName }}</strong>
+		:
+		{{ comment.comment }}
+		<br>
+		{{ include('comments/_deleted_by_admin.html.twig') }}
+		{{ include('comments/_allow_comment.html.twig') }}
+	</p>
+	{% endfor %}
+	{% else %}
+	<p>Aucun Commentaire signalé(s)</p>
+	{% endif %}
+</div>
 {% endblock %}

@@ -1,6 +1,6 @@
 <div class="container">
 
-    {% if user.imgProfile %}
+    {% if user.imgProfile.source %}
     <div class="">
         <img src="{{ asset('/img/download/profile/'~ user.imgProfile.source) }}" alt="">
     </div>
@@ -43,6 +43,14 @@
     </div>
     <div class="">
         {{ form_widget(form.roles) }}
+    </div>
+    {% endif %}
+    {% if is_granted('CHANGE_AVERTISSEMENT_USER',app.user) %}
+    <div class="">
+        {{ form_label(form.warning, 'Nombre d\'avertissement') }}
+    </div>
+    <div class="">
+        {{ form_widget(form.warning) }}
     </div>
     {% endif %}
     <div class="">

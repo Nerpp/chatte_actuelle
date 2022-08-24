@@ -25,8 +25,8 @@ class UserVoter extends Voter
     public const CHANGE_ROLE = 'CHANGE_ROLE';
     public const USER_INDEX = 'USER_INDEX';
     public const DELETE_USER = 'DELETE_USER';
+    public const CHANGE_AVERTISSEMENT_USER = 'CHANGE_AVERTISSEMENT_USER';
     
-
     private $security;
 
     public function __construct(Security $security)
@@ -54,8 +54,10 @@ class UserVoter extends Voter
         self::CHANGE_ROLE,
         self::USER_INDEX,
         self::DELETE_USER,
+        self::CHANGE_AVERTISSEMENT_USER,
         ])
             && $subject instanceof \App\Entity\User;
+
     }
 
     protected function voteOnAttribute(string $attribute, $subject ,TokenInterface $token): bool
@@ -103,6 +105,9 @@ class UserVoter extends Voter
                 break;
             case self::EDIT_PROFILE:
                 return $this->authEditProfile($subject);
+                break;
+            case self::USER_INDEX:
+                return $this->authUserIndex();
                 break;
         }
 
@@ -212,6 +217,15 @@ class UserVoter extends Voter
             return true;
         }
         
+        return false;
+    }
+
+    public function authUserIndex()
+    {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+       
         return false;
     }
     
