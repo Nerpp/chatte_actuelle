@@ -45,6 +45,21 @@ class ArticlesRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Recherche les annonces en fonction du formulaire
+     * @return void 
+     */
+    public function search($mots = null){
+        $query = $this->createQueryBuilder('a');
+        $query->where('a.draft = 0');
+        if($mots != null){
+            $query->andWhere('MATCH_AGAINST(a.title) AGAINST (:mots boolean)>0')
+                ->setParameter('mots', $mots);
+        }
+        
+        return $query->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Articles[] Returns an array of Articles objects
     //  */

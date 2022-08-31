@@ -21,7 +21,7 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'editos' => $doctrine->getRepository(Edito::class)->findOneBy(['id' => 1]),
-            'last_articles' => $doctrine->getRepository(Articles::class)->findBy(['draft' => 0,'censure' => 0],['publishedAt'=>'ASC'],3),
+            'last_articles' => $doctrine->getRepository(Articles::class)->findBy(['draft' => 0,'censure' => 0],['id'=>'DESC'],3),
             'tags' => $doctrine->getRepository(Tags::class)->findAll(),
            
            

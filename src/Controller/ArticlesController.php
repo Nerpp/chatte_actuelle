@@ -12,6 +12,7 @@ use App\Form\ArticlesType;
 use App\Form\CommentsType;
 use App\Services\FileSysteme;
 use App\Form\ArticlesEditType;
+use App\Form\SearchArticleType;
 use App\Services\ImageOptimizer;
 use App\Repository\TagsRepository;
 use App\Repository\ImagesRepository;
@@ -38,11 +39,21 @@ class ArticlesController extends AbstractController
     }
 
     // Index Publication
-    #[Route('/', name: 'app_articles_index', methods: ['GET'])]
-    public function index(ArticlesRepository $articlesRepository): Response
+    #[Route('/', name: 'app_articles_index', methods: ['GET','POST'])]
+    public function index(Request $request,ArticlesRepository $articlesRepository): Response
     {
+        $articles = $articlesRepository->findBy(['draft' => 0, 'censure' => 0], ['id' => 'DESC']);
+
+        $search = $this->createForm(SearchArticleType::class);
+        $search->handleRequest($request);
+
+        if ($search->isSubmitted() && $search->isValid()) {
+            $articles = $articlesRepository->search($search->get('mots')->getData());
+        }
+
         return $this->render('articles/index.html.twig', [
-            'articles' => $articlesRepository->findBy(['draft' => 0, 'censure' => 0], ['publishedAt' => 'ASC']),
+            'articles' => $articles,
+            'search' => $search->createView(),
         ]);
     }
 

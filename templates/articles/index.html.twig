@@ -13,6 +13,11 @@
 
 {% block section %}
 
+{{ form_start(search) }}
+    {{ form_widget(search) }}
+    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
+{{ form_end(search) }}
+
 <div class="container">
 	{% if articles %}
 	<div class="d-flex flex-row flex-wrap justify-content-center d-grid gap-2">
