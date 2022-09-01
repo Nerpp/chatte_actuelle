@@ -6,7 +6,7 @@
 {% block header %}
 <div class="container">
 	<div class="text-center">
-		<h1>Historique de tout les articles</h1>
+		<h1>Historique de tous les articles</h1>
 	</div>
 </div>
 {% endblock %}
@@ -20,7 +20,7 @@
 
 <div class="container">
 	{% if articles %}
-	<div class="d-flex flex-row flex-wrap justify-content-center d-grid gap-2">
+	<div class="d-flex flex-row flex-wrap justify-content-around d-grid gap-2">
 		{% for article in articles %}
 		<div class="card" style="width: 18rem;">
 			{% if article.images is empty %}
@@ -70,6 +70,38 @@
 		</div>
 		{% endfor %}
 	</div>
+	
+	{% set pages = (total / limit)|round(0,'ceil') %}
+
+	<div class="">
+	<ul class="d-flex justify-content-center pagination pt-3">
+
+		<li class="page-item {{ page == 1 ?'disabled': '' }}"  >
+			<a class="page-link" href="?page=1">Retour</a>
+		</li>
+
+		<li class="page-item {{ page == 1 ?'disabled': '' }}"  >
+			<a class="page-link" href="{{ page > 1 ? '?page=' ~ (page - 1) : '' }}">Previous</a>
+		</li>
+
+		{% for item in 1..pages %}
+			<li class="page-item {{ page == item ?'active': '' }} m-2" aria-current="true">
+				<a class="page-link" href="?page={{ item }}">{{ item }}</a>
+			</li>
+
+		{% endfor %}
+
+		<li class="page-item {{ page == pages ?'disabled': '' }}">
+			<a class="page-link" href="{{ page < pages ? '?page=' ~ (page + 1) : '' }}">Next</a>
+		</li>
+
+		<li class="page-item {{ page == pages ?'disabled': '' }}">
+			<a class="page-link" href="?page={{ pages }}">Fin</a>
+		</li>
+
+	</ul>
+</div>
+
 	{% else %}
 	<div class="">
 		<h2>Au boulot</h2>

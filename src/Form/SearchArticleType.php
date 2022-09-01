@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Tags;
+use App\Entity\Articles;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,9 +19,9 @@ class SearchArticleType extends AbstractType
                 'label' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Votre recherche'
+                    'placeholder' => 'Rechercher un article par son titre'
                 ],
-                'required' => false
+                'required' =>false,
             ])
 
             ->add('Rechercher',SubmitType::class)
@@ -31,7 +31,7 @@ class SearchArticleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            
         ]);
     }
 }

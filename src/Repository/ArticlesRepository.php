@@ -50,14 +50,41 @@ class ArticlesRepository extends ServiceEntityRepository
      * @return void 
      */
     public function search($mots = null){
-        $query = $this->createQueryBuilder('a');
-        $query->where('a.draft = 0');
+        $query = $this->createQueryBuilder('a')
+            ->where('a.draft = 0')
+            ->andWhere('a.censure = 0')
+            ;
         if($mots != null){
             $query->andWhere('MATCH_AGAINST(a.title) AGAINST (:mots boolean)>0')
                 ->setParameter('mots', $mots);
         }
         
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Returns all Annonces per page
+     * @return void 
+     */
+    public function getPaginatedArticles($limit, $page){
+        $query = $this->createQueryBuilder('a')
+            ->where('a.draft = 0')
+            ->andWhere('a.censure = 0')
+            ->orderBy('a.publishedAt','DESC')
+            ->setFirstResult(($page * $limit - $limit))
+            ->setMaxResults($limit)
+        ;
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getTotalArticles(){
+        $query = $this->createQueryBuilder('a')
+            ->select('COUNT(a)')
+            ->where('a.draft = 0')
+            ->andWhere('a.censure = 0')
+        ;
+        return $query->getQuery()->getSingleScalarResult();
     }
 
     // /**

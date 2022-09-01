@@ -29,6 +29,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 #[Route('/articles')]
 class ArticlesController extends AbstractController
 {
+    private const LIMIT_PAGE = 4 ;
 
     public function __construct(Security $security)
     {
@@ -39,11 +40,21 @@ class ArticlesController extends AbstractController
     }
 
     // Index Publication
-    #[Route('/', name: 'app_articles_index', methods: ['GET','POST'])]
+    #[Route('/Historique', name: 'app_articles_index', methods: ['GET','POST'])]
     public function index(Request $request,ArticlesRepository $articlesRepository): Response
     {
-        $articles = $articlesRepository->findBy(['draft' => 0, 'censure' => 0], ['id' => 'DESC']);
+        $limit = self::LIMIT_PAGE;
 
+        // je récupére le numéros de page
+        $page = (int)$request->query->get("page",1);
+
+        // je récupére les annonces
+        $articles = $articlesRepository->getPaginatedArticles($limit, $page);
+
+        // je récupére le nombre total d'annonce
+        $total = $articlesRepository->getTotalArticles();
+
+        //  $articles = $articlesRepository->findBy(['draft' => 0, 'censure' => 0], ['publishedAt' => 'DESC']);
         $search = $this->createForm(SearchArticleType::class);
         $search->handleRequest($request);
 
@@ -54,6 +65,9 @@ class ArticlesController extends AbstractController
         return $this->render('articles/index.html.twig', [
             'articles' => $articles,
             'search' => $search->createView(),
+            'total' => $total,
+            'limit' => $limit,
+            'page' => $page,
         ]);
     }
 
