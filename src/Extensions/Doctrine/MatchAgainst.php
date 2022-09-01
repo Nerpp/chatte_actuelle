@@ -17,6 +17,10 @@ class MatchAgainst extends FunctionNode
     /** @var bool */
     protected $queryExpansion = false;
 
+    /**
+     * Returns all Annonces per page
+     * @return void 
+     */
     public function parse(Parser $parser)
     {
         // match
@@ -50,6 +54,10 @@ class MatchAgainst extends FunctionNode
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
     }
 
+    /**
+     * Returns all Annonces per page
+     * @return void 
+     */
     public function getSql(SqlWalker $walker)
     {
         $fields = [];
