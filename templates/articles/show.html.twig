@@ -88,18 +88,16 @@
 	</div>
 </div>
 
-<div class="container pt-5">
-	<div class="">
-		<h2>Commentaire</h2>
-	</div>
 
-	{# {{ include('/comments/_form.html.twig') }} #}
+<div class="container pt-5">
 
 	{% if is_granted('SEND_COMMENTS',app.user) %}
+
+	{% set action = '#liste_commentaire' %}
 	<div class="">
-		{{ form_start(form) }}
+		{{ form_start(form, {'method': 'POST', 'action':  action }) }}
 		{{ form_widget(form) }}
-		<button class="btn btn-primary">{{ button_label|default('Envoyer') }}</button>
+		<button class="btn btn-primary">{{ button_label|default('Commenter') }}</button>
 		{{ form_end(form) }}
 		{% else %}
 		<p>Vous devez être connecté pour poster des commentaires</p>
@@ -107,7 +105,7 @@
 	{% endif %}
 </div>
 <div class="container">
-	<div class="pt-3">
+	<div class="pt-3" id="liste_commentaire">
 		{% for comment in article.comments|reverse %}
 
 		{% if comment.user.imgProfile.source %}
@@ -124,6 +122,21 @@
 		<div class="">
 			{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
 		</div>
+		<div class="">
+			<!-- Button trigger modal -->
+			<small><button type="button" class="btn btn-primary" data-bs-toggle="modal"
+					data-bs-target="#exampleModal">Reply</button></small>
+		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					test
+				</div>
+			</div>
+		</div>
+
 
 		{% if is_granted('DELETE_COMMENT',comment) %}
 		<div class="">

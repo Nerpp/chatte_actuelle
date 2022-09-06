@@ -36,10 +36,17 @@ class Comments
     #[ORM\Column(type: 'boolean', nullable: true)]
     private $moderated;
 
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'reply')]
+    private ?self $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    private Collection $reply;
+
 
     public function __construct()
     {
         $this->reportings = new ArrayCollection();
+        $this->reply = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +122,48 @@ class Comments
     public function setModerated(?bool $moderated): self
     {
         $this->moderated = $moderated;
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getReply(): Collection
+    {
+        return $this->reply;
+    }
+
+    public function addReply(self $reply): self
+    {
+        if (!$this->reply->contains($reply)) {
+            $this->reply->add($reply);
+            $reply->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReply(self $reply): self
+    {
+        if ($this->reply->removeElement($reply)) {
+            // set the owning side to null (unless already changed)
+            if ($reply->getParent() === $this) {
+                $reply->setParent(null);
+            }
+        }
 
         return $this;
     }

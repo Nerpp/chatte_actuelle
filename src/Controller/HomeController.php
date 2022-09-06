@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Tags;
 use App\Entity\Edito;
 use App\Entity\Articles;
-use App\Form\ArticleAutocompleterType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +20,6 @@ class HomeController extends AbstractController
             'controller_name' => 'HomeController',
             'editos' => $doctrine->getRepository(Edito::class)->findOneBy(['id' => 1]),
             'last_articles' => $doctrine->getRepository(Articles::class)->findBy(['draft' => 0,'censure' => 0],['id'=>'DESC'],3),
-            'tags' => $doctrine->getRepository(Tags::class)->findAll(),
-           
-           
         ]);
     }
 }

@@ -1,17 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Chatte actuelle Accueil
+{% block title %}Accueil
 {% endblock %}
 
 {% block header %}
 	<div class="container">
-		<h1>Chatte Actuelle</h1>
-	</div>
-{% endblock %}
-
-{% block section %}
-	<div class="container">
-
 		<div class="">
 			<p>
 				<h1>Edito</h1>
@@ -34,15 +27,14 @@
 				<h2>Humeur en construction</h2>
 			</div>
 		{% endif %}
+	</div>
+{% endblock %}
 
-		<div class="d-flex flex-row flex-wrap d-grid gap-2">
-			{% for tag in tags %}
-				<div class="">
-					<a href="{{ path('app_articles_by_tag_index', {'id': tag.id, }) }}" class="btn btn-primary">{{ tag.name }}</a>
-				</div>
-			{% endfor %}
-		</div>
+{% block section %}
+	<div class="container">
+		
 
+		
 		{% if last_articles %}
 			<div class="d-flex flex-row flex-wrap d-grid gap-3">
 				{% for last_article in last_articles %}
