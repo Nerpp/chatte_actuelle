@@ -7,6 +7,7 @@ use App\Entity\Images;
 use App\Entity\Articles;
 use App\Entity\Comments;
 use App\Form\AnswerType;
+use App\Form\ImagesType;
 use App\Services\Cleaner;
 use App\Form\ArticlesType;
 use App\Form\CommentsType;
@@ -336,7 +337,8 @@ class ArticlesController extends AbstractController
                 return $this->redirectToRoute('app_draft_index_personnal', [], Response::HTTP_SEE_OTHER);
             }
 
-            return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
+            // return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
+            return  $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('articles/edit.html.twig', [
@@ -366,7 +368,7 @@ class ArticlesController extends AbstractController
         return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/image/{id}', name: 'app_images_delete', methods: ['POST', 'GET'])]
+    #[Route('/delete/image/{id}', name: 'app_images_delete', methods: ['POST', 'GET'])]
     public function deleteImage(Request $request, Images $image, ImagesRepository $imagesRepository): Response
     {
 
@@ -382,6 +384,31 @@ class ArticlesController extends AbstractController
         $imagesRepository->remove($image);
 
         return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/editImage', name: 'app_images_edit', methods: ['GET', 'POST'])]
+    public function editImage(Request $request, Images $image, ImagesRepository $imagesRepository): Response
+    {
+       
+        if (!$this->isGranted('IMAGE_EDIT', $image)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $form = $this->createForm(ImagesType::class, $image);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+          
+            $imagesRepository->add($image);
+            $article = $image->getArticles();
+            return $this->redirectToRoute('app_articles_show', ['slug' => $article->getSlug() ], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('images/edit.html.twig', [
+            'image' => $image,
+            'form' => $form,
+        ]);
     }
 
 }

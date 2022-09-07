@@ -12,7 +12,7 @@
 		</div>
 		{% if editos %}
 			<div class="">
-				<p>{{ editos.edito }}</p>
+				<p>{{ editos.edito|raw }}</p>
 			</div>
 			{% if is_granted('EDITO_EDIT',app.user) %}
 				<div class="">

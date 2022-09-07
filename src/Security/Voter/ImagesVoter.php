@@ -10,7 +10,6 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ImagesVoter extends Voter
 {
     public const IMAGE_EDIT = 'IMAGE_EDIT';
-    public const VIEW = 'POST_VIEW';
     public const DELETE_IMAGE = 'DELETE_IMAGE';
 
     private $security;
@@ -23,26 +22,24 @@ class ImagesVoter extends Voter
 
     protected function supports(string $attribute, $image): bool
     {
-        
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [
             self::IMAGE_EDIT, 
-            self::VIEW,
             self::DELETE_IMAGE])
             && $image instanceof \App\Entity\Images;
     }
 
     protected function voteOnAttribute(string $attribute, $image, TokenInterface $token): bool
     {
-        
+       
         $user = $token->getUser();
-
+       
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
-
+       
         if ($this->security->isGranted('ROLE_SUPERADMIN')) {
             return true;
         }
@@ -51,10 +48,6 @@ class ImagesVoter extends Voter
         switch ($attribute) {
             case self::IMAGE_EDIT:
                 return $this->authEditImage($image);
-                break;
-            case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
                 break;
             case self::DELETE_IMAGE:
                 return $this->authDeleteImage($image);
@@ -75,6 +68,7 @@ class ImagesVoter extends Voter
 
     private function authEditImage($image)
     {
+        dd('test');
         if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser ) {
             return true;
         }
