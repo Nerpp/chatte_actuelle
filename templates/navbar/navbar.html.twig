@@ -1,13 +1,13 @@
 <div class="container-fluid test">
   <div class="container">
     <div class="d-flex flex-row justify-content-around">
-      <div class="">
+      <div class="mt-auto text-right">
         {{ actualTime.getTime|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")|capitalize }}
       </div>
       <div class="">
-        <img src="{{ asset('/img/chatte_actuelle.jpg') }}" alt="">
+        <img src="{{ asset('/img/plusbelle2.jpg') }}" alt="">
       </div>
-      <div class="d-grid gap-2">
+      <div class="d-flex flex-column justify-content-center">
         {% if not app.user %}
           <a class="nav-link" href="{{ path('app_login') }}">Connection</a>
           <a class="nav-link" href="{{ path('app_register') }}">Enregistrement</a>

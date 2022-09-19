@@ -5,9 +5,8 @@ body {
 }
 
 .test {
-    padding: 100px;
+    
     text-align: center;
-    background-color:red;
   }
 
   #navbar {
@@ -43,8 +42,14 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
+    z-index: 99;
   }
   
   .sticky + .content {
     padding-top: 60px;
   }
+
+section
+{
+  min-height: 100vh;
+}
