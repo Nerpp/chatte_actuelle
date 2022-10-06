@@ -1,50 +1,50 @@
-<div class="container-fluid test">
-  <div class="container">
-    <div class="d-flex flex-row justify-content-around">
-      <div class="mt-auto text-right">
-        {{ actualTime.getTime|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")|capitalize }}
-      </div>
-      <div class="">
-        <img src="{{ asset('/img/plusbelle2.jpg') }}" alt="">
-      </div>
-      <div class="d-flex flex-column justify-content-center">
-        {% if not app.user %}
-          <a class="nav-link" href="{{ path('app_login') }}">Connection</a>
-          <a class="nav-link" href="{{ path('app_register') }}">Enregistrement</a>
-        {% else %}
-          <a class="nav-link" href="{{ path('app_logout') }}">Déconnection</a>
-          <a class="nav-link" href="{{ path('app_user_edit',{'id': app.user.id}) }}">Profil</a>
-        {% endif %}
+    <div class="container-fluid" id="kitty">
+      <div class="col-12">
+        <img class="img-fluid" src="{{ asset('/img/bandeau3.jpg') }}" alt="">
       </div>
     </div>
-  </div>
-</div>
 
-<nav id="navbar" class="navbar-expand-lg navbar-dark bg-dark role=" navigation"">
-  <div class="container-fluid">
-    <div class="container collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('app_articles_index') }}">Historique</a>
-        </li>
-        {% if is_granted('SECTION_ADMIN',app.user) %}
-        <li class="nav-item">
-          <a class="nav-link" href="{{ path('app_admin') }}">Admin</a>
-        </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="offcanvas" href="#tags" role="button"
-	aria-controls="tags">
-	
-Rubrique
-</a>
-        </li>
-       
-      </ul>
 
-    </div>
-  </div>
-</nav>
+    <nav id="navbar_stuck" class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#"><img src="{{ asset('/img/logo.png') }}" alt="" width="50" height="50"
+            class="">
+        </a>
+        <li class="nav-link">Chatte Actuelle</li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{{ path('app_home') }}">Accueil</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_articles_index') }}">Historique</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="offcanvas" href="#tags" role="button" aria-controls="tags">
+                Rubrique
+              </a>
+            </li>
+            {% if not app.user %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_login') }}">Connection</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_register') }}">Enregistrement</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_logout') }}">Déconnection</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_user_edit',{'id': app.user.id}) }}">Profil</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+        <span class="nav-link">{{ actualTime.getTime|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")|capitalize }}</span>
+      </div>
+    </nav>

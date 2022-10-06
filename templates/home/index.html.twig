@@ -6,19 +6,22 @@
 {% block header %}
 
 <div class="container">
-	<div class="">
+
+	{# <div class="pt-5">
 		<p>
-			<h1>Edito</h1>
+			<h1>Chatte Actuelle</h1>
 		</p>
-	</div>
+	</div> #}
+
 	<div class="col background-white py-3">
 		<div class="clearfix">
-			<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-			<lottie-player src="https://assets3.lottiefiles.com/packages/lf20_5je6iN.json" background="transparent"
-				class="float-sm-start" speed="1" style="width: 200px; height: 200px;" loop autoplay></lottie-player>
 
+			{# <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_5je6iN.json" background="transparent"
+				class="float-sm-start" speed="1" style="width: 200px; height: 200px;" loop autoplay></lottie-player> #}
+
+				<img src="{{ asset('/img/logo.png') }}" alt="" width="150" height="150"
+				class="float-sm-start">
 			<p>
-				<!--have to figure out how to wrap this-->
 				{{ editos.edito|raw }}
 			</p>
 		</div>
@@ -36,31 +39,31 @@
 	</div>
 </div>
 
-	{% endblock %}
+{% endblock %}
 
-	{% block section %}
-	<div class="container">
-		{% if last_articles %}
-		<div class="d-flex flex-row justify-content-center flex-wrap d-grid gap-3">
-			{% for last_article in last_articles %}
-			<div class="card" style="width: 18rem;">
-				<img src="{{ asset('/img/chatte_actuelle.jpg') }}" class="card-img-top" alt="chatte_actuelle">
-				<div class="card-body">
-					<h5 class="card-title">{{ last_article.title }}</h5>
-					{% autoescape %}
-					<p class="card-text">{{ last_article.article|u.truncate(155)|raw }}...</p>
-					{% endautoescape %}
-					<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}"
-						class="btn btn-primary">Lire</a>
-				</div>
+{% block section %}
+<div class="container pt-5">
+	{% if last_articles %}
+	<div class="d-flex flex-row justify-content-around flex-wrap d-grid gap-3">
+		{% for last_article in last_articles %}
+		<div class="card" style="width: 18rem">
+			<img src="{{ asset('/img/chatte_actuelle.jpg') }}" class="card-img-top" alt="chatte_actuelle">
+			<div class="card-body">
+				<h5 class="card-title">{{ last_article.title }}</h5>
+				{% autoescape %}
+				<p class="card-text">{{ last_article.article|u.truncate(155)|raw }}...</p>
+				{% endautoescape %}
+				<p> Autheur : {{ last_article.user.displayname }}</p>
+				<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}" class="btn btn-primary">Lire</a>
 			</div>
-			{% endfor %}
 		</div>
-		{% else %}
-		<div class="">
-			<h2>Au Boulot</h2>
-		</div>
-		{% endif %}
-
+		{% endfor %}
 	</div>
-	{% endblock %}
+	{% else %}
+	<div class="">
+		<h2>Au Boulot</h2>
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

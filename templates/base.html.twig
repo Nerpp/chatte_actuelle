@@ -13,6 +13,8 @@
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
+
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
     </head>
     <body>
     <nav>
@@ -20,6 +22,21 @@
 
         {% include "modals/tags.html.twig" %}
     </nav>
+
+    <div class="container-fluid">
+        <ul class="background">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+         </ul>
+    </div>
 
     <header>
         {% block header %}{% endblock %}
