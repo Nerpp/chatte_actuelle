@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block header %}
-<div class="container">
+<div class="container pt-5">
 	<div class="text-center">
 		<h1>Historique de tous les articles</h1>
 	</div>
@@ -13,11 +13,12 @@
 
 {% block section %}
 
+<div class="container pt-5">
 {{ form_start(search) }}
     {{ form_widget(search) }}
     {# <button class="btn">{{ button_label|default('Save') }}</button> #}
 {{ form_end(search) }}
-
+</div>
 <div class="container">
 	{% if articles %}
 	<div class="d-flex flex-row flex-wrap justify-content-around d-grid gap-2">
@@ -74,7 +75,7 @@
 	{% set pages = (total / limit)|round(0,'ceil') %}
 
 	<div class="">
-	<ul class="d-flex justify-content-center pagination pt-3">
+	<ul class="col-12 d-flex justify-content-center align-items-center pagination pt-5">
 
 		<li class="page-item {{ page == 1 ?'disabled': '' }}"  >
 			<a class="page-link" href="?page=1">Retour</a>
@@ -88,7 +89,6 @@
 			<li class="page-item {{ page == item ?'active': '' }} m-2" aria-current="true">
 				<a class="page-link" href="?page={{ item }}">{{ item }}</a>
 			</li>
-
 		{% endfor %}
 
 		<li class="page-item {{ page == pages ?'disabled': '' }}">

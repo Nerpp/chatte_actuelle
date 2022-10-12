@@ -54,7 +54,7 @@
   position: fixed;
   z-index: -99;
   width: 100vw;
-  height: 100vh;
+  height: 150vh;
   top: 0;
   left: 0;
   margin: 0;
@@ -72,9 +72,11 @@
   border-radius: 48px;
   // background: linear-gradient(145deg, #9c7f7f, #836b6b);
   // background: linear-gradient(145deg, #8c3800, #ff7380,);
-  box-shadow: 17px 17px 34px #534444,
-    -17px -17px 34px #d1aaaa;
+  
+  box-shadow: 17px 17px 32px #534444,
+    -17px -17px 32px #d1aaaa;
   animation: animate 19s linear infinite;
+  
 }
 
 
@@ -112,9 +114,9 @@
 
 .background li:nth-child(4) {
   left: 77%;
-  width: 124px;
-  height: 124px;
-  bottom: -124px;
+  width: 122px;
+  height: 122px;
+  bottom: -122px;
   animation-delay: 4s;
 }
 
@@ -144,9 +146,9 @@
 
 .background li:nth-child(8) {
   left: 42%;
-  width: 104px;
-  height: 104px;
-  bottom: -104px;
+  width: 102px;
+  height: 102px;
+  bottom: -102px;
   animation-delay: 13s;
 }
 
@@ -167,7 +169,7 @@ p {
 }
 
 
-section {
-  min-height: 100vh;
-}
+// section {
+//   min-height: 100vh;
+// }
 
