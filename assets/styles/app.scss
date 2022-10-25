@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 
+// navbar
 .nav-link {
   color: #ffe6cc;
   font-size: 17px;
@@ -30,12 +31,16 @@
 .sticky+.content {
   padding-top: 60px;
 }
+// navbar
 
+// image kitty
 #kitty {
   padding: 0%;
   margin: 0%;
 }
+// image kitty
 
+//animation background + background
 @keyframes animate {
   0% {
     transform: translateY(-10) rotate(0deg);
@@ -159,17 +164,46 @@
   bottom: -182px;
   animation-delay: 18s;
 }
+//animation background + background
 
+
+// site en général
 p {
   color: #ffe6cc;
 }
 
+// carte pour accueil et historique
 .card{
   background-color: transparent;
 }
+// carte pour accueil et historique
+//site en général
 
 
-// section {
-//   min-height: 100vh;
-// }
+.page-link{
+  background-color: transparent;
+}
+
+// historique
+#unknow{
+  text-decoration: underline wavy #AA336A 5px;
+}
+// historique
+
+// rubrique
+
+.offcanvas-header{
+background-color: black;
+}
+#bgModal{
+// position: fixed;
+// z-index: -1;
+width: 40%;
+height: 40%;
+}
+
+#bgRubrique{
+  background-image: linear-gradient(to right, #8c3800, #ff7380);
+}
+
 

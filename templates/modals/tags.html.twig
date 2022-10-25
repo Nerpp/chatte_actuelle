@@ -1,13 +1,17 @@
 <div class="offcanvas offcanvas-start" tabindex="-1" id="tags" aria-labelledby="Rubrique">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Rubrique</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div class="offcanvas-header text-white">
+       
+        <img id="bgModal" src="{{ asset("/img/svg/stretching.svg") }}" alt="empreinte de chat">
+
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Rubrique</h5> 
+        
+        <button type="button" class="btn btn-light btn-close text-reset text-white" data-bs-dismiss="offcanvas" aria-label="Close">X</button>
     </div>
-    <div class="offcanvas-body">
-       <div class="d-flex flex-column flex-wrap d-grid gap-4">
+    <div class="offcanvas-body" id="bgRubrique">
+       <div class="d-flex flex-column flex-wrap align-items-center d-grid gap-4">
         {% for tag in getTags.getTags %}
             <div class="">
-                <a href="{{ path('app_articles_by_tag_index', {'id': tag.id, }) }}" class="btn btn-primary">{{ tag.name }}</a>
+                <a href="{{ path('app_articles_by_tag_index', {'id': tag.id, }) }}" class="btn btn-light">{{ tag.name }}</a>
             </div>
         {% endfor %}
     </div>

@@ -24,7 +24,7 @@ class SearchArticleType extends AbstractType
                 'required' =>false,
             ])
 
-            ->add('Rechercher',SubmitType::class)
+            // ->add('Rechercher',SubmitType::class)
         ;
     }
 

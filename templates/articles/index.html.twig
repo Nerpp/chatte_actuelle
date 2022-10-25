@@ -14,12 +14,18 @@
 {% block section %}
 
 <div class="container pt-5">
-{{ form_start(search) }}
-    {{ form_widget(search) }}
-    {# <button class="btn">{{ button_label|default('Save') }}</button> #}
-{{ form_end(search) }}
+	{{ form_start(search) }}
+	<div class="d-flex justify-content-center">
+		<div class="col-8">
+			{{ form_widget(search.mots)}}
+		</div>
+		<div class="ms-2">
+			<button class="btn btn-outline-success"><img src="{{ asset('/img/svg/search.svg') }}" alt="search"></button>
+		</div>
+	</div>
+	{{ form_end(search) }}
 </div>
-<div class="container">
+<div class="container pt-5">
 	{% if articles %}
 	<div class="d-flex flex-row flex-wrap justify-content-around d-grid gap-2">
 		{% for article in articles %}
@@ -71,42 +77,50 @@
 		</div>
 		{% endfor %}
 	</div>
-	
+
 	{% set pages = (total / limit)|round(0,'ceil') %}
+	{% set action = '#liste_articles' %}
 
-	<div class="">
-	<ul class="col-12 d-flex justify-content-center align-items-center pagination pt-5">
 
-		<li class="page-item {{ page == 1 ?'disabled': '' }}"  >
-			<a class="page-link" href="?page=1">Retour</a>
-		</li>
 
-		<li class="page-item {{ page == 1 ?'disabled': '' }}"  >
-			<a class="page-link" href="{{ page > 1 ? '?page=' ~ (page - 1) : '' }}">Previous</a>
-		</li>
+	<div class="" id="#liste_articles">
+		<ul class=" d-flex justify-content-center align-items-center pagination pt-5">
 
-		{% for item in 1..pages %}
-			<li class="page-item {{ page == item ?'active': '' }} m-2" aria-current="true">
+			<li class="page-item {{ page == 1 ?'disabled': '' }}">
+				<a class="page-link" href="?page=1{{ action }}">Début</a>
+			</li>
+
+			<li class="page-item {{ page == 1 ?'disabled': '' }}">
+				<a class="page-link" href="{{ page > 1 ? '?page=' ~ (page - 1) : '' }}">Retour</a>
+			</li>
+
+
+			{% for item in 1..pages %}
+			<li class="d-none d-md-block page-item {{ page == item ?'active': '' }} m-2" aria-current="true">
 				<a class="page-link" href="?page={{ item }}">{{ item }}</a>
 			</li>
-		{% endfor %}
+			{% endfor %}
 
-		<li class="page-item {{ page == pages ?'disabled': '' }}">
-			<a class="page-link" href="{{ page < pages ? '?page=' ~ (page + 1) : '' }}">Next</a>
-		</li>
+			<li class="page-item {{ page == pages ?'disabled': '' }}">
+				<a class="page-link" href="{{ page < pages ? '?page=' ~ (page + 1) : '' }}">Suivant</a>
+			</li>
 
-		<li class="page-item {{ page == pages ?'disabled': '' }}">
-			<a class="page-link" href="?page={{ pages }}">Fin</a>
-		</li>
+			<li class="page-item {{ page == pages ?'disabled': '' }}">
+				<a class="page-link" href="?page={{ pages }}">Fin</a>
+			</li>
 
-	</ul>
-</div>
+		</ul>
+	</div>
 
 	{% else %}
-	<div class="">
-		<h2>Un sujet dont nous avons pas traité</h2>
+	<div class="text-center pt-5">
+		<div class="">
+			<h2 id="unknow">Un sujet dont nous n'avons pas traité</h2>
+		</div>
+		<div class="">
+			<img class="img-fluid" src="{{ asset('/img/trouvé_une_araignée.png') }}" alt="chatte_actuelle search">
+		</div>
 	</div>
 	{% endif %}
 </div>
-
 {% endblock %}
