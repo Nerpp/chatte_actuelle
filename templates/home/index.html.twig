@@ -49,8 +49,10 @@
 				{% autoescape %}
 				<p class="card-text">{{ last_article.article|u.truncate(155)|raw }}...</p>
 				{% endautoescape %}
-				<p> Autheur : {{ last_article.user.displayname }}</p>
-				<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}" class="btn btn-primary">Lire</a>
+				<p> Auteur : {{ last_article.user.displayname }}</p>
+				<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}" class="btn btn-light">
+					<img id="footprints" src="{{ asset("/img/svg/paw.svg") }}" alt="paw">
+				</a>
 			</div>
 		</div>
 		{% endfor %}

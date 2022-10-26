@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-    </head>
-    <body>
+    {% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+
+</head>
+
+<body>
     <nav>
         {% include "navbar/navbar.html.twig" %}
 
@@ -34,7 +37,7 @@
             <li></li>
             <li></li>
             <li></li>
-         </ul>
+        </ul>
     </div>
 
     <header>
@@ -46,7 +49,31 @@
     </section>
 
     <footer>
-        {% block footer %}{% endblock %}
+        {# {% block footer %}{% endblock %} #}
+        <div class="container-full">
+
+            <div id="footer" class="d-flex flex-row align-items-center justify-content-evenly text-white">
+                <div class="d-flex flex-column">
+                    <p>
+                        <img src="{{ asset("/img/svg/mail.svg") }}" alt="mail"> Nous contacter :
+                    </p>
+                    <p>
+                        chatteActuelle@gmail.com
+                    </p>
+                </div>
+                <div class="d-flex flex-column">
+                    <p>
+                        Nos réseau sociaux
+                    </p>
+
+                    <a class="text-end" href="https://www.facebook.com/profile.php?id=100087009169794" target="_blank"
+                        rel="noopener noreferrer">
+                        <img src="{{ asset("/img/svg/facebook.svg") }}" alt="facebook">
+                    </a>
+                </div>
+            </div>
+        </div>
     </footer>
-    </body>
+</body>
+
 </html>

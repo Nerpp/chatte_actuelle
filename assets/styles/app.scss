@@ -166,6 +166,9 @@
 }
 //animation background + background
 
+section{
+  min-height: 90vh;
+}
 
 // site en général
 p {
@@ -177,12 +180,17 @@ p {
   background-color: transparent;
 }
 // carte pour accueil et historique
-//site en général
-
 
 .page-link{
   background-color: transparent;
 }
+
+#footer{
+  width: 100%;
+  height: 20vh;
+  background-color: #212529;
+}
+//site en général
 
 // historique
 #unknow{
@@ -191,13 +199,10 @@ p {
 // historique
 
 // rubrique
-
 .offcanvas-header{
-background-color: black;
+background-color: #212529;
 }
 #bgModal{
-// position: fixed;
-// z-index: -1;
 width: 40%;
 height: 40%;
 }
@@ -205,5 +210,16 @@ height: 40%;
 #bgRubrique{
   background-image: linear-gradient(to right, #8c3800, #ff7380);
 }
+// rubrique
 
+// connection
+.borderLog{
+  border-style: groove;
+}
 
+#resetPass{
+  color: white;
+  background-color: transparent;
+  text-decoration: none;
+}
+// connection

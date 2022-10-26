@@ -4,48 +4,67 @@
 {% endblock %}
 
 {% block header %}
-	<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+<div class="container pt-5">
+	<div class="text-center">
+		<h1 class="h3 mb-3 font-weight-normal">Connection</h1>
+	</div>
+</div>
 {% endblock %}
 
 
 {% block section %}
+<div class="container pt-5">
 
-	<form method="post">
+	<div class="d-flex justify-content-center">
 
-		{% if error %}
+		<form class="borderLog col-xs-10 col-md-6 d-grid gap-2 text-white justify-content-center p-5" method="post">
+
+			{% if error %}
 			<div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-		{% endif %}
+			{% endif %}
 
-		<div class="col-12 bg-danger bg-gradient text-white text-center ">
-			{% for message in app.flashes('unauthorised') %}
+			<div class="bg-danger bg-gradient text-white text-center ">
+				{% for message in app.flashes('unauthorised') %}
 				<div class="flash-notice">
 					{{ message }}
 				</div>
-			{% endfor %}
-		</div>
+				{% endfor %}
+			</div>
 
-		<div class="col-12 bg-success bg-gradient text-white text-center ">
-			{% for message in app.flashes('bien') %}
+			<div class="bg-success bg-gradient text-white text-center ">
+				{% for message in app.flashes('bien') %}
 				<div class="flash-notice">
 					{{ message }}
 				</div>
-			{% endfor %}
-		</div>
+				{% endfor %}
+			</div>
 
-		{% if app.user %}
-			<div class="mb-3">
+			{% if app.user %}
+			<div class="mb-3 text-white">
 				You are logged in as
 				{{ app.user.displayName }},
 				<a href="{{ path('app_logout') }}">Logout</a>
 			</div>
-		{% else %}
-			<label for="inputEmail">Email</label>
-			<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-			<label for="inputPassword">Password</label>
-			<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+			{% else %}
 
-			<input
-			type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+			<div class="">
+				<label for="inputEmail">Email</label>
+			</div>
+			<div class="">
+				<input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
+					autocomplete="email" required autofocus>
+			</div>
+
+			<div class="">
+				<label for="inputPassword">Password</label>
+			</div>
+
+			<div class="">
+				<input type="password" name="password" id="inputPassword" class="form-control"
+					autocomplete="current-password" required>
+			</div>
+
+			<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
 			{#
 					        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
@@ -57,15 +76,17 @@
 					            </label>
 					        </div>
 					    #}
-
-			<button class="btn btn-lg btn-primary" type="submit">
-				Sign in
+			<div class="pt-2"></div>
+			<button class="btn btn-lg btn-light" type="submit">
+				<img id="footprints" src="{{ asset("/img/svg/paw.svg") }}" alt="paw">
 			</button>
-			<div class="">
-				<a href="{{ path('app_forgot_password_request') }}">reset password</a>
+			<div class="text-center pt-2">
+				<a id="resetPass" href="{{ path('app_forgot_password_request') }}">Réinitialiser le mot de passe</a>
 			</div>
-		{% endif %}
+			{% endif %}
 
-	</form>
+		</form>
 
+	</div>
+</div>
 {% endblock %}
