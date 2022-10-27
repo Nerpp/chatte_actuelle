@@ -17,7 +17,7 @@
     {% endfor %}
     {{ form_start(registrationForm) }}
     
-    <div class="d-grid gap-2">
+    <div class="col-12 justify-content-center d-grid gap-3">
         <div class="">
             {{ form_errors(registrationForm.email) }}
         </div>
@@ -34,7 +34,7 @@
             {{ form_errors(registrationForm.imgProfile) }}
         </div>
         <div class="">
-            {{ form_widget(registrationForm.imgProfile, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
+            {{ form_widget(registrationForm.imgProfile, {'attr':{'class':'form-control form-control-lg'}}) }}
         </div>
         <div class="">
             {{ form_errors(registrationForm.plainPassword.first) }}
@@ -49,9 +49,10 @@
             {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control  text-center'}}) }}
         </div>
 
-        <div class="pt-1 pt-lg-3">
-            Résoudre :
-            {{ captcha }}
+        <div class="">
+            <p>
+                Résoudre : {{ captcha }}
+            </p>
         </div>
         <div class="">
             {{ form_widget(registrationForm.captcha, {'attr': {'class': 'form-control  text-center'}}) }}
@@ -59,7 +60,7 @@
         <div class="">
             {{ form_widget(registrationForm.agreeTerms) }}
         </div>
-        <div class="">
+        <div class="text-center">
             {{ form_widget(registrationForm.save, { 'label': 'Envoyer' }) }}
         </div>
     </div>

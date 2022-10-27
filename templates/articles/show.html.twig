@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block header %}
-<div class="container">
+<div class="container pt-5">
 	<div class="text-center">
 		<h1>{{ article.title }}</h1>
 	</div>
@@ -26,16 +26,18 @@
 {% block section %}
 <div class="container pt-5">
 	<div class="d-flex flex-column d-grid gap-2">
-		<div class="">
+		<div class="article">
 			{{ article.article|raw }}
 		</div>
 		<div class="d-flex flex-row flex-wrap d-grid gap-2">
 			{% for image in article.images %}
 			<div class="">
-				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="{{ article.slug }}">
+				<img class="img-fluid" src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="{{ article.slug }}">
 			</div>
 			<div class="">
-				<small>{{ image.description }}</small>
+				<p>
+					<small>{{ image.description }}</small>
+				</p>
 			</div>
 			{% if is_granted('IMAGE_EDIT',image) %}
 			<div class="">
@@ -44,31 +46,34 @@
 			{% endif %}
 			{% endfor %}
 		</div>
-		<div class="">
+		<div class="d-flex flex-row justify-content-evenly pt-3">
+			<div class="">
+				<p>
+					<strong>Auteur :
+					</strong>
+					{{ article.user.displayName }}
+				</p>
+			</div>
+			{% if article.PublishedAt %}
 			<p>
-				<strong>Auteur :
+				<strong>Publié :
 				</strong>
-				{{ article.user.displayName }}</p>
-		</div>
-		{% if article.PublishedAt %}
-		<p>
-			<strong>Publié :
-			</strong>
-			{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
-		</p>
-		{% else %}
-		<p>
-			<strong>Jamais Publié</strong>
-		</p>
-		{% endif %}
+				{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+			</p>
+			{% else %}
+			<p>
+				<strong>Jamais Publié</strong>
+			</p>
+			{% endif %}
 
-		{% if article.modifiedAt %}
-		<p>
-			<strong>Modifié :
-			</strong>
-			{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
-		</p>
-		{% endif %}
+			{% if article.modifiedAt %}
+			<p>
+				<strong>Modifié :
+				</strong>
+				{{ article.publishedAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+			</p>
+			{% endif %}
+		</div>
 	</div>
 </div>
 
@@ -88,7 +93,6 @@
 	</div>
 </div>
 
-
 <div class="container pt-5">
 
 	{% if is_granted('SEND_COMMENTS',app.user) %}
@@ -100,43 +104,60 @@
 		<button class="btn btn-primary">{{ button_label|default('Commenter') }}</button>
 		{{ form_end(form) }}
 		{% else %}
-		<p>Vous devez être connecté pour poster des commentaires</p>
+		<p class="text-center important"><strong>Vous devez être connecté pour poster des commentaires</strong></p>
 	</div>
 	{% endif %}
 </div>
+
 <div class="container">
 	<div class="pt-3" id="liste_commentaire">
+
+		{{ form_start(answerForm, {'method': 'POST', 'action':  action }) }}
+
 		{% for comment in article.comments|reverse %}
+		<div class="d-flex flex-row align-items-center">
+			{% if comment.user.imgProfile.source %}
+			<div class="">
+				<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
+			</div>
+			{% else %}
 
-		{% if comment.user.imgProfile.source %}
-		<div class="">
-			<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
-		</div>
-		{% else %}
-		<img src="{{ asset('/img/chatte_actuelle.jpg') }}" alt="">
-		{% endif %}
+			<img id="footprints" src="{{ asset("/img/svg/profile.svg") }}" alt="paw">
+			{% endif %}
 
-		<div class="pt-2">
-			<strong>{{ comment.user.displayname }}</strong> : {{ comment.comment }}
+			<div class="pt-2 justify">
+				<p>
+					<strong>{{ comment.user.displayname }}</strong> : {{ comment.comment }}
+				</p>
+			</div>
 		</div>
-		<div class="">
-			{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+		<div class="text-end">
+			<p>
+				{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
+			</p>
 		</div>
-		<div class="">
+		{# <div class="">
 			<!-- Button trigger modal -->
 			<small><button type="button" class="btn btn-primary" data-bs-toggle="modal"
 					data-bs-target="#exampleModal">Reply</button></small>
+					<pre>
+						{{ dump(comment.id) }}
+					</pre>
+		</div> #}
+
+		
+		<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="{{ '#ca' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
+			Réponse
+		</button>
+		</p>
+		<div class="collapse" id="{{ 'ca' ~ comment.id }}">
+		
+			{{ form_row(answerForm.field_name) }}
+		<button class="btn btn-primary">{{ button_label|default('Commenter') }}</button>
+		
 		</div>
 
-		<!-- Modal -->
-		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					test
-				</div>
-			</div>
-		</div>
-
+		
 
 		{% if is_granted('DELETE_COMMENT',comment) %}
 		<div class="">
@@ -155,6 +176,9 @@
 		{% endif %}
 
 		{% endfor %}
+
+		{{ form_end(answerForm) }}
+
 	</div>
 </div>
 
