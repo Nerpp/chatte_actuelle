@@ -164,4 +164,23 @@ class CommentsController extends AbstractController
         $this->addFlash('success', 'Le commentaire à été autorisé');
         return $this->redirectToRoute('app_comments_reported_index');
     }
+
+    #[Route('/{id}/reply', name: 'app_comment_reply', methods: ['GET', 'POST'])]
+    public function reply(Request $request,Comments $comment, CommentsRepository $commentsRepository)
+    {
+
+
+        if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
+        $reply = new Comments;
+        $reply->setComment($request->get("replyF"));
+        $reply->setUser($comment->getUser());
+        $reply->setArticle($comment->getArticle());
+        $reply->setCreatedAt(new \DateTime('now'));
+        $reply->setParent($comment);
+        $commentsRepository->add($reply);
+
+        return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
+        }
+    }
+    
 }

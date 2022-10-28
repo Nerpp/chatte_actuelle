@@ -1,0 +1,9 @@
+<form method="post" action="{{ path('app_comment_reply', {'id': comment.id}) }}">
+    <div class="d-flex flex-row align-items-center">
+    <div class="col-8 ms-5">
+    <input type="text" class="form-control" id="fname" name="replyF" value="">
+    </div>
+    <input type="hidden" name="_token" value="{{ csrf_token('reply' ~ comment.id) }}">
+    <button class="btn information"><img  src="{{ asset("/img/svg/paw.svg") }}" alt="paw"></button>
+    </div>
+</form>

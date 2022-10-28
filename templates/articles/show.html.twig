@@ -31,19 +31,22 @@
 		</div>
 		<div class="d-flex flex-row flex-wrap d-grid gap-2">
 			{% for image in article.images %}
-			<div class="">
-				<img class="img-fluid" src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt="{{ article.slug }}">
+			<div class="d-flex flex-column">
+				<div class="">
+					<img class="img-fluid" src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}"
+						alt="{{ article.slug }}">
+				</div>
+				<div class="text-center jutify">
+					<p>
+						<small>{{ image.description }}</small>
+					</p>
+				</div>
+				{% if is_granted('IMAGE_EDIT',image) %}
+				<div class="">
+					<a href="{{ path('app_images_edit', {'id': image.id}) }}" class="btn btn-primary">Editer</a>
+				</div>
+				{% endif %}
 			</div>
-			<div class="">
-				<p>
-					<small>{{ image.description }}</small>
-				</p>
-			</div>
-			{% if is_granted('IMAGE_EDIT',image) %}
-			<div class="">
-				<a href="{{ path('app_images_edit', {'id': image.id}) }}" class="btn btn-primary">Editer</a>
-			</div>
-			{% endif %}
 			{% endfor %}
 		</div>
 		<div class="d-flex flex-row justify-content-evenly pt-3">
@@ -78,7 +81,7 @@
 </div>
 
 <div class="container">
-	<div class="d-flex flex-row d-grid gap-2">
+	<div class="d-flex flex-row justify-content-end d-grid gap-2">
 		{% if is_granted('DELETE_ARTICLE',article) %}
 		<div class="">
 			{{ include('articles/_delete_form.html.twig') }}
@@ -93,93 +96,121 @@
 	</div>
 </div>
 
+{# container envoit commentaire #}
 <div class="container pt-5">
 
 	{% if is_granted('SEND_COMMENTS',app.user) %}
 
 	{% set action = '#liste_commentaire' %}
-	<div class="">
-		{{ form_start(form, {'method': 'POST', 'action':  action }) }}
-		{{ form_widget(form) }}
+
+	{{ form_start(form, {'method': 'POST', 'action':  action }) }}
+	<div class="d-flex flex-row">
+
+		<img id="footprints" src="{{ asset("/img/svg/profile.svg") }}" alt="profile">
+
+		{{ form_widget(form.comment, {'attr': {'class': 'form-control'}}) }}
+
 		<button class="btn btn-primary">{{ button_label|default('Commenter') }}</button>
-		{{ form_end(form) }}
-		{% else %}
-		<p class="text-center important"><strong>Vous devez être connecté pour poster des commentaires</strong></p>
 	</div>
+	{{ form_end(form) }}
+	{% else %}
+	<p class="text-center important"><strong>Vous devez être connecté pour poster des commentaires</strong></p>
+
 	{% endif %}
 </div>
+{# container envoit commentaire #}
 
-<div class="container">
-	<div class="pt-3" id="liste_commentaire">
+{# container liste commentaire #}
+<div class="container pt-5" id="liste_commentaire">
+	{# <div class="row" > #}
 
-		{{ form_start(answerForm, {'method': 'POST', 'action':  action }) }}
+	{% for comment in article.comments|reverse %}
 
-		{% for comment in article.comments|reverse %}
-		<div class="d-flex flex-row align-items-center">
+	{% if not comment.parent %}
+
+	<div class="d-flex flex-row align-items-center">
+
+		<div class="">
 			{% if comment.user.imgProfile.source %}
-			<div class="">
-				<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
-			</div>
+			<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
 			{% else %}
-
-			<img id="footprints" src="{{ asset("/img/svg/profile.svg") }}" alt="paw">
+			<img src="{{ asset("/img/svg/profile.svg") }}" alt="profile">
 			{% endif %}
+		</div>
 
-			<div class="pt-2 justify">
-				<p>
-					<strong>{{ comment.user.displayname }}</strong> : {{ comment.comment }}
-				</p>
+		<div class="d-flex flex-column">
+			<div class="">
+				<strong class="text-light">{{ comment.user.displayname }}</strong>
+				<small>{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</small>
+			</div>
+			<div class="text-light justify">
+				{{ comment.comment|raw }}
 			</div>
 		</div>
-		<div class="text-end">
-			<p>
-				{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}
-			</p>
-		</div>
-		{# <div class="">
-			<!-- Button trigger modal -->
-			<small><button type="button" class="btn btn-primary" data-bs-toggle="modal"
-					data-bs-target="#exampleModal">Reply</button></small>
-					<pre>
-						{{ dump(comment.id) }}
-					</pre>
-		</div> #}
 
-		
-		<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="{{ '#ca' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
+		<div class="d-flex flex-column">
+			<button class="btn information" type="button" data-bs-toggle="collapse"
+				data-bs-target="{{ '#opt' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
+				<img src="{{ asset("/img/svg/gear.svg") }}" alt="options">
+			</button>
+			<div class="collapse" id="{{ 'opt' ~ comment.id }}">
+
+				<div class="d-flex flex-column">
+					{% if is_granted('DELETE_COMMENT',comment) %}
+					<div class="text-center">
+						{{ include('comments/_delete_form.html.twig') }}
+					</div>
+					{% endif %}
+
+					{% if is_granted('REPORT_COMMENT',comment) %}
+					<div class="text-center">
+						<a href="{{ path('app_comments_report', {'id': comment.id }) }}" class="btn information"><img
+								src="{{ asset("/img/svg/flag.svg") }}" alt="flag"></a>
+					</div>
+					{% endif %}
+
+					{% if is_granted('EDIT_COMMENT',comment) %}
+					<div class="text-center">
+						<a href="{{ path('app_comments_edit', {'id': comment.id }) }}" class="btn information"><img
+								src="{{ asset("/img/svg/edit.svg") }}" alt="edit"></a>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="">
+		{% if is_granted('SEND_COMMENTS',app.user) %}
+		<button class="btn information" type="button" data-bs-toggle="collapse"
+			data-bs-target="{{ '#ca' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
+			Répondre
+		</button>
+		<div class="collapse" id="{{ 'ca' ~ comment.id }}">
+			{{ include('comments/_reply_form.html.twig') }}
+		</div>
+		{% endif %}
+	</div>
+
+	<div class="">
+		<button class="btn information" type="button" data-bs-toggle="collapse"
+			data-bs-target="{{ '#reply' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
 			Réponse
 		</button>
-		</p>
-		<div class="collapse" id="{{ 'ca' ~ comment.id }}">
 		
-			{{ form_row(answerForm.field_name) }}
-		<button class="btn btn-primary">{{ button_label|default('Commenter') }}</button>
-		
-		</div>
-
-		
-
-		{% if is_granted('DELETE_COMMENT',comment) %}
-		<div class="">
-			{{ include('comments/_delete_form.html.twig') }}
+		<div class="collapse" id="{{ 'reply' ~ comment.id }}">
+			
 		</div>
 		{% endif %}
-		{% if is_granted('REPORT_COMMENT',comment) %}
-		<div class="">
-			<a href="{{ path('app_comments_report', {'id': comment.id }) }}" class="btn">signaler</a>
-		</div>
-		{% endif %}
-		{% if is_granted('EDIT_COMMENT',comment) %}
-		<div class="">
-			<a href="{{ path('app_comments_edit', {'id': comment.id }) }}" class="btn">Editer</a>
-		</div>
-		{% endif %}
-
-		{% endfor %}
-
-		{{ form_end(answerForm) }}
-
 	</div>
+
+
+	{% for reply in comment.reply %}
+	{{ dump(reply.comment) }}
+	{% endfor %}
+
+	{% endif %}
+	{% endfor %}
+	{# </div> #}
 </div>
 
 {% endblock %}
