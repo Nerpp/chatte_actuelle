@@ -178,9 +178,9 @@ class CommentsController extends AbstractController
         $reply->setCreatedAt(new \DateTime('now'));
         $reply->setParent($comment);
         $commentsRepository->add($reply);
-
         return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
         }
+        return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
     }
     
 }

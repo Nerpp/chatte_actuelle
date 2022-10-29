@@ -122,7 +122,6 @@
 
 {# container liste commentaire #}
 <div class="container pt-5" id="liste_commentaire">
-	{# <div class="row" > #}
 
 	{% for comment in article.comments|reverse %}
 
@@ -179,38 +178,43 @@
 			</div>
 		</div>
 	</div>
+
+	{% if is_granted('SEND_COMMENTS',app.user) %}
 	<div class="">
-		{% if is_granted('SEND_COMMENTS',app.user) %}
 		<button class="btn information" type="button" data-bs-toggle="collapse"
 			data-bs-target="{{ '#ca' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
-			Répondre
+			<small>Répondre</small>
 		</button>
 		<div class="collapse" id="{{ 'ca' ~ comment.id }}">
 			{{ include('comments/_reply_form.html.twig') }}
 		</div>
-		{% endif %}
 	</div>
+	{% endif %}
 
-	<div class="">
+	{% if comment.reply|length %}
+	<div class="ms-5">
 		<button class="btn information" type="button" data-bs-toggle="collapse"
-			data-bs-target="{{ '#reply' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
-			Réponse
+			data-bs-target="{{ '#viewReply' ~ comment.id }}" aria-expanded="false" aria-controls="collapseExample">
+		<small>{{ comment.reply|length }} Réponse(s)<img src="{{ asset("/img/svg/down.svg") }}" alt="down"></small>
 		</button>
-		
-		<div class="collapse" id="{{ 'reply' ~ comment.id }}">
-			
+		<div class="collapse" id="{{ 'viewReply' ~ comment.id }}">
+			{% for reply in comment.reply %}
+
+			<p>
+				{{ reply.comment }}
+			</p>
+
+
+
+			{% endfor %}
 		</div>
-		{% endif %}
 	</div>
+	{% endif %}
 
-
-	{% for reply in comment.reply %}
-	{{ dump(reply.comment) }}
-	{% endfor %}
 
 	{% endif %}
 	{% endfor %}
-	{# </div> #}
+
 </div>
 
 {% endblock %}
