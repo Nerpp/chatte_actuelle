@@ -39,7 +39,7 @@ class Comments
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'reply')]
     private ?self $parent = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', orphanRemoval: true, targetEntity: self::class)]
     private Collection $reply;
 
 

@@ -182,5 +182,26 @@ class CommentsController extends AbstractController
         }
         return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/delete/reply/{id}', name: 'app_reply_delete', methods: ['POST'])]
+    public function deleteReply(Request $request, Comments $comment, CommentsRepository $commentsRepository): Response
+    {
+        $slug = $comment->getArticle()->getSlug();
+
+        if (!$this->isGranted('DELETE_COMMENT', $comment)) {
+            $this->addFlash('unauthorised', 'Désolé, vous ne pouvez pas supprimé ce commentaire');
+            return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
+        }
+
+        if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
+
+            $reply = new Comments;
+            $reply->removeReply($comment);
+            $commentsRepository->remove($reply);
+            $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
+        }
+
+        return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
+    }
     
 }

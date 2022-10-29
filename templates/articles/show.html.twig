@@ -199,9 +199,58 @@
 		</button>
 		<div class="collapse" id="{{ 'viewReply' ~ comment.id }}">
 			{% for reply in comment.reply %}
-			<p>
-				{{ reply.comment }}
-			</p>
+
+			<div class="d-flex flex-row">
+				{# <div class=""></div> #}
+				<p>
+				{% if reply.user.imgProfile.source %}
+				<img src="{{ asset('/img/download/profile/'~ comment.user.imgProfile.source) }}" alt="">
+				{% else %}
+				<img src="{{ asset("/img/svg/profile.svg") }}" alt="profile">
+				{% endif %}
+				<div class="d-flex flex-column">
+					<div class="">
+						<strong class="text-light">{{ comment.user.displayname }}</strong>
+						<small>{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</small>
+					</div>
+					<div class="text-light">
+						{{ reply.comment }}
+					</div>
+				</div>
+
+				<div class="d-flex flex-column">
+					<button class="btn information" type="button" data-bs-toggle="collapse"
+						data-bs-target="{{ '#opt' ~ reply.id }}" aria-expanded="false" aria-controls="collapseExample">
+						<img src="{{ asset("/img/svg/gear.svg") }}" alt="options">
+					</button>
+					<div class="collapse" id="{{ 'opt' ~ reply.id }}">
+		
+						<div class="d-flex flex-column">
+							{% if is_granted('DELETE_COMMENT',comment) %}
+							<div class="text-center">
+								{{ include('comments/_delete_reply_form.html.twig') }}
+							</div>
+							{% endif %}
+		
+							{% if is_granted('REPORT_COMMENT',comment) %}
+							<div class="text-center">
+								<a href="{{ path('app_comments_report', {'id': reply.id }) }}" class="btn information"><img
+										src="{{ asset("/img/svg/flag.svg") }}" alt="flag"></a>
+							</div>
+							{% endif %}
+		
+							{% if is_granted('EDIT_COMMENT',comment) %}
+							<div class="text-center">
+								<a href="{{ path('app_comments_edit', {'id': reply.id }) }}" class="btn information"><img
+										src="{{ asset("/img/svg/edit.svg") }}" alt="edit"></a>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				
+				</p>
+			</div>
 			{% endfor %}
 		</div>
 	</div>

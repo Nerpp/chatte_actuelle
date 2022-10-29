@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_reply_delete', {'id': reply.id}) }}" onsubmit="return confirm('Vous étes certain de vouloir supprimer ce commentaire ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('reply' ~ reply.id) }}">
+    <button class="btn"><img  src="{{ asset("/img/svg/trash.svg") }}" alt="trash"></button>
+</form>
