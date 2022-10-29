@@ -126,7 +126,7 @@
 	{% for comment in article.comments|reverse %}
 
 	{% if not comment.parent %}
-
+<p>
 	<div class="d-flex flex-row align-items-center">
 
 		<div class="">
@@ -199,13 +199,9 @@
 		</button>
 		<div class="collapse" id="{{ 'viewReply' ~ comment.id }}">
 			{% for reply in comment.reply %}
-
 			<p>
 				{{ reply.comment }}
 			</p>
-
-
-
 			{% endfor %}
 		</div>
 	</div>
@@ -213,6 +209,7 @@
 
 
 	{% endif %}
+	</p>
 	{% endfor %}
 
 </div>
