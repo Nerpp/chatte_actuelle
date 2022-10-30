@@ -173,11 +173,12 @@ class CommentsController extends AbstractController
         if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
         $reply = new Comments;
         $reply->setComment($request->get("replyF"));
-        $reply->setUser($comment->getUser());
+        $reply->setUser($this->tokenUser);
         $reply->setArticle($comment->getArticle());
         $reply->setCreatedAt(new \DateTime('now'));
         $reply->setParent($comment);
         $commentsRepository->add($reply);
+
         return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
         }
         return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
@@ -194,10 +195,9 @@ class CommentsController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
-
-            $reply = new Comments;
-            $reply->removeReply($comment);
-            $commentsRepository->remove($reply);
+          
+            $comment->removeReply($comment);
+            $commentsRepository->remove($comment);
             $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
         }
 

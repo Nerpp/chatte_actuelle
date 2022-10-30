@@ -210,8 +210,8 @@
 				{% endif %}
 				<div class="d-flex flex-column">
 					<div class="">
-						<strong class="text-light">{{ comment.user.displayname }}</strong>
-						<small>{{ comment.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</small>
+						<strong class="text-light">{{ reply.user.displayname }}</strong>
+						<small>{{ reply.createdAt|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</small>
 					</div>
 					<div class="text-light">
 						{{ reply.comment }}

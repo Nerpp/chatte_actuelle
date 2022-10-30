@@ -39,14 +39,15 @@ class Comments
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'reply')]
     private ?self $parent = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent', orphanRemoval: true, targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent',cascade:['persist'], orphanRemoval: true, targetEntity: self::class)]
     private Collection $reply;
 
-
+    
     public function __construct()
     {
         $this->reportings = new ArrayCollection();
         $this->reply = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
@@ -126,6 +127,18 @@ class Comments
         return $this;
     }
 
+    public function getComments(): ?self
+    {
+        return $this->comments;
+    }
+
+    public function setComments(?self $comments): self
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
+
     public function getParent(): ?self
     {
         return $this->parent;
@@ -168,6 +181,5 @@ class Comments
         return $this;
     }
 
-  
-
+ 
 }
