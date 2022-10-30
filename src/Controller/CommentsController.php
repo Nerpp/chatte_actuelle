@@ -47,7 +47,7 @@ class CommentsController extends AbstractController
         $slug = $comment->getArticle()->getSlug();
 
         if (!$this->isGranted('EDIT_COMMENT', $comment)) {
-            $this->addFlash('unauthorised', 'Désolé, vous ne pouvez pas supprimé ce commentaire');
+            $this->addFlash('unauthorised', 'Désolé, vous ne pouvez pas éditer ce commentaire');
             return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
         }
 
@@ -76,9 +76,10 @@ class CommentsController extends AbstractController
             return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
         }
 
-        $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
+        
         if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
             $commentsRepository->remove($comment);
+            $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
         }
 
         return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
@@ -92,6 +93,7 @@ class CommentsController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
+        if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
         $user = $comment->getUser();
         $warning = $user->getWarning();
         $warning = $warning + 1;
@@ -123,11 +125,12 @@ class CommentsController extends AbstractController
             $user->setWarning($warning);
             $userRepository->add($user, true);
 
-        if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
             $commentsRepository->remove($comment);
+
+            return $this->redirectToRoute('app_comments_reported_index');
         }
 
-        return $this->redirectToRoute('app_comments_reported_index');
+        return $this->redirectToRoute('app_home');
     }
 
 
@@ -169,7 +172,11 @@ class CommentsController extends AbstractController
     public function reply(Request $request,Comments $comment, CommentsRepository $commentsRepository)
     {
 
-
+        if (!$this->isGranted('SEND_COMMENTS', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous devez être connecté');
+            return $this->redirectToRoute('app_login');
+        }
+        
         if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
         $reply = new Comments;
         $reply->setComment($request->get("replyF"));
@@ -196,7 +203,6 @@ class CommentsController extends AbstractController
 
         if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
           
-            $comment->removeReply($comment);
             $commentsRepository->remove($comment);
             $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
         }
