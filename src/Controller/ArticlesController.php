@@ -193,6 +193,7 @@ class ArticlesController extends AbstractController
 
                         $resizeImg = new ImageOptimizer;
                         $resizeImg->resize($where.$slug.'/'. $filename);
+                        
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');

@@ -176,19 +176,22 @@ class CommentsController extends AbstractController
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté');
             return $this->redirectToRoute('app_login');
         }
-        
-        if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
+
+        $replyF = $request->get("replyF");
+
+
+        if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token')) && isset($replyF) && !empty($replyF) ) {
+
         $reply = new Comments;
-        $reply->setComment($request->get("replyF"));
+        $reply->setComment($replyF);
         $reply->setUser($this->tokenUser);
         $reply->setArticle($comment->getArticle());
         $reply->setCreatedAt(new \DateTime('now'));
         $reply->setParent($comment);
         $commentsRepository->add($reply);
 
-        return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
         }
-        return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_articles_show', ['slug' =>$comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/delete/reply/{id}', name: 'app_reply_delete', methods: ['POST'])]

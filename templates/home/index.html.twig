@@ -43,7 +43,12 @@
 	<div class="d-flex flex-row justify-content-around flex-wrap d-grid gap-3">
 		{% for last_article in last_articles %}
 		<div class="card" style="width: 18rem">
+			{% if last_article.images is empty %}
 			<img src="{{ asset('/img/chatte_actuelle.jpg') }}" class="card-img-top" alt="chatte_actuelle">
+			{% else %}
+			<img src="{{ asset('/img/download/'~last_article.slug ~'/'~last_article.images[0].source) }}" class="card-img-top"
+				alt="chatte_actuelle">
+			{% endif %}
 			<div class="card-body">
 				<h5 class="card-title">{{ last_article.title }}</h5>
 				{% autoescape %}

@@ -42,7 +42,7 @@ class AppFixtures extends Fixture
                 'email' => 'leblancanais@gmail.com',
                 'displayName' => 'Anais',
                 'password' => '12345678',
-                'roles' => ['ROLE_ADMIN'],
+                'roles' => ['ROLE_SUPERADMIN'],
                 'isVerified' => true
             ],
             [

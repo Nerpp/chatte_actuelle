@@ -43,6 +43,12 @@
               <a class="nav-link" href="{{ path('app_user_edit',{'id': app.user.id}) }}">Profil</a>
             </li>
             {% endif %}
+            {% if is_granted('SECTION_ADMIN',app.user) %}
+            <li>
+              <a class="nav-link" href="{{ path('app_admin')}}">Admin</a>
+            </li>
+            {% endif %}
+            
           </ul>
         </div>
         <span class="nav-link">{{ actualTime.getTime|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")|capitalize }}</span>

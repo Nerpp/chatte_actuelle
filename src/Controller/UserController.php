@@ -44,6 +44,11 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
     public function show(User $user): Response
     {
+        if (!$this->isGranted('USER_INDEX', $this->tokenUser)) {
+            $this->addFlash('unauthorised', 'Désolé, vous n\'avez pas les droits suffisants pour accéder à cet espace');
+            return $this->redirectToRoute('app_login');
+        }
+        
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
@@ -95,6 +100,7 @@ class UserController extends AbstractController
 
                     $resizeImg = new ImageOptimizer;
                     $resizeImg->resizeImgProfile($where.'/'. $filename);
+
                 } catch (FileException $e) {
                     $this->addFlash('verify_email_error', 'Une érreur est survenue lors du chargement de l\'image !');
                     return $this->redirectToRoute('app_user_edit');
