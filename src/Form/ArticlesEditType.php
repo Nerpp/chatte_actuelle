@@ -39,6 +39,7 @@ class ArticlesEditType extends AbstractType
             ])
 
             ->add('draft',CheckboxType::class,[
+                'label'    => 'Brouillon',
                 'required' => false
             ])
 

@@ -7,12 +7,6 @@
 
 <div class="container">
 
-	{# <div class="pt-5">
-		<p>
-			<h1>Chatte Actuelle</h1>
-		</p>
-	</div> #}
-
 	<div class="col background-white py-3 justify">
 		<div class="clearfix">
 				<img src="{{ asset('/img/logo.png') }}" alt="" width="150" height="150"
@@ -50,9 +44,9 @@
 				alt="chatte_actuelle">
 			{% endif %}
 			<div class="card-body">
-				<h5 class="card-title">{{ last_article.title }}</h5>
+				<h5 class="card-title text-center">{{ last_article.title }}</h5>
 				{% autoescape %}
-				<p class="card-text">{{ last_article.article|u.truncate(155)|raw }}...</p>
+				<p class="card-text justify">{{ last_article.article|u.truncate(155)|raw }}...</p>
 				{% endautoescape %}
 				<p> Auteur : {{ last_article.user.displayname }}</p>
 				<a href="{{ path('app_articles_show', {'slug': last_article.slug}) }}" class="btn btn-light">

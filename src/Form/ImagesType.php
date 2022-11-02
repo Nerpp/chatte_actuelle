@@ -17,7 +17,12 @@ class ImagesType extends AbstractType
             // ->add('source')
             ->add('source',HiddenType::class,[
             ])
-            ->add('description')
+            ->add('description',TextType::class,[
+                'attr' => [
+                    'placeholder' => 'Décrire votre image nombre',  
+                ]
+            ]
+            )
             ->add('articles')
            
         ;

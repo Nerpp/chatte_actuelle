@@ -1,5 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
 
+#bandeau{
+  width: 100%;
+  height: 100%;
+}
 // navbar
 .nav-link {
   color: #ffe6cc;
@@ -178,6 +182,11 @@ p {
 // carte pour accueil et historique
 .card{
   background-color: transparent;
+}
+
+.card card-img-top{
+  width: 100%;
+  height: 10rem;
 }
 // carte pour accueil et historique
 

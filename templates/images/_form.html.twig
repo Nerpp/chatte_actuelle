@@ -1,4 +1,23 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+       
+        <p>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control  text-center'}}) }}
+        </p>
+        
+       <p>
+        <img id="footprints" src="{{ asset("/img/svg/info.svg") }}" alt="information"> Vous pouvez déplacer votre image dans autre article
+       </p>
+
+        <p>
+            {{ form_widget(form.articles, {'attr': {'class': 'form-control  text-center'}}) }}
+        </p>
+        <div class="d-flex flex-row align-items-center justify-content-evenly">
+            <p>
+                <a href="{{ path('app_articles_show',{'slug' : image.articles.slug }) }}">Retour</a>
+            </p>
+            <p>
+                <button class="btn">{{ button_label|default('Save') }}</button>
+            </p>
+        </div>
+       
 {{ form_end(form) }}

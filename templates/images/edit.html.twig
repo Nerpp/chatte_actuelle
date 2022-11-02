@@ -2,11 +2,26 @@
 
 {% block title %}Edit Images{% endblock %}
 
+{% block header %}
+<div class="container pt-5">
+    <div class="text-center">
+        <h1>Editer l'image</h1>
+    </div>
+</div>
+{% endblock %}
+
 {% block section %}
-    <h1>Edit Images</h1>
+<div class="container pt-5">
+
+    <div class="d-grid gap-4">
+    <div class="d-flex justify-content-center">
+        <img class="img-fluid" src="{{ asset('/img/download/'~ image.articles.slug ~ '/' ~ image.source) }}"
+            alt="{{ image.articles.slug }}">
+    </div>
 
     {{ include('images/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_articles_show',{'slug' : image.articles.slug }) }}">Retour</a>
+</div>
+    {# <a href="{{ path('app_articles_show',{'slug' : image.articles.slug }) }}">Retour</a> #}
+</div>
 
 {% endblock %}

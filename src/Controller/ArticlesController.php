@@ -351,8 +351,7 @@ class ArticlesController extends AbstractController
     #[Route('/delete/{slug}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
-        // https://gmanier.com/memo/6/php-supprimer-dossier-a-l-aide-de-la-recursivite a voir pour supprimer dossier php
-
+        
         if (!$this->isGranted('DELETE_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
@@ -367,6 +366,26 @@ class ArticlesController extends AbstractController
         }
 
         return $this->redirectToRoute('app_articles_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/delete/image/byarticle/{id}', name: 'app_images_delete_by_article', methods: ['POST', 'GET'])]
+    public function deleteImageByArticle(Request $request,Images $image, ImagesRepository $imagesRepository): Response
+    {
+
+        if (!$this->isGranted('DELETE_IMAGE', $image)) {
+            $this->addFlash('unauthorised', 'Désolé, vous ne disposez pas des droits nécessaires');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $article = $image->getArticles()->getSlug();
+
+        if ($this->isCsrfTokenValid('delete' . $image->getId(), $request->request->get('_token')) ) {
+            $filesystem = new FileSysteme;
+        $filesystem->remove($this->getParameter('images_directory').$article. '/' . $image->getSource());
+        $imagesRepository->remove($image);
+        }
+
+        return  $this->redirectToRoute('app_articles_show', ['slug' => $article], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/delete/image/{id}', name: 'app_images_delete', methods: ['POST', 'GET'])]

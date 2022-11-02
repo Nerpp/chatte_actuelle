@@ -26,7 +26,7 @@
 
 	<div class="d-flex flex-row d-grid gap-2">
 		<div class="">
-			{{ form_label(form.draft, 'Décocher la case pour Publier l\'article') }}
+			{{ form_label(form.draft) }}
         </div>
         <div class="">
             {{ form_widget(form.draft) }}
@@ -40,14 +40,14 @@
         </div>
 		{% endif %}
     </div>
-	<div class="">
+	<div class="text-center">
 		<h1>Gestion images</h1>
 	</div>
     <div class="">
 	{{ form_errors(form.image) }}
 	</div>
 	<div class="">
-	{{ form_widget(form.image, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
+	{{ form_widget(form.image, {'attr':{'class':'form-control form-control-lg'}}) }}
 	</div>
 	
 	<div class="d-flex flex-row flex-wrap d-grid gap-4">
@@ -55,10 +55,10 @@
 		{% for image in article.images %}
 			<div class="d-flex flex-column d-grid gap-2">
 			<div class="">
-				<img src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt=""> 
+				<img class="img-fluid" src="{{ asset('/img/download/'~ article.slug ~ '/' ~ image.source) }}" alt=""> 
 			</div>
 			{% if is_granted('DELETE_IMAGE',image) %}
-			<div class="">
+			<div class="text-end">
 				<a href="{{ path('app_images_delete', {'id': image.id, }) }}" data-delete data-token="{{ csrf_token('delete' ~ image.id) }}" class="btn btn-danger" onclick="return confirm('Cette action est définitive !!!');">
 					Supprimer
 				</a>
@@ -68,15 +68,9 @@
 		{% endfor %}
 	</div>
 	
-    <div class="">
-        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    <div class="text-end">
+        <button class="btn btn-light">{{ button_label|default('Enregistrer') }}</button>
     </div>
-
-	{# <button class="btn btn-primary">
-		<span>{{ button_label|default('Enregistrer') }}</span>
-		<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-		<span class="sr-only">Loading...</span>
-	</button> #}
 
 </div>
 {{ form_end(form) }}
