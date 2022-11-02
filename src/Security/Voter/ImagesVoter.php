@@ -68,7 +68,6 @@ class ImagesVoter extends Voter
 
     private function authEditImage($image)
     {
-        dd('test');
         if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser ) {
             return true;
         }
