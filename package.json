@@ -24,6 +24,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@fontsource/roboto": "^4.5.8",
         "@popperjs/core": "^2.11.4",
         "bootstrap": "^5.2.1",
         "ckeditor4": "^4.13.0"

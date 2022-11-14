@@ -1,4 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
+@import "@fontsource/roboto";
+
+body {
+  font-family: "Roboto";
+}
 
 #bandeau{
   width: 100%;
