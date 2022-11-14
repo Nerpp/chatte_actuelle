@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Tags
+{% block title %}Nouveau Tag
 {% endblock %}
 
 
 {% block header %}
-	<div class="container">
-		<div class="">
-			<h1>Create new Tags</h1>
+	<div class="container pt-5">
+		<div class="text-center">
+			<h1>Créer un Tag</h1>
 		</div>
 	</div>
 
@@ -17,8 +17,8 @@
 
 	{{ include('tags/_form.html.twig') }}
 
-	<div class="container">
-		<div class="">
+	<div class="container pt-5">
+		<div class="text-end">
 			<a href="{{ path('app_admin') }}">Retour</a>
 		</div>
 	</div>

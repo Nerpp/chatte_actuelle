@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block header %}
-	<div class="container">
+	<div class="container pt-5">
 		<div class="text-center">
 			<h1>Vos Brouillons {{ app.user.displayName }}</h1>
 		</div>
@@ -70,10 +70,9 @@
 	</div>
 
 	<div class="container">
-		<div class="">
+		<div class="text-end">
 			<a href="{{ path('app_admin') }}">Retour</a>
 		</div>
 	</div>
-	
-		{# <a href="{{ path('app_articles_new') }}">Create new</a> #} 
+
 {% endblock %}

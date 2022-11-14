@@ -4,10 +4,9 @@
 {% endblock %}
 
 {% block header %}
-<div class="container">
-	<div class="">
-		<h1>Bienvenue
-			{{ app.user.displayName }}</h1>
+<div class="container pt-5">
+	<div class="text-center">
+		<h1>Bienvenue {{ app.user.displayName }}</h1>
 	</div>
 </div>
 {% endblock %}
@@ -18,7 +17,7 @@
 		<div class="">
 			<h2>Gestion Tags</h2>
 		</div>
-		<div class="d-flex flex-row d-grid gap-2">
+		<div class="d-flex flex-row justify-content-center d-grid gap-2">
 			<div class="">
 				<a class="btn btn-primary" href="{{ path('app_tags_new') }}" role="button">Créer un Tag</a>
 			</div>
@@ -33,7 +32,7 @@
 		<div class="">
 			<h2>Gestion Articles</h2>
 		</div>
-		<div class="d-flex flex-row d-grid gap-2">
+		<div class="d-flex flex-row justify-content-center flex-wrap d-grid gap-2">
 			<div class="">
 				<a class="btn btn-primary" href="{{ path('app_articles_new') }}" role="button">Nouvel Article</a>
 			</div>
@@ -69,7 +68,7 @@
 		<div class="">
 			<h2>Gestion Commentaires</h2>
 		</div>
-		<div class="">
+		<div class="text-center">
 			<a class="btn btn-primary" href="{{ path('app_comments_reported_index') }}" role="button">Commentaire
 				signalé {{ comments|length }}</a>
 		</div>
@@ -80,12 +79,12 @@
 		<div class="">
 			<h2>Gestion Utilisateur</h2>
 		</div>
-		<div class="d-flex flex-row d-grid gap-2">
+		{# <div class="d-flex flex-row d-grid gap-2"> #}
 			
-			<div class="">
+			<div class="text-center">
 				<a class="btn btn-primary" href="{{ path('app_user_index') }}" role="button">Index Utilisateur</a>
 			</div>
-		</div>
+		{# </div> #}
 	</div>
 </div>
 {% endblock %}

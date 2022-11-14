@@ -1,17 +1,22 @@
 <div class="container">
-
+    {{ form_start(form) }}
+    <div class="d-grid gap-2">
     {% if user.imgProfile.source %}
     <div class="">
         <img src="{{ asset('/img/download/profile/'~ user.imgProfile.source) }}" alt="">
     </div>
     {% else %}
-    <div class="">
-        <img src="{{ asset('/img/chatte_actuelle.jpg') }}" alt="">
+    <div class="d-flex flex-row align-items-center d-grid gap-3">
+        <p>
+            Image par défaut
+        </p>
+
+        <img src="{{ asset('/img/svg/profile.svg') }}" alt="">
     </div>
     {% endif %}
-    {{ form_start(form) }}
+    
     <div class="">
-        {{ form_label(form.imgProfile, 'Image de profil') }}
+        <p>Changer votre image de profil</p>
     </div>
     <div class="">
         {{ form_errors(form.imgProfile) }}
@@ -19,24 +24,20 @@
     <div class="">
         {{ form_widget(form.imgProfile, {'attr':{'class':'form-control form-control-lg ms-5'}}) }}
     </div>
-    <div class="">
-        {{ form_label(form.displayName, 'Nom d\'affichage') }}
+    <div class="pt-1">
+        <p>Nom d'affichage</p>
     </div>
+   
     <div class="">
         {{ form_errors(form.displayName) }}
     </div>
     <div class="">
         {{ form_widget(form.displayName, {'attr': {'class': 'form-control  text-center'}}) }}
     </div>
-    <div class="">
-        {{ form_label(form.email, 'email') }}
+    <div class="pt-2">
+        <p>Email : {{ user.email }}</p>
     </div>
-    <div class="">
-        {{ form_errors(form.email) }}
-    </div>
-    <div class="">
-        {{ form_widget(form.email, {'attr': {'class': 'form-control  text-center'}}) }}
-    </div>
+   
     {% if is_granted('CHANGE_ROLE',app.user) %}
     <div class="">
         {{ form_label(form.roles, 'Choisissez un role') }}
@@ -53,8 +54,10 @@
         {{ form_widget(form.warning) }}
     </div>
     {% endif %}
-    <div class="">
-        <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+    <div class="text-end pt-3">
+        <button class="btn btn-light">{{ button_label|default('Enregistrer') }}</button>
     </div>
+</div>
     {{ form_end(form) }}
+    
 </div>

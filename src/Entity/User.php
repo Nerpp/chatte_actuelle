@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Cet email n\'est pas disponible')]
-#[UniqueEntity(fields: ['displayname'], message: 'Le nom d\'affichage est déjà utilisé')]
+#[UniqueEntity(fields: ['displayname'], message: 'Le pseudonyme est déjà utilisé')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,7 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Regex(pattern:"/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).{8,}$/", message:"Votre mot de passe doit être constitué de minuscule, de caractéres spéciaux et de caractéres numérique")]
     private $password;
 
-    #[ORM\Column(type: 'string', length: 45, unique: true)]
+    #[ORM\Column(type: 'string', length: 45, unique:true)]
     #[Assert\NotBlank(message:"Vous devez choisir un pseudonyme d'affichage.")]
     private $displayname;
 

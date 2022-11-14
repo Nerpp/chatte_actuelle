@@ -3,53 +3,81 @@
 {% block title %}Index Utilisateur{% endblock %}
 
 {% block header %}
-<div class="container text-center pt-3">
-    <h1>Index</h1>
+<div class="container text-center pt-5">
+    <h1>Index des utilisateurs</h1>
 </div>
 
 {% endblock %}
 
 {% block section %}
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Roles</th>
+<div class="container pt-5">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        <p>Email</p>
+                    </th>
+                    <th>
+                        <p>Roles</p>
+                    </th>
 
-                <th>Pseudonyme d'affichage</th>
-                <th>Compte vérifié</th>
-                <th>Avertissement</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
-            <tr>
+                    <th>
+                        <p>Pseudonyme d'affichage</p>
+                    </th>
+                    <th>
+                        <p>Compte vérifié</p>
+                    </th>
+                    <th>
+                        <p>Avertissement</p>
+                    </th>
+                    <th>
+                        <p>actions</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
 
-                <td>{{ user.email }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                    <td>
+                        <p>{{ user.email }}</p>
+                    </td>
+                    <td>
+                        <p>{{ user.roles ? user.roles|json_encode(constant('JSON_PRETTY_PRINT')) : 'Utilisateur' }}</p>
+                    </td>
 
-                <td>{{ user.displayname }}</td>
-                <td>{{ user.isVerified ? 'Oui' : 'Non' }}</td>
-             
-                <td>{{ user.warning ? user.warning : '0' }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+                    <td>
+                        <p>{{ user.displayname }}</p>
+                    </td>
+                    <td>
+                        <p>{{ user.isVerified ? 'Oui' : 'Non' }}</p>
+                    </td>
 
-                    {% if is_granted('EDIT_PROFILE',user) %}
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                    <td>
+                        <p>{{ user.warning ? user.warning : '0' }}</p>
+                    </td>
+                    <td>
+                        {% if is_granted('USER_INDEX',user) %}
+                        <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
+                        {% endif %}
 
+                        {% if is_granted('EDIT_PROFILE',user) %}
+                        <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8">no records found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="text-end pt-5">
+        <a href="{{ path('app_admin') }}">Retour</a>
+    </div>
 </div>
 
 {% endblock %}

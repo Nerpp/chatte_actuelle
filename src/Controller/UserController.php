@@ -8,7 +8,9 @@ use App\Entity\ImgProfile;
 use App\Services\FileSysteme;
 use App\Services\ImageOptimizer;
 use App\Repository\UserRepository;
+use Symfony\Component\Mime\Address;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,6 +74,8 @@ class UserController extends AbstractController
         if (!$this->isGranted('CHANGE_AVERTISSEMENT_USER', $this->tokenUser)) {
             $form->remove('warning');
         }
+
+        $form->remove('email');
        
         $form->handleRequest($request);
 
@@ -112,10 +116,7 @@ class UserController extends AbstractController
 
              $userRepository->add($user, true);
 
-            return $this->renderForm('user/edit.html.twig', [
-                'user' => $user,
-                'form' => $form,
-            ]);
+           
         }
 
         return $this->renderForm('user/edit.html.twig', [

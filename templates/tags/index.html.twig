@@ -3,7 +3,7 @@
 {% block title %}Tags index{% endblock %}
 
 {% block header %}
-<div class="container">
+<div class="container pt-5">
     <div class="text-center">
         <h1>Index des Tags</h1>
     </div>
@@ -16,17 +16,19 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Nom</th>
-                {# <th>Color</th> #}
-                <th>Editer</th>
-                <th>Supprimer</th>
+                <th><p>Nom</p></th>
+                <th><p>Editer</p></th>
+                <th><p>Supprimer</p></th>
             </tr>
         </thead>
         <tbody>
         {% for tag in tags %}
             <tr>
-                <td>{{ tag.name }}</td>
-                {# <td>{{ tag.color }}</td> #}
+                <td>
+                    <p>
+                        {{ tag.name }}
+                    </p>
+                </td>
                 <td>
                     {# <a href="{{ path('app_tags_show', {'id': tag.id}) }}">show</a> #}
                    
@@ -43,12 +45,14 @@
     </table>
 
 </div>
-<div class="container">
-    <div class="">
-        <a href="{{ path('app_admin') }}">Retour</a>
-    </div>
-    <div class="">
-    <a href="{{ path('app_tags_new') }}">Create new</a>
+<div class="container pt-5">
+    <div class="d-flex flex-row justify-content-evenly">
+        <div class="">
+            <a href="{{ path('app_admin') }}">Retour</a>
+        </div>
+        <div class="">
+        <a href="{{ path('app_tags_new') }}">Créer un nouveau</a>
+        </div>
     </div>
 </div>
 {% endblock %}

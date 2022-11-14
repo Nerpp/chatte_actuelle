@@ -18,13 +18,13 @@
     {{ form_start(registrationForm) }}
     
     <div class="col-12 justify-content-center d-grid gap-3">
-        <div class="">
+        <div class="bg-light">
             {{ form_errors(registrationForm.email) }}
         </div>
         <div class="">
             {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control  text-center'}}) }}
         </div>
-        <div class="">
+        <div class="bg-light">
             {{ form_errors(registrationForm.displayName) }}
         </div>
         <div class="">
@@ -36,13 +36,13 @@
         <div class="">
             {{ form_widget(registrationForm.imgProfile, {'attr':{'class':'form-control form-control-lg'}}) }}
         </div>
-        <div class="">
+        <div class="bg-light">
             {{ form_errors(registrationForm.plainPassword.first) }}
         </div>
         <div class="">
             {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control  text-center'}}) }}
         </div>
-        <div class="">
+        <div class="bg-light">
             {{ form_errors(registrationForm.plainPassword.second) }}
         </div>
         <div class="">

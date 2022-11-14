@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block header %}
-	<div class="container">
+	<div class="container pt-5">
 		<div class="text-center">
 			<h1>Vos articles publié {{ app.user.displayName }}</h1>
 		</div>
@@ -61,12 +61,12 @@
 		</div>
 	</div>
 
-	<div class="container">
-		<div class="">
-			<a href="{{ path('app_articles_new') }}">Nouvel Article</a> 
-		</div>
-		<div class="">
-			<a href="{{ path('app_admin') }}">Retour</a> 
+	<div class="container pt-5">
+		<div class="d-flex flex-row justify-content-evenly">
+				<a href="{{ path('app_articles_new') }}">Nouvel Article</a> 
+
+				<a href="{{ path('app_admin') }}">Retour</a> 
+
 		</div>
 	</div>
 		

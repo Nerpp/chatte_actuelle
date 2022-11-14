@@ -32,7 +32,7 @@
 			{{ form_widget(form.draft) }}
 		</div>
 	</div>
-	<div class="">
+	<div class="text-center">
 		<h1>Gestion images</h1>
 	</div>
 	<div class="">
@@ -50,8 +50,12 @@
 		{% endfor %}
 	</div>
 
-	<div class="">
-		<button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+	<div class="d-flex flex-row align-items-center justify-content-evenly">
+		<a href="{{ path('app_admin') }}">Retour</a>
+
+		{# <div class=""> #}
+			<button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+		{# </div> #}
 	</div>
 
 </div>
