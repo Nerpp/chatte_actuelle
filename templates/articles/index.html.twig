@@ -38,7 +38,7 @@
 			{% endif %}
 			<div class="card-body">
 				<h6 class='text-end text-info'>{{article.tags.name}}</h6>
-				<h5 class="card-title">{{ article.title }}</h5>
+				<h5 class="card-title text-center"><strong>{{ article.title }}</strong></h5>
 				{% autoescape %}
 				<p class="card-text justify">{{ article.article|u.truncate(155)|raw }}...</p>
 				{% endautoescape %}

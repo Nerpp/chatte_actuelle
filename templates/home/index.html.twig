@@ -44,7 +44,7 @@
 				alt="chatte_actuelle">
 			{% endif %}
 			<div class="card-body">
-				<h5 class="card-title text-center">{{ last_article.title }}</h5>
+				<h2 class="card-title text-center">{{ last_article.title }}</h2>
 				{% autoescape %}
 				<p class="card-text justify">{{ last_article.article|u.truncate(155)|raw }}...</p>
 				{% endautoescape %}

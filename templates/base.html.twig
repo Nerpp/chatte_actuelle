@@ -7,7 +7,7 @@
     <title>{% block title %}Bienvenue Chatte Actuelle!{% endblock %}</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-   
+
     {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
     {% endblock %}
@@ -52,26 +52,31 @@
         <div class="container-full pt-3">
 
             <div id="footer" class="d-flex flex-row align-items-center justify-content-evenly text-white d-grid gap-2">
-                <div class="d-flex flex-column">
-                    <p>
-                        <img src="{{ asset("/img/svg/mail.svg") }}" alt="mail"> Nous contacter :
-                    </p>
+                {# <div class="d-flex flex-column">
+                    <div class="d-flex flex-row align-items-center justify-content-center">
+                        <p>
+                            <img src="{{ asset("/img/svg/mail.svg") }}" alt="mail"> 
+                        </p>
+                        <p class="ms-1">
+                            Nous contacter :
+                        </p>
+                    </div>
                     <p>
                         chatteActuelle@gmail.com
                     </p>
-                </div>
+                </div> #}
                 <div class="d-flex flex-column">
                     <p>
                         Réseaux sociaux
                     </p>
 
-                    <a class="text-center" href="https://www.facebook.com/profile.php?id=100087009169794" target="_blank"
-                        rel="noopener noreferrer">
+                    <a class="text-center" href="https://www.facebook.com/profile.php?id=100087009169794"
+                        target="_blank" rel="noopener noreferrer">
                         <img src="{{ asset("/img/svg/facebook.svg") }}" alt="facebook">
                     </a>
                 </div>
                 <div class="d-flex flex-column">
-                    
+
                     <p>
                         <a class="nav-link" href="{{ path('app_cgu') }}">Conditions Utilisation</a>
                     </p>

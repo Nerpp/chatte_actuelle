@@ -1,8 +1,28 @@
 @import "~bootstrap/scss/bootstrap";
-@import "@fontsource/roboto";
 
+@font-face {
+  font-family: myFirstFont;
+  src: url('/assets/fonts/crimson/CrimsonText-Roman.ttf');
+}
+
+@font-face {
+  font-family: myFirstFont;
+  src: url('/assets/fonts/crimson/CrimsonText-Bold.ttf');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: myFirstFont;
+  src: url('/assets/fonts/crimson/CrimsonText-italic.ttf');
+  font-weight: italic;
+}
+
+
+html,
 body {
-  font-family: "Roboto";
+  font-family: myFirstFont;
+  color: #ffe6cc;
+  font-size: 21px;
 }
 
 #bandeau{
@@ -179,10 +199,6 @@ section{
   min-height: 90vh;
 }
 
-// site en général
-p {
-  color: #ffe6cc;
-}
 
 // carte pour accueil et historique
 .card{

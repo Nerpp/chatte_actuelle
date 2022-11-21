@@ -4,7 +4,6 @@
         "@symfony/stimulus-bridge": "^3.0.0",
         "@symfony/webpack-encore": "^1.0.0",
         "autoprefixer": "^10.4.4",
-        "compression-webpack-plugin": "^10.0.0",
         "core-js": "^3.0.0",
         "file-loader": "^6.0.0",
         "postcss": "^8.4.12",
@@ -25,7 +24,6 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "@fontsource/roboto": "^4.5.8",
         "@popperjs/core": "^2.11.4",
         "bootstrap": "^5.2.1",
         "ckeditor4": "^4.13.0"
