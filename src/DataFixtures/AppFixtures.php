@@ -44,35 +44,34 @@ class AppFixtures extends Fixture
                 'roles' => ['ROLE_SUPERADMIN'],
                 'isVerified' => true
             ],
-            [
-                'email' => 'francis@gmail.com',
-                'displayName' => 'Francis',
-                'password' => '12345678',
-                'roles' => ['ROLE_USER'],
-                'isVerified' => true
-            ],
-            [
-                'email' => 'darky@gmail.com',
-                'displayName' => 'Dark Vador',
-                'password' => '12345678',
-                'roles' => ['ROLE_USER'],
-                'isVerified' => true
-            ],
-            [
-                'email' => 'fernande@gmail.com',
-                'displayName' => 'Fernande',
-                'password' => '12345678',
-                'roles' => ['ROLE_USER'],
-                'isVerified' => true
-            ],
-            [
-                'email' => 'line@gmail.com',
-                'displayName' => 'Linette',
-                'password' => '12345678',
-                'roles' => ['ROLE_USER'],
-                'isVerified' => true
-            ],
-
+            // [
+            //     'email' => 'francis@gmail.com',
+            //     'displayName' => 'Francis',
+            //     'password' => '12345678',
+            //     'roles' => ['ROLE_USER'],
+            //     'isVerified' => true
+            // ],
+            // [
+            //     'email' => 'darky@gmail.com',
+            //     'displayName' => 'Dark Vador',
+            //     'password' => '12345678',
+            //     'roles' => ['ROLE_USER'],
+            //     'isVerified' => true
+            // ],
+            // [
+            //     'email' => 'fernande@gmail.com',
+            //     'displayName' => 'Fernande',
+            //     'password' => '12345678',
+            //     'roles' => ['ROLE_USER'],
+            //     'isVerified' => true
+            // ],
+            // [
+            //     'email' => 'line@gmail.com',
+            //     'displayName' => 'Linette',
+            //     'password' => '12345678',
+            //     'roles' => ['ROLE_USER'],
+            //     'isVerified' => true
+            // ],
         ];
 
         $listTags = [
@@ -138,47 +137,47 @@ class AppFixtures extends Fixture
         $insertEdito->setPublishedAt(new \DateTime('now'));
         $manager->persist($insertEdito);
 
-        foreach ($listTags as $tagListed) {
-            $tag = new Tags();
-            $tag->setName($tagListed['tags']);
-            $manager->persist($tag);
-            $allTags[] = $tag;
-        }
+        // foreach ($listTags as $tagListed) {
+        //     $tag = new Tags();
+        //     $tag->setName($tagListed['tags']);
+        //     $manager->persist($tag);
+        //     $allTags[] = $tag;
+        // }
 
-        $manager->flush();
+        // $manager->flush();
 
-        for ($i = 0; $i < 11; $i++) {
-            foreach ($allUser as $userALl) {
-                $article = new Articles();
-                $IdUnic = uniqid(true);
-                $article->setTitle($listArticle['title'] . $IdUnic);
-                $article->setSlug($listArticle['slug'] . $IdUnic);
-                $article->setArticle($listArticle['article']);
+        // for ($i = 0; $i < 11; $i++) {
+        //     foreach ($allUser as $userALl) {
+        //         $article = new Articles();
+        //         $IdUnic = uniqid(true);
+        //         $article->setTitle($listArticle['title'] . $IdUnic);
+        //         $article->setSlug($listArticle['slug'] . $IdUnic);
+        //         $article->setArticle($listArticle['article']);
 
-                $draft = rand(0, 1);
-                $article->setDraft($draft);
-                if ($draft === 0) {
-                    $article->setPublishedAt(new \DateTime('now'));
-                }
-                $article->setUser($userALl);
-                $article->setTags($allTags[rand(0, 4)]);
-                $manager->persist($article);
-                $allArticle[] = $article;
-            }
-        }
+        //         $draft = rand(0, 1);
+        //         $article->setDraft($draft);
+        //         if ($draft === 0) {
+        //             $article->setPublishedAt(new \DateTime('now'));
+        //         }
+        //         $article->setUser($userALl);
+        //         $article->setTags($allTags[rand(0, 4)]);
+        //         $manager->persist($article);
+        //         $allArticle[] = $article;
+        //     }
+        // }
 
-        foreach ($allArticle as $articleAll) {
-            for ($i = 0; $i < 15; $i++) {
-                $comment = new Comments();
-                $comment->setComment(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis sem ligula. Nulla nisl ex, rhoncus et rutrum vel, tempor nec lorem. Pellentesque sit amet augue vitae ipsum blandit pharetra. Nullam imperdiet imperdiet semper. Vestibulum vivamus.'
-                );
-                $comment->setCreatedAt(new \DateTime('+' . mt_rand(5, 19) . 'days'));
-                $comment->setUser($allUser[rand(0, count($allUser) - 1)]);
-                $comment->setArticle($articleAll);
-                $manager->persist($comment);
-            }
-        }
+        // foreach ($allArticle as $articleAll) {
+        //     for ($i = 0; $i < 15; $i++) {
+        //         $comment = new Comments();
+        //         $comment->setComment(
+        //             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis sem ligula. Nulla nisl ex, rhoncus et rutrum vel, tempor nec lorem. Pellentesque sit amet augue vitae ipsum blandit pharetra. Nullam imperdiet imperdiet semper. Vestibulum vivamus.'
+        //         );
+        //         $comment->setCreatedAt(new \DateTime('+' . mt_rand(5, 19) . 'days'));
+        //         $comment->setUser($allUser[rand(0, count($allUser) - 1)]);
+        //         $comment->setArticle($articleAll);
+        //         $manager->persist($comment);
+        //     }
+        // }
 
         $manager->flush();
     }
