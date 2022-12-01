@@ -19,7 +19,7 @@ class TagsController extends AbstractController
         $this->security = $security;
         $this->tokenUser = $this->security->getUser();
     }
-    
+
     #[Route('/', name: 'app_tags_index', methods: ['GET'])]
     public function index(TagsRepository $tagsRepository): Response
     {
@@ -86,8 +86,8 @@ class TagsController extends AbstractController
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
-        
-        if ($this->isCsrfTokenValid('delete'.$tag->getId(), $request->request->get('_token'))) {
+
+        if ($this->isCsrfTokenValid('delete' . $tag->getId(), $request->request->get('_token'))) {
             $tagsRepository->remove($tag);
         }
 

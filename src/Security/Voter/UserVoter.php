@@ -18,7 +18,7 @@ class UserVoter extends Voter
     public const CREATE_TAG = 'CREATE_TAG';
     public const INDEX_TAGS = 'INDEX_TAGS';
     public const ACCES_CENSURE = 'ACCES_CENSURE';
-    public const EDITO_EDIT ='EDITO_EDIT';
+    public const EDITO_EDIT = 'EDITO_EDIT';
     public const SEND_COMMENTS = 'SEND_COMMENTS';
     public const VIEW_REPORTED_COMMENTS = 'VIEW_REPORTED_COMMENTS';
     public const EDIT_PROFILE = 'EDIT_PROFILE';
@@ -26,7 +26,7 @@ class UserVoter extends Voter
     public const USER_INDEX = 'USER_INDEX';
     public const DELETE_USER = 'DELETE_USER';
     public const CHANGE_AVERTISSEMENT_USER = 'CHANGE_AVERTISSEMENT_USER';
-    
+
     private $security;
 
     public function __construct(Security $security)
@@ -38,29 +38,30 @@ class UserVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, 
-        [
-        self::SECTION_ADMIN,
-        self::NEW_ARTICLE,
-        self::VIEW_ALL_DRAFT,
-        self::VIEW_PERSONNAL_DRAFT,
-        self::CREATE_TAG,
-        self::INDEX_TAGS,
-        self::ACCES_CENSURE,
-        self::EDITO_EDIT,
-        self::SEND_COMMENTS,
-        self::VIEW_REPORTED_COMMENTS,
-        self::EDIT_PROFILE,
-        self::CHANGE_ROLE,
-        self::USER_INDEX,
-        self::DELETE_USER,
-        self::CHANGE_AVERTISSEMENT_USER,
-        ])
+        return in_array(
+            $attribute,
+            [
+            self::SECTION_ADMIN,
+            self::NEW_ARTICLE,
+            self::VIEW_ALL_DRAFT,
+            self::VIEW_PERSONNAL_DRAFT,
+            self::CREATE_TAG,
+            self::INDEX_TAGS,
+            self::ACCES_CENSURE,
+            self::EDITO_EDIT,
+            self::SEND_COMMENTS,
+            self::VIEW_REPORTED_COMMENTS,
+            self::EDIT_PROFILE,
+            self::CHANGE_ROLE,
+            self::USER_INDEX,
+            self::DELETE_USER,
+            self::CHANGE_AVERTISSEMENT_USER,
+            ]
+        )
             && $subject instanceof \App\Entity\User;
-
     }
 
-    protected function voteOnAttribute(string $attribute, $subject ,TokenInterface $token): bool
+    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
@@ -86,7 +87,7 @@ class UserVoter extends Voter
                 return $this->authPersonnalDraft();
                 break;
             case self::CREATE_TAG:
-               return $this->authCreateTag();
+                return $this->authCreateTag();
                 break;
             case self::INDEX_TAGS:
                 return $this->authIndexTag();
@@ -112,7 +113,6 @@ class UserVoter extends Voter
         }
 
         return false;
-        
     }
 
     private function authSectionAdmin()
@@ -174,10 +174,10 @@ class UserVoter extends Voter
         if (!$this->security->isGranted('ROLE_ADMIN')) {
             return false;
         }
-       
+
         foreach ($this->security->getUser()->getArticles() as $articlesChecked) {
             if ($articlesChecked->getCensure()) {
-               return true;
+                return true;
             }
         }
 
@@ -207,16 +207,16 @@ class UserVoter extends Voter
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
-       
+
         return false;
     }
 
     private function authEditProfile($subject)
     {
-        if ($subject === $this->security->getUser() ) {
+        if ($subject === $this->security->getUser()) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -225,8 +225,7 @@ class UserVoter extends Voter
         if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
-       
+
         return false;
     }
-    
 }

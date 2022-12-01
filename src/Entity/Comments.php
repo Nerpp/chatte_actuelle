@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommentsRepository;
 
-
 #[ORM\Entity(repositoryClass: CommentsRepository::class)]
 class Comments
 {
@@ -39,15 +38,14 @@ class Comments
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'reply')]
     private ?self $parent = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent',cascade:['persist'], orphanRemoval: true, targetEntity: self::class)]
+    #[ORM\OneToMany(mappedBy: 'parent', cascade:['persist'], orphanRemoval: true, targetEntity: self::class)]
     private Collection $reply;
 
-    
+
     public function __construct()
     {
         $this->reportings = new ArrayCollection();
         $this->reply = new ArrayCollection();
-        
     }
 
     public function getId(): ?int
@@ -180,6 +178,4 @@ class Comments
 
         return $this;
     }
-
- 
 }

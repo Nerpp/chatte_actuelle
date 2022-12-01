@@ -40,7 +40,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             if (strval($session->get('captcha')) !== $form->get('captcha')->getData()) {
                 $this->addFlash('', 'Le captcha est incorrect');
 
@@ -56,7 +55,7 @@ class RegistrationController extends AbstractController
 
             // je vérifie qu'il existe des images
             $files = $form->get('imgProfile')->getData();
-            $recImg = new ImgProfile;
+            $recImg = new ImgProfile();
 
             if ($files) {
                 $where = $this->getParameter('images_directory') . 'profile/';
@@ -68,7 +67,7 @@ class RegistrationController extends AbstractController
                         $filename
                     );
 
-                    $resizeImg = new ImageOptimizer;
+                    $resizeImg = new ImageOptimizer();
                     $resizeImg->resizeImgProfile($where . '/' . $filename);
                 } catch (FileException $e) {
                     $this->addFlash('verify_email_error', 'Une érreur est survenue lors du chargement de l\'image !');
@@ -80,12 +79,12 @@ class RegistrationController extends AbstractController
                         'captcha' => $firstElement . '+' . $secondElement,
                     ]);
                 }
-                
+
                 $recImg->setSource($filename);
-            }else{
+            } else {
                 $recImg->setSource(false);
             }
-            
+
             $entityManager->persist($recImg);
                 $user->setImgProfile($recImg);
             // encode the plain password

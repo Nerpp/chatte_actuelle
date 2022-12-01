@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Imagine\Gd\Imagine;
@@ -8,12 +9,9 @@ class ImageOptimizer
 {
     private const MAX_WIDTH = 400;
     private const MAX_HEIGHT = 400;
-
     private const PROFILE_MAX_WIDTH = 100;
     private const PROFILE_MAX_HEIGHT = 100;
-
     private $imagine;
-
     public function __construct()
     {
         $this->imagine = new Imagine();
@@ -50,6 +48,4 @@ class ImageOptimizer
         $photo = $this->imagine->open($filename);
         $photo->resize(new Box($width, $height))->save($filename);
     }
-
-
 }

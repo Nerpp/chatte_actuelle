@@ -10,9 +10,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-
 #[ORM\Entity(repositoryClass: ArticlesRepository::class)]
-#[UniqueEntity(fields: ['title'],message:'Ce Titre existe déjà.')]
+#[UniqueEntity(fields: ['title'], message:'Ce Titre existe déjà.')]
 #[ORM\Index(name: 'articles', columns: ['title'], flags: ['fulltext'])]
 
 class Articles
@@ -22,10 +21,10 @@ class Articles
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 45,unique:true)]
+    #[ORM\Column(type: 'string', length: 45, unique:true)]
     private $title;
 
-    #[ORM\Column(type: 'string', length: 45,unique:true)]
+    #[ORM\Column(type: 'string', length: 45, unique:true)]
     private $slug;
 
     /**
@@ -51,10 +50,10 @@ class Articles
     #[ORM\JoinColumn(nullable: false)]
     private $tags;
 
-    #[ORM\OneToMany(mappedBy: 'articles', targetEntity: Images::class , cascade:['persist'],orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'articles', targetEntity: Images::class, cascade:['persist'], orphanRemoval: true)]
     private $images;
 
-    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comments::class,orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'article', targetEntity: Comments::class, orphanRemoval: true)]
     private $comments;
 
     #[ORM\Column(type: 'boolean')]

@@ -48,5 +48,4 @@ class Edito
 
         return $this;
     }
-
 }

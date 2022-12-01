@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\Tags;
 use App\Entity\Articles;
-
 use Symfony\Component\Form\AbstractType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,37 +18,36 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
-
 class ArticlesEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title',TextType::class,[
+            ->add('title', TextType::class, [
                 'required'   => true,
                 'attr' => [
                     'placeholder' => 'Le titre de l\'article',
                 ]
             ])
-            ->add('slug',HiddenType::class,[
+            ->add('slug', HiddenType::class, [
                 'required'   => false,
             ])
-            ->add('article', CKEditorType::class,[
+            ->add('article', CKEditorType::class, [
                 'required' => true,
             ])
 
-            ->add('draft',CheckboxType::class,[
+            ->add('draft', CheckboxType::class, [
                 'label'    => 'Brouillon',
                 'required' => false
             ])
 
-            ->add('tags',EntityType::class,[
+            ->add('tags', EntityType::class, [
                 'class' => Tags::class,
-                'choice_label' => 'name', 
+                'choice_label' => 'name',
                 'placeholder' => '-- Sélectionnez le tag de l\'article * --',
                 'required' => true,
             ])
-            
+
             ->add('image', FileType::class, [
                 'label' => 'Choisir un fichier',
                 'mapped' => false,
@@ -72,7 +70,7 @@ class ArticlesEditType extends AbstractType
                 ]
               ])
 
-              ->add('censure',CheckboxType::class,[
+              ->add('censure', CheckboxType::class, [
                 'required' => false
             ])
 

@@ -15,13 +15,13 @@ class SearchArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('mots',SearchType::class,[
+            ->add('mots', SearchType::class, [
                 'label' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Rechercher un article par son titre'
                 ],
-                'required' =>false,
+                'required' => false,
             ])
 
             // ->add('Rechercher',SubmitType::class)
@@ -31,7 +31,7 @@ class SearchArticleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            
+
         ]);
     }
 }

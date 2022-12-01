@@ -42,12 +42,12 @@ class ArticlesController extends AbstractController
 
     // Index Publication
     #[Route('/Historique', name: 'app_articles_index', methods: ['GET','POST'])]
-    public function index(Request $request,ArticlesRepository $articlesRepository): Response
+    public function index(Request $request, ArticlesRepository $articlesRepository): Response
     {
         $limit = self::LIMIT_PAGE;
 
         // je récupére le numéros de page
-        $page = (int)$request->query->get("page",1);
+        $page = (int)$request->query->get("page", 1);
 
         // je récupére les annonces
         $articles = $articlesRepository->getPaginatedArticles($limit, $page);
@@ -131,7 +131,7 @@ class ArticlesController extends AbstractController
     #[Route('/censure', name: 'app_index_censure', methods: ['GET'])]
     public function indexArticleCensure(ArticlesRepository $articlesRepository): Response
     {
-        
+
         if (!$this->isGranted('ACCES_CENSURE', $this->tokenUser)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
@@ -159,7 +159,6 @@ class ArticlesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager = $doctrine->getManager();
             $newArticle = $form->getData();
 
@@ -167,7 +166,7 @@ class ArticlesController extends AbstractController
             $article->setTags($newArticle->getTags());
 
 
-            $cleaner = new Cleaner;
+            $cleaner = new Cleaner();
             $slug = strToLower($cleaner->delAccent($newArticle->getTitle()));
             $article->setSlug($slug);
 
@@ -177,8 +176,8 @@ class ArticlesController extends AbstractController
             // si il existe des images je crée un dossier au nom de l'article dans public img avec le slug
             if ($files) {
                 $where = $this->getParameter('images_directory');
-                $filesystem = new FileSysteme;
-                $filesystem->createFolder($where.$slug);
+                $filesystem = new FileSysteme();
+                $filesystem->createFolder($where . $slug);
             }
 
             foreach ($files as $image) {
@@ -187,20 +186,19 @@ class ArticlesController extends AbstractController
                 if ($image) {
                     try {
                         $image->move(
-                            $where.$slug.'/',
+                            $where . $slug . '/',
                             $filename
                         );
 
-                        $resizeImg = new ImageOptimizer;
-                        $resizeImg->resize($where.$slug.'/'. $filename);
-                        
+                        $resizeImg = new ImageOptimizer();
+                        $resizeImg->resize($where . $slug . '/' . $filename);
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');
                     }
                 }
 
-                $recImage = new Images;
+                $recImage = new Images();
                 $recImage->setSource($filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
@@ -231,7 +229,7 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/{slug}', name: 'app_articles_show', methods: ['GET','POST'])]
-    public function show(Request $request,Articles $article, CommentsRepository $commentsRepository): Response
+    public function show(Request $request, Articles $article, CommentsRepository $commentsRepository): Response
     {
         if ($article->getDraft()) {
             if (!$this->isGranted('VIEW_DRAFT', $article)) {
@@ -257,7 +255,7 @@ class ArticlesController extends AbstractController
             $comment->setArticle($article);
             $commentsRepository->add($comment);
 
-            return $this->redirectToRoute('app_articles_show',['slug' => $article->getSlug()]);
+            return $this->redirectToRoute('app_articles_show', ['slug' => $article->getSlug()]);
         }
 
         return $this->render('articles/show.html.twig', [
@@ -292,7 +290,7 @@ class ArticlesController extends AbstractController
 
             $oldSlug = $article->getSlug();
 
-            $cleaner = new Cleaner;
+            $cleaner = new Cleaner();
             $slug = strToLower($cleaner->delAccent($article->getTitle()));
             $article->setSlug($slug);
 
@@ -301,8 +299,8 @@ class ArticlesController extends AbstractController
 
             $where = $this->getParameter('images_directory');
 
-            $filesystem = new FileSysteme;
-            $filesystem->renameFolder($where . $oldSlug . '/', $where.$slug .'/');
+            $filesystem = new FileSysteme();
+            $filesystem->renameFolder($where . $oldSlug . '/', $where . $slug . '/');
 
             foreach ($files as $image) {
                 $filename = "_" . md5(uniqid()) . "." . $image->guessExtension();
@@ -310,19 +308,19 @@ class ArticlesController extends AbstractController
                 if ($image) {
                     try {
                         $image->move(
-                            $where.$slug.'/',
+                            $where . $slug . '/',
                             $filename
                         );
 
-                        $resizeImg = new ImageOptimizer;
-                        $resizeImg->resize($where.$slug.'/'.$filename);
+                        $resizeImg = new ImageOptimizer();
+                        $resizeImg->resize($where . $slug . '/' . $filename);
                     } catch (FileException $e) {
                         $this->addFlash('failed', 'Une érreur est survenue lors du chargement de l\'image !');
                         return $this->redirectToRoute('app_articles_new');
                     }
                 }
 
-                $recImage = new Images;
+                $recImage = new Images();
                 $recImage->setSource($filename);
                 $article->addImage($recImage);
                 $entityManager->persist($recImage);
@@ -351,16 +349,15 @@ class ArticlesController extends AbstractController
     #[Route('/delete/{slug}', name: 'app_articles_delete', methods: ['POST'])]
     public function delete(Request $request, Articles $article, ArticlesRepository $articlesRepository): Response
     {
-        
+
         if (!$this->isGranted('DELETE_ARTICLE', $article)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
         }
 
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
-
-        $filesystem = new FileSysteme;
-            $filesystem->remove($this->getParameter('images_directory'). $article->getSlug().'/');
+            $filesystem = new FileSysteme();
+            $filesystem->remove($this->getParameter('images_directory') . $article->getSlug() . '/');
 
             $articlesRepository->remove($article);
         }
@@ -369,7 +366,7 @@ class ArticlesController extends AbstractController
     }
 
     #[Route('/delete/image/byarticle/{id}', name: 'app_images_delete_by_article', methods: ['POST', 'GET'])]
-    public function deleteImageByArticle(Request $request,Images $image, ImagesRepository $imagesRepository): Response
+    public function deleteImageByArticle(Request $request, Images $image, ImagesRepository $imagesRepository): Response
     {
 
         if (!$this->isGranted('DELETE_IMAGE', $image)) {
@@ -379,10 +376,10 @@ class ArticlesController extends AbstractController
 
         $article = $image->getArticles()->getSlug();
 
-        if ($this->isCsrfTokenValid('delete' . $image->getId(), $request->request->get('_token')) ) {
-            $filesystem = new FileSysteme;
-        $filesystem->remove($this->getParameter('images_directory').$article. '/' . $image->getSource());
-        $imagesRepository->remove($image);
+        if ($this->isCsrfTokenValid('delete' . $image->getId(), $request->request->get('_token'))) {
+            $filesystem = new FileSysteme();
+            $filesystem->remove($this->getParameter('images_directory') . $article . '/' . $image->getSource());
+            $imagesRepository->remove($image);
         }
 
         return  $this->redirectToRoute('app_articles_show', ['slug' => $article], Response::HTTP_SEE_OTHER);
@@ -399,8 +396,8 @@ class ArticlesController extends AbstractController
 
         $article = $image->getArticles()->getSlug();
 
-        $filesystem = new FileSysteme;
-        $filesystem->remove($this->getParameter('images_directory').$article. '/' . $image->getSource());
+        $filesystem = new FileSysteme();
+        $filesystem->remove($this->getParameter('images_directory') . $article . '/' . $image->getSource());
         $imagesRepository->remove($image);
 
         return  $this->redirectToRoute('app_articles_edit', ['slug' => $article], Response::HTTP_SEE_OTHER);
@@ -409,7 +406,7 @@ class ArticlesController extends AbstractController
     #[Route('/{id}/editImage', name: 'app_images_edit', methods: ['GET', 'POST'])]
     public function editImage(Request $request, Images $image, ImagesRepository $imagesRepository): Response
     {
-       
+
         if (!$this->isGranted('IMAGE_EDIT', $image)) {
             $this->addFlash('unauthorised', 'Désolé, vous devez être connecté en tant que administrateur');
             return $this->redirectToRoute('app_login');
@@ -417,9 +414,8 @@ class ArticlesController extends AbstractController
 
         $form = $this->createForm(ImagesType::class, $image);
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
-          
             $imagesRepository->add($image);
             $article = $image->getArticles();
             return $this->redirectToRoute('app_articles_show', ['slug' => $article->getSlug() ], Response::HTTP_SEE_OTHER);
@@ -430,5 +426,4 @@ class ArticlesController extends AbstractController
             'form' => $form,
         ]);
     }
-
 }

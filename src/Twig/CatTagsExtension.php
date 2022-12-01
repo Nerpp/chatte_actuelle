@@ -16,15 +16,15 @@ class CatTagsExtension extends AbstractExtension
         $this->em = $em;
     }
 
-    public function getFunctions():array
+    public function getFunctions(): array
     {
         return [
-            new TwigFunction('catTag',[$this,'getTag'])
+            new TwigFunction('catTag', [$this,'getTag'])
         ];
     }
 
     public function getTags()
     {
-       return $this->em->getRepository(Tags::class)->findAll();
+        return $this->em->getRepository(Tags::class)->findAll();
     }
 }

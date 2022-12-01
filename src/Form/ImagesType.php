@@ -15,16 +15,15 @@ class ImagesType extends AbstractType
     {
         $builder
             // ->add('source')
-            ->add('source',HiddenType::class,[
+            ->add('source', HiddenType::class, [
             ])
-            ->add('description',TextType::class,[
+            ->add('description', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Décrire votre image nombre',  
+                    'placeholder' => 'Décrire votre image nombre',
                 ]
-            ]
-            )
+            ])
             ->add('articles')
-           
+
         ;
     }
 

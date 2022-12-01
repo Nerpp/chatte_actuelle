@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Extensions\Doctrine;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
@@ -10,33 +11,32 @@ class MatchAgainst extends FunctionNode
 {
     /** @var array list of \Doctrine\ORM\Query\AST\PathExpression */
     protected $pathExp = null;
-    /** @var string */
+/** @var string */
     protected $against = null;
-    /** @var bool */
+/** @var bool */
     protected $booleanMode = false;
-    /** @var bool */
+/** @var bool */
     protected $queryExpansion = false;
-
-    /**
+/**
      * Returns all Annonces per page
-     * @return void 
+     * @return void
      */
     public function parse(Parser $parser)
     {
         // match
         $parser->match(Lexer::T_IDENTIFIER);
         $parser->match(Lexer::T_OPEN_PARENTHESIS);
-        // first Path Expression is mandatory
+// first Path Expression is mandatory
         $this->pathExp = [];
         $this->pathExp[] = $parser->StateFieldPathExpression();
-        // Subsequent Path Expressions are optional
+// Subsequent Path Expressions are optional
         $lexer = $parser->getLexer();
         while ($lexer->isNextToken(Lexer::T_COMMA)) {
             $parser->match(Lexer::T_COMMA);
             $this->pathExp[] = $parser->StateFieldPathExpression();
         }
         $parser->match(Lexer::T_CLOSE_PARENTHESIS);
-        // against
+// against
         if (strtolower($lexer->lookahead['value']) !== 'against') {
             $parser->syntaxError('against');
         }
@@ -56,7 +56,7 @@ class MatchAgainst extends FunctionNode
 
     /**
      * Returns all Annonces per page
-     * @return void 
+     * @return void
      */
     public function getSql(SqlWalker $walker)
     {

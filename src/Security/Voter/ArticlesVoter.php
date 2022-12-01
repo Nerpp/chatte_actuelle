@@ -14,7 +14,7 @@ class ArticlesVoter extends Voter
     public const DELETE_ARTICLE = 'DELETE_ARTICLE';
     public const CENSURE_ARTICLE = 'CENSURE_ARTICLE';
     public const VIEW_CENSURE = 'VIEW_CENSURE';
-    
+
     private $security;
 
     public function __construct(Security $security)
@@ -58,17 +58,16 @@ class ArticlesVoter extends Voter
                 return $this->authCensureArticle($article);
                 break;
             case self::VIEW_CENSURE:
-               return $this->authViewCensure($article);
+                return $this->authViewCensure($article);
                 break;
         }
 
         return false;
-
     }
 
     private function authViewDraft($article)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser) {
             return true;
         }
 
@@ -77,7 +76,7 @@ class ArticlesVoter extends Voter
 
     private function authEditArticle($article)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser) {
             return true;
         }
 
@@ -86,7 +85,7 @@ class ArticlesVoter extends Voter
 
     private function authDeleteArticle($article)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser) {
             return true;
         }
 
@@ -104,11 +103,10 @@ class ArticlesVoter extends Voter
 
     private function authViewCensure($article)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $article->getUser() === $this->tokenUser) {
             return true;
         }
 
         return false;
     }
-
 }

@@ -25,7 +25,7 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-        ->add('email',EmailType::class,[
+        ->add('email', EmailType::class, [
             'attr' => [
             'placeholder' => 'email@exemple.com',
             'autocomplete' => 'email',
@@ -36,7 +36,7 @@ class RegistrationFormType extends AbstractType
                 ]),
             ]
         ])
-        ->add('displayName',TextType::class,[
+        ->add('displayName', TextType::class, [
             'attr' => [
             'placeholder' => 'Votre pseudonyme'
             ],
@@ -74,7 +74,7 @@ class RegistrationFormType extends AbstractType
             ],
         ])
 
-          ->add('plainPassword',RepeatedType::class, [
+          ->add('plainPassword', RepeatedType::class, [
             // instead of being set onto the object directly,
             // this is read and encoded in the controller
             'type' => PasswordType::class,
@@ -109,7 +109,7 @@ class RegistrationFormType extends AbstractType
                 ]),
             ],
         ])
-            
+
 
             ->add('captcha', TextType::class, [
                 'mapped' => false,

@@ -25,7 +25,7 @@ class EditoType extends AbstractType
             //         'maxlength' => 65000,
             //     ],
             // ])
-            ->add('edito', CKEditorType::class,[
+            ->add('edito', CKEditorType::class, [
                 'required' => true,
             ])
         ;

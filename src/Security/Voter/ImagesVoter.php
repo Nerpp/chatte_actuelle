@@ -25,21 +25,21 @@ class ImagesVoter extends Voter
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [
-            self::IMAGE_EDIT, 
+            self::IMAGE_EDIT,
             self::DELETE_IMAGE])
             && $image instanceof \App\Entity\Images;
     }
 
     protected function voteOnAttribute(string $attribute, $image, TokenInterface $token): bool
     {
-       
+
         $user = $token->getUser();
-       
+
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
-       
+
         if ($this->security->isGranted('ROLE_SUPERADMIN')) {
             return true;
         }
@@ -59,7 +59,7 @@ class ImagesVoter extends Voter
 
     private function authDeleteImage($image)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser) {
             return true;
         }
 
@@ -68,7 +68,7 @@ class ImagesVoter extends Voter
 
     private function authEditImage($image)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser ) {
+        if ($this->security->isGranted('ROLE_ADMIN') && $image->getArticles()->getUser() === $this->tokenUser) {
             return true;
         }
 

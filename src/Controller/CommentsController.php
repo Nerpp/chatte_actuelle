@@ -19,7 +19,6 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 #[Route('/comments')]
 class CommentsController extends AbstractController
 {
-
     public function __construct(Security $security)
     {
         // Avoid calling getUser() in the constructor: auth may not
@@ -76,7 +75,7 @@ class CommentsController extends AbstractController
             return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
         }
 
-        
+
         if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
             $commentsRepository->remove($comment);
             $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
@@ -94,11 +93,11 @@ class CommentsController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete' . $comment->getId(), $request->request->get('_token'))) {
-        $user = $comment->getUser();
-        $warning = $user->getWarning();
-        $warning = $warning + 1;
+            $user = $comment->getUser();
+            $warning = $user->getWarning();
+            $warning = $warning + 1;
 
-        $email = (new TemplatedEmail())
+            $email = (new TemplatedEmail())
             ->from('wampkarl@gmail.com')
             ->to(new Address($user->getEmail()))
             ->subject('Moderation')
@@ -114,12 +113,12 @@ class CommentsController extends AbstractController
                 'warning' => $warning,
             ]);
 
-           
+
             try {
                 $mailer->send($email);
             } catch (TransportExceptionInterface $e) {
-               $this->addFlash('warning','Un problémé est survenue lors de l\'envoit de l\'email au client');
-               return $this->redirectToRoute('app_comments_reported_index');
+                $this->addFlash('warning', 'Un problémé est survenue lors de l\'envoit de l\'email au client');
+                return $this->redirectToRoute('app_comments_reported_index');
             }
 
             $user->setWarning($warning);
@@ -169,7 +168,7 @@ class CommentsController extends AbstractController
     }
 
     #[Route('/{id}/reply', name: 'app_comment_reply', methods: ['GET', 'POST'])]
-    public function reply(Request $request,Comments $comment, CommentsRepository $commentsRepository)
+    public function reply(Request $request, Comments $comment, CommentsRepository $commentsRepository)
     {
 
         if (!$this->isGranted('SEND_COMMENTS', $this->tokenUser)) {
@@ -180,18 +179,16 @@ class CommentsController extends AbstractController
         $replyF = $request->get("replyF");
 
 
-        if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token')) && isset($replyF) && !empty($replyF) ) {
-
-        $reply = new Comments;
-        $reply->setComment($replyF);
-        $reply->setUser($this->tokenUser);
-        $reply->setArticle($comment->getArticle());
-        $reply->setCreatedAt(new \DateTime('now'));
-        $reply->setParent($comment);
-        $commentsRepository->add($reply);
-
+        if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token')) && isset($replyF) && !empty($replyF)) {
+            $reply = new Comments();
+            $reply->setComment($replyF);
+            $reply->setUser($this->tokenUser);
+            $reply->setArticle($comment->getArticle());
+            $reply->setCreatedAt(new \DateTime('now'));
+            $reply->setParent($comment);
+            $commentsRepository->add($reply);
         }
-        return $this->redirectToRoute('app_articles_show', ['slug' =>$comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_articles_show', ['slug' => $comment->getArticle()->getSlug()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/delete/reply/{id}', name: 'app_reply_delete', methods: ['POST'])]
@@ -205,12 +202,10 @@ class CommentsController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('reply' . $comment->getId(), $request->request->get('_token'))) {
-          
             $commentsRepository->remove($comment);
             $this->addFlash('success', 'Le commentaire a étè supprimé avec succés');
         }
 
         return $this->redirectToRoute('app_articles_show', ['slug' => $slug], Response::HTTP_SEE_OTHER);
     }
-    
 }

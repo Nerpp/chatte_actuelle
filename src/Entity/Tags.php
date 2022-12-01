@@ -6,10 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TagsRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-
 // DON'T forget the following use statement!!!
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -26,7 +24,7 @@ class Tags
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    
+
     #[ORM\Column(type: 'string', length: 45, unique:true)]
     private $name;
 

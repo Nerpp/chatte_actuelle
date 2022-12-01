@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/edito')]
 class EditoController extends AbstractController
 {
-
     public function __construct(Security $security)
     {
         // Avoid calling getUser() in the constructor: auth may not
@@ -22,7 +21,7 @@ class EditoController extends AbstractController
         $this->security = $security;
         $this->tokenUser = $this->security->getUser();
     }
-   
+
     #[Route('/{id}/edit', name: 'app_edito_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Edito $edito, EditoRepository $editoRepository): Response
     {
@@ -46,5 +45,4 @@ class EditoController extends AbstractController
             'form' => $form,
         ]);
     }
-
 }

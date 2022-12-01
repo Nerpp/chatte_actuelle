@@ -23,17 +23,17 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-           
+
             ->add('imgProfile', FileType::class, [
               'label' => 'Choisir un fichier',
-  
+
               // unmapped means that this field is not associated to any entity property
               'mapped' => false,
-  
+
               // make it optional so you don't have to re-upload the PDF file
               // every time you edit the Product details
               'required' => false,
-  
+
               // unmapped fields can't define their validation using annotations
               // in the associated entity, so you can use the PHP constraint classes
               'constraints' => [
@@ -50,7 +50,7 @@ class UserType extends AbstractType
                   ])
               ],
           ])
-              ->add('email',EmailType::class,[
+              ->add('email', EmailType::class, [
                 'attr' => [
                 'placeholder' => 'email@exemple.com',
                 'autocomplete' => 'email',
@@ -61,7 +61,7 @@ class UserType extends AbstractType
                     ]),
                 ]
             ])
-            
+
             ->add('roles', ChoiceType::class, [
                 'required' => false,
                 'multiple' => false,
@@ -72,8 +72,8 @@ class UserType extends AbstractType
                   'Décisionnaire' => 'ROLE_SUPERADMIN'
                 ]
             ])
-           
-            ->add('displayName',TextType::class,[
+
+            ->add('displayName', TextType::class, [
               'attr' => [
               'placeholder' => 'Votre pseudonyme'
               ],
@@ -92,14 +92,14 @@ class UserType extends AbstractType
           // Data transformer
           $builder->get('roles')
           ->addModelTransformer(new CallbackTransformer(
-              function ($rolesArray) {
-                   // transform the array to a string
-                   return count($rolesArray) ? $rolesArray[0] : null;
-              },
-              function ($rolesString) {
-                   // transform the string back to an array
-                   return [$rolesString];
-              }
+                function ($rolesArray) {
+                     // transform the array to a string
+                     return count($rolesArray) ? $rolesArray[0] : null;
+                },
+                function ($rolesString) {
+                     // transform the string back to an array
+                     return [$rolesString];
+                }
           ));
     }
 

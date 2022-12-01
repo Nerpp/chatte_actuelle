@@ -29,7 +29,7 @@ class UserController extends AbstractController
         $this->security = $security;
         $this->tokenUser = $this->security->getUser();
     }
-    
+
     #[Route('/', name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
@@ -50,21 +50,21 @@ class UserController extends AbstractController
             $this->addFlash('unauthorised', 'Désolé, vous n\'avez pas les droits suffisants pour accéder à cet espace');
             return $this->redirectToRoute('app_login');
         }
-        
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, UserRepository $userRepository,ManagerRegistry $doctrine): Response
+    public function edit(Request $request, User $user, UserRepository $userRepository, ManagerRegistry $doctrine): Response
     {
         $userProfile = $user;
         if (!$this->isGranted('EDIT_PROFILE', $userProfile)) {
             $this->addFlash('unauthorised', 'Désolé, vous n\'avez pas les droits suffisants pour accéder à cet espace');
             return $this->redirectToRoute('app_login');
         }
-        
+
         $form = $this->createForm(UserType::class, $user);
 
         if (!$this->isGranted('CHANGE_ROLE', $this->tokenUser)) {
@@ -76,25 +76,23 @@ class UserController extends AbstractController
         }
 
         $form->remove('email');
-       
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager = $doctrine->getManager();
             $files = $form->get('imgProfile')->getData();
 
-            if($files){
-
-                $where = $this->getParameter('images_directory').'profile/';
+            if ($files) {
+                $where = $this->getParameter('images_directory') . 'profile/';
                 $filename = "_" . md5(uniqid()) . "." . $files->guessExtension();
-                
+
                 $userImg = $user->getImgProfile();
                 if ($userImg) {
-                    $filesystem = new FileSysteme;
-                    $filesystem->remove($this->getParameter('images_directory').'profile/'.$userImg->getSource());
+                    $filesystem = new FileSysteme();
+                    $filesystem->remove($this->getParameter('images_directory') . 'profile/' . $userImg->getSource());
                 }
-                   
+
                 try {
                     $files->move(
                         $where,
@@ -102,21 +100,17 @@ class UserController extends AbstractController
                     );
 
 
-                    $resizeImg = new ImageOptimizer;
-                    $resizeImg->resizeImgProfile($where.'/'. $filename);
-
+                    $resizeImg = new ImageOptimizer();
+                    $resizeImg->resizeImgProfile($where . '/' . $filename);
                 } catch (FileException $e) {
                     $this->addFlash('verify_email_error', 'Une érreur est survenue lors du chargement de l\'image !');
                     return $this->redirectToRoute('app_user_edit');
                 }
-                
+
                 $userImg->setSource($filename);
-                  
             }
 
              $userRepository->add($user, true);
-
-           
         }
 
         return $this->renderForm('user/edit.html.twig', [
@@ -135,11 +129,11 @@ class UserController extends AbstractController
 
         $img = $user->getImgProfile()->getSource();
         if ($img) {
-            $filesystem = new FileSysteme;
-            $filesystem->remove($this->getParameter('images_directory').'profile/'.$img);
+            $filesystem = new FileSysteme();
+            $filesystem->remove($this->getParameter('images_directory') . 'profile/' . $img);
         }
 
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $userRepository->remove($user, true);
         }
 

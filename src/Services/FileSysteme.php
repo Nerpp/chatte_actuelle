@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Services;
 
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Filesystem\Filesystem;
-
 
 class FileSysteme
 {
@@ -21,7 +21,7 @@ class FileSysteme
         }
     }
 
-    public function renameFolder($oldFolder,$newFolder)
+    public function renameFolder($oldFolder, $newFolder)
     {
         try {
             $this->filesystem->rename($oldFolder, $newFolder, false);
@@ -38,5 +38,4 @@ class FileSysteme
             echo "An error occurred while creating your directory at " . $exception->getPath();
         }
     }
-
 }

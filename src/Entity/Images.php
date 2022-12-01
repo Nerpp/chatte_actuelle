@@ -19,12 +19,12 @@ class Images
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $description;
 
-    #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'images',cascade:["persist"])]
+    #[ORM\ManyToOne(targetEntity: Articles::class, inversedBy: 'images', cascade:["persist"])]
     private $articles;
 
     public function __toString()
     {
-        $this->source;   
+        $this->source;
     }
 
     public function getId(): ?int

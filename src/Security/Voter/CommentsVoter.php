@@ -21,10 +21,10 @@ class CommentsVoter extends Voter
         $this->security = $security;
         $this->tokenUser = $this->security->getUser();
     }
-    
+
     protected function supports(string $attribute, $comment): bool
     {
-        
+
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [
@@ -38,14 +38,14 @@ class CommentsVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, $comment, TokenInterface $token): bool
     {
-       
-        $user = $token->getUser(); 
+
+        $user = $token->getUser();
         // if the user is anonymous, do not grant access
-        
+
         if (!$user instanceof UserInterface) {
             return false;
         }
-      
+
         if ($this->security->isGranted('ROLE_SUPERADMIN')) {
             return true;
         }
@@ -56,10 +56,10 @@ class CommentsVoter extends Voter
                 return $this->authDeletComment($comment);
                 break;
             case self::REPORT_COMMENT:
-               return $this->authReportComment($comment);
+                return $this->authReportComment($comment);
                 break;
             case self::ALLOW_COMMENT:
-               return $this->authAllowComment($comment);
+                return $this->authAllowComment($comment);
                 break;
             case self::EDIT_COMMENT:
                 return $this->authEditComment($comment);
@@ -71,12 +71,12 @@ class CommentsVoter extends Voter
 
     private function authDeletComment($comment)
     {
-       
+
         if ($this->security->isGranted('ROLE_USER') && $comment->getUser() === $this->tokenUser) {
             return true;
         }
 
-        if ($this->security->isGranted('ROLE_ADMIN') ) {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
@@ -95,7 +95,7 @@ class CommentsVoter extends Voter
 
     private function authAllowComment($comment)
     {
-        if ($this->security->isGranted('ROLE_ADMIN') ) {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 
