@@ -108,13 +108,8 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            // do anything else you need here, like send an email
 
-            // return $userAuthenticator->authenticateUser(
-            //     $user,
-            //     $authenticator,
-            //     $request
-            // );
+            $this->addFlash('bien', 'Derniére étape, veuillez verifier votre email pour confirmer, ou vos spams..');
 
             return $this->redirectToRoute('app_login');
         }
